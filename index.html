@@ -1,397 +1,1437 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Pure Ice | Food Safety Management System</title>
-  <style>
-    :root {
-      --bg: #edf7fa;
-      --panel: #ffffff;
-      --panel2: #eef8fa;
-      --text: #10232c;
-      --muted: #607783;
-      --line: #dfeaf1;
-      --brand: #0f7aa8;
-      --brand2: #18a0c3;
-      --accent: #0d8c7d;
-      --warn: #efb53c;
-      --bad: #cf4a4a;
-      --good: #1e8d5a;
-      --shadow: 0 16px 40px rgba(13, 61, 74, .08);
-      --radius: 18px;
-      color-scheme: light;
-    }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; font-family: Inter, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
-    body { min-height: 100vh; }
-    button, input, select { font: inherit; }
-    .hidden { display: none !important; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pure Ice | Food Safety Management System</title>
 
-    .app-shell {
-      display: flex;
-      min-height: 100vh;
-      background: linear-gradient(180deg, #f4fafc 0%, #edf7fa 100%);
-    }
-    .sidebar {
-      width: 270px; background: #0b1e2a; color: #edf7fa; padding: 22px 16px 18px; position: sticky; top: 0; height: 100vh; overflow-y: auto;
-    }
-    .brand {
-      display: flex; align-items: center; gap: 12px; padding: 8px 8px 18px; border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-    .logo {
-      width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(135deg, var(--brand), var(--brand2)); box-shadow: inset 0 0 18px rgba(255,255,255,.12);
-      font-size: 26px; font-weight: 700;
-    }
-    .brand b { display: block; letter-spacing: .14em; font-size: 14px; }
-    .brand span { color: rgba(237,247,250,.72); font-size: 11px; }
-    nav { margin-top: 12px; }
-    .section { color: rgba(255,255,255,.44); letter-spacing: .12em; text-transform: uppercase; font-size: 10px; padding: 18px 10px 8px; }
-    .nav {
-      width: 100%; border: none; background: transparent; color: #edf7fa; display: flex; align-items: center; gap: 12px; text-align: left; padding: 12px 10px; border-radius: 12px; cursor: pointer; font-size: 14px;
-    }
-    .nav:hover:not(:disabled) { background: rgba(255,255,255,.05); }
-    .nav.active { background: linear-gradient(90deg, rgba(39,171,204,.22), rgba(39,171,204,.08)); box-shadow: inset 0 0 0 1px rgba(39,171,204,.18); }
-    .nav:disabled { cursor: not-allowed; opacity: .4; }
-    .main {
-      flex: 1; padding: 26px 22px 30px; min-width: 0; overflow-y: auto;
-    }
-    .top {
-      display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px;
-    }
-    .eyebrow { color: var(--muted); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
-    .title { font-size: clamp(24px, 3vw, 38px); font-weight: 800; margin: 4px 0 6px; }
-    .sub { color: var(--muted); }
-    .top-right { display: flex; align-items: center; gap: 12px; }
-    .search {
-      align-items: center; display: flex; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; width: min(420px, 42vw); box-shadow: var(--shadow);
-    }
-    .search input { background: transparent; border: none; width: 100%; outline: none; color: var(--text); }
-    .profile-btn, .btn {
-      border: none; border-radius: 12px; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: #fff; cursor: pointer; padding: 10px 14px; font-weight: 700; box-shadow: 0 12px 24px rgba(15,122,168,.14);
-    }
-    .btn.secondary { background: rgba(15,122,168,.10); color: var(--brand); box-shadow: none; }
-    .cards {
-      display: grid; grid-template-columns: repeat(6, minmax(140px, 1fr)); gap: 14px; margin-bottom: 18px;
-    }
-    .card {
-      background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 16px;
-    }
-    .card .label { color: var(--muted); font-size: 12px; font-weight: 600; }
-    .card .num { font-size: clamp(22px, 2vw, 32px); font-weight: 800; margin-top: 8px; }
-    .card .delta { color: var(--good); font-size: 12px; margin-top: 6px; }
-    .card .delta.warn { color: var(--warn); }
-    .card .delta.bad { color: var(--bad); }
-    .grid {
-      display: grid; grid-template-columns: 2fr 1.1fr; gap: 18px; margin-bottom: 18px;
-    }
-    .panel {
-      background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 16px; box-shadow: var(--shadow);
-    }
-    .panelhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .panel h3 { margin: 0; font-size: 18px; }
-    .pill {
-      background: rgba(17, 165, 119, .12); color: var(--good); padding: 5px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;
-    }
-    .muted { color: var(--muted); }
-    .chart {
-      height: 220px; display: flex; align-items: end; gap: 12px; padding-top: 16px;
-    }
-    .barwrap { flex: 1; display: flex; align-items: end; justify-content: center; height: 100%; }
-    .bar { width: 100%; max-width: 42px; border-radius: 10px 10px 0 0; background: linear-gradient(180deg, var(--brand2), var(--brand)); min-height: 10px; }
-    .issue { display: flex; gap: 12px; align-items: center; padding: 10px 8px; border-bottom: 1px solid var(--line); }
-    .issue:last-child { border-bottom: none; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--warn); display: inline-block; }
-    .dot.bad { background: var(--bad); }
-    .issue b { display: block; }
-    .issue span { color: var(--muted); font-size: 12px; }
-    .bottom {
-      display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 18px;
-    }
-    .metric { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
-    .metric:last-child { border-bottom: none; }
-    .metric b { font-size: 18px; }
-    .btn-row { display: grid; gap: 8px; }
-    .audit-box { font-size: 32px; font-weight: 800; margin-top: 10px; }
+<style>
+:root{
+  --bg:#edf7fa;
+  --panel:#fff;
+  --panel2:#eef8fa;
+  --text:#10232c;
+  --muted:#607783;
+  --line:#dfeaf1;
+  --brand:#0f7aa8;
+  --brand2:#18a0c3;
+  --accent:#0d8c7d;
+  --warn:#efb53c;
+  --bad:#cf4a4a;
+  --good:#1e8d5a;
+  --shadow:0 16px 40px rgba(13,61,74,.08);
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text)
+}
+body{min-height:100vh}
+button,input,select,textarea{font:inherit}
+.hidden{display:none!important}
 
-    .login-screen {
-      min-height: 100vh; display: grid; place-items: center; background: radial-gradient(circle at top, rgba(23,123,160,.12), transparent 38%), linear-gradient(180deg, #edf7fa 0%, #eef8fa 100%);
-      padding: 24px;
-    }
-    .login-panel {
-      width: min(480px, 100%); background: rgba(255,255,255,.87); backdrop-filter: blur(8px); border: 1px solid var(--line); border-radius: 28px; box-shadow: 0 18px 40px rgba(8, 37, 51, .12); padding: 36px 32px;
-    }
-    .login-brand { display: flex; align-items: center; gap: 12px; justify-content: center; margin-bottom: 12px; }
-    .login-logo { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: #fff; font-size: 30px; font-weight: 700; }
-    .login-title { font-size: clamp(26px, 3vw, 32px); font-weight: 800; letter-spacing: .08em; text-align: center; }
-    .login-sub { text-align: center; color: var(--muted); margin: 8px 0 20px; }
-    .field { display: grid; gap: 8px; margin-bottom: 12px; }
-    .field label { font-size: 12px; font-weight: 700; color: var(--muted); }
-    .field input, .field select {
-      border: 1px solid var(--line); background: #f5fafb; border-radius: 12px; padding: 12px 14px; outline: none; color: var(--text);
-    }
-    .field input:focus, .field select:focus { border-color: rgba(18,138,184,.5); box-shadow: 0 0 0 4px rgba(18,138,184,.10); }
-    .login-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
-    .secondary-btn {
-      background: rgba(24, 142, 182, .08); color: var(--brand); border: 1px solid rgba(24,142,182,.18); border-radius: 12px; cursor: pointer; padding: 11px 14px; font-weight: 700;
-    }
-    .status {
-      margin-top: 14px; min-height: 20px; font-size: 13px; font-weight: 600; display: block;
-    }
-    .status.error { color: var(--bad); }
-    .status.success { color: var(--good); }
-    .status.info { color: var(--brand); }
+.app-shell{
+  display:flex;
+  min-height:100vh;
+  background:linear-gradient(180deg,#f4fafc 0%,#edf7fa 100%)
+}
 
-    /* User Management Styles */
-    .users-table {
-      width: 100%; border-collapse: collapse; margin-top: 16px;
-    }
-    .users-table thead {
-      background: var(--panel2); border-bottom: 1px solid var(--line);
-    }
-    .users-table th {
-      padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px; color: var(--muted);
-    }
-    .users-table td {
-      padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 14px;
-    }
-    .users-table tr:hover {
-      background: rgba(15,122,168,.04);
-    }
-    .user-status {
-      display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;
-    }
-    .user-status.active {
-      background: rgba(30, 141, 90, .12); color: var(--good);
-    }
-    .user-status.inactive {
-      background: rgba(207, 74, 74, .12); color: var(--bad);
-    }
-    .action-buttons {
-      display: flex; gap: 8px;
-    }
-    .action-buttons button {
-      padding: 6px 10px; font-size: 12px; border: none; border-radius: 6px; cursor: pointer; background: rgba(15,122,168,.10); color: var(--brand);
-    }
-    .action-buttons button:hover {
-      background: rgba(15,122,168,.20);
-    }
+.sidebar{
+  width:270px;
+  background:#0b1e2a;
+  color:#edf7fa;
+  padding:22px 16px 18px;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto
+}
 
-    .users-filter-row {
-      display: flex; gap: 8px; margin-top: 16px; margin-bottom: 16px;
-    }
-    .users-filter-row input, .users-filter-row select {
-      padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: var(--panel); color: var(--text);
-    }
-    .users-filter-row input {
-      flex: 1;
-    }
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 8px 18px;
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
 
-    /* Modal Styles */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(11,30,42,.38); display: none; align-items: center; justify-content: center; z-index: 1000;
-    }
-    .modal-overlay.active {
-      display: flex;
-    }
-    .modal-box {
-      width: min(520px, calc(100vw - 24px)); background: #fff; border-radius: 18px; padding: 22px; box-shadow: 0 18px 40px rgba(11,30,42,.14); max-height: 90vh; overflow-y: auto;
-    }
-    .modal-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;
-    }
-    .modal-header h2 {
-      margin: 0; font-size: 20px; font-weight: 800;
-    }
-    .close-btn {
-      background: rgba(15,122,168,.10); color: var(--brand); border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-weight: 700;
-    }
-    .close-btn:hover {
-      background: rgba(15,122,168,.20);
-    }
+.logo{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  font-size:25px
+}
 
-    @media (max-width: 980px) {
-      .app-shell { flex-direction: column; }
-      .sidebar { width: 100%; height: auto; position: static; }
-      .cards { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
-      .grid, .bottom { grid-template-columns: 1fr; }
-      .main { padding: 18px 16px 26px; }
-      .top { flex-direction: column; align-items: flex-start; }
-      .search { width: 100%; }
-      .top-right { width: 100%; justify-content: space-between; }
-      .users-table { font-size: 12px; }
-      .users-table th, .users-table td { padding: 8px 10px; }
-      .users-filter-row { flex-direction: column; }
-    }
-  </style>
+.brand b{
+  display:block;
+  letter-spacing:.14em;
+  font-size:14px
+}
+
+.brand span{
+  color:rgba(237,247,250,.72);
+  font-size:11px
+}
+
+nav{margin-top:12px}
+
+.section{
+  color:rgba(255,255,255,.44);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-size:10px;
+  padding:18px 10px 8px
+}
+
+.nav{
+  width:100%;
+  border:none;
+  background:transparent;
+  color:#edf7fa;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-align:left;
+  padding:12px 10px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:14px
+}
+
+.nav:hover:not(:disabled){background:rgba(255,255,255,.05)}
+
+.nav.active{
+  background:linear-gradient(
+    90deg,
+    rgba(39,171,204,.22),
+    rgba(39,171,204,.08)
+  );
+  box-shadow:inset 0 0 0 1px rgba(39,171,204,.18)
+}
+
+.nav:disabled{
+  cursor:not-allowed;
+  opacity:.4
+}
+
+.main{
+  flex:1;
+  padding:26px 22px 30px;
+  min-width:0;
+  overflow-y:auto
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-bottom:18px
+}
+
+.eyebrow{
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+
+.title{
+  font-size:clamp(24px,3vw,38px);
+  font-weight:800;
+  margin:4px 0 6px
+}
+
+.sub{color:var(--muted)}
+
+.top-right{
+  display:flex;
+  align-items:center;
+  gap:12px
+}
+
+.search{
+  align-items:center;
+  display:flex;
+  gap:8px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 12px;
+  width:min(420px,42vw);
+  box-shadow:var(--shadow)
+}
+
+.search input{
+  background:transparent;
+  border:none;
+  width:100%;
+  outline:none;
+  color:var(--text)
+}
+
+.profile-btn,.btn{
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  color:#fff;
+  cursor:pointer;
+  padding:10px 14px;
+  font-weight:700;
+  box-shadow:0 12px 24px rgba(15,122,168,.14)
+}
+
+.btn.secondary{
+  background:rgba(15,122,168,.10);
+  color:var(--brand);
+  box-shadow:none
+}
+
+.btn.danger{
+  background:rgba(207,74,74,.10);
+  color:var(--bad);
+  box-shadow:none
+}
+
+.btn.small{
+  padding:7px 10px;
+  font-size:12px
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(140px,1fr));
+  gap:14px;
+  margin-bottom:18px
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:18px 16px
+}
+
+.card .label{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:600
+}
+
+.card .num{
+  font-size:clamp(22px,2vw,32px);
+  font-weight:800;
+  margin-top:8px
+}
+
+.card .delta{
+  color:var(--good);
+  font-size:12px;
+  margin-top:6px
+}
+
+.card .delta.warn{color:var(--warn)}
+.card .delta.bad{color:var(--bad)}
+
+.grid{
+  display:grid;
+  grid-template-columns:2fr 1.1fr;
+  gap:18px;
+  margin-bottom:18px
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px 16px;
+  box-shadow:var(--shadow)
+}
+
+.panelhead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px
+}
+
+.panel h3{
+  margin:0;
+  font-size:18px
+}
+
+.pill{
+  background:rgba(17,165,119,.12);
+  color:var(--good);
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap
+}
+
+.pill.warn{
+  background:rgba(239,181,60,.15);
+  color:#9b6d00
+}
+
+.pill.bad{
+  background:rgba(207,74,74,.12);
+  color:var(--bad)
+}
+
+.pill.info{
+  background:rgba(15,122,168,.10);
+  color:var(--brand)
+}
+
+.chart{
+  height:220px;
+  display:flex;
+  align-items:end;
+  gap:12px;
+  padding-top:16px
+}
+
+.barwrap{
+  flex:1;
+  display:flex;
+  align-items:end;
+  justify-content:center;
+  height:100%
+}
+
+.bar{
+  width:100%;
+  max-width:42px;
+  border-radius:10px 10px 0 0;
+  background:linear-gradient(180deg,var(--brand2),var(--brand));
+  min-height:10px
+}
+
+.issue{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:10px 8px;
+  border-bottom:1px solid var(--line)
+}
+
+.issue:last-child{border-bottom:none}
+
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--warn);
+  display:inline-block;
+  flex-shrink:0
+}
+
+.dot.bad{background:var(--bad)}
+.dot.good{background:var(--good)}
+
+.issue b{display:block}
+.issue span{color:var(--muted);font-size:12px}
+
+.bottom{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:18px
+}
+
+.metric{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid var(--line)
+}
+
+.metric:last-child{border-bottom:none}
+.metric b{font-size:18px}
+
+.btn-row{
+  display:grid;
+  gap:8px
+}
+
+.audit-box{
+  font-size:32px;
+  font-weight:800;
+  margin-top:10px
+}
+
+/* Login */
+
+.login-screen{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at top,rgba(23,123,160,.12),transparent 38%),
+    linear-gradient(180deg,#edf7fa 0%,#eef8fa 100%);
+  padding:24px
+}
+
+.login-panel{
+  width:min(480px,100%);
+  background:rgba(255,255,255,.87);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--line);
+  border-radius:28px;
+  box-shadow:0 18px 40px rgba(8,37,51,.12);
+  padding:36px 32px
+}
+
+.login-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  justify-content:center;
+  margin-bottom:12px
+}
+
+.login-logo{
+  width:52px;
+  height:52px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  color:#fff;
+  font-size:30px;
+  font-weight:700
+}
+
+.login-title{
+  font-size:clamp(26px,3vw,32px);
+  font-weight:800;
+  letter-spacing:.08em;
+  text-align:center
+}
+
+.login-sub{
+  text-align:center;
+  color:var(--muted);
+  margin:8px 0 20px
+}
+
+.field{
+  display:grid;
+  gap:8px;
+  margin-bottom:12px
+}
+
+.field label{
+  font-size:12px;
+  font-weight:700;
+  color:var(--muted)
+}
+
+.field input,
+.field select,
+.field textarea{
+  border:1px solid var(--line);
+  background:#f5fafb;
+  border-radius:12px;
+  padding:12px 14px;
+  outline:none;
+  color:var(--text)
+}
+
+.field textarea{
+  min-height:90px;
+  resize:vertical
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:rgba(18,138,184,.5);
+  box-shadow:0 0 0 4px rgba(18,138,184,.10)
+}
+
+.login-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:16px
+}
+
+.secondary-btn{
+  background:rgba(24,142,182,.08);
+  color:var(--brand);
+  border:1px solid rgba(24,142,182,.18);
+  border-radius:12px;
+  cursor:pointer;
+  padding:11px 14px;
+  font-weight:700
+}
+
+.status{
+  margin-top:14px;
+  min-height:20px;
+  font-size:13px;
+  font-weight:600;
+  display:block
+}
+
+.status.error{color:var(--bad)}
+.status.success{color:var(--good)}
+.status.info{color:var(--brand)}
+
+/* Tables */
+
+.table-wrap{
+  width:100%;
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:14px
+}
+
+.data-table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1050px
+}
+
+.data-table thead{
+  background:var(--panel2);
+  border-bottom:1px solid var(--line)
+}
+
+.data-table th{
+  padding:12px 14px;
+  text-align:left;
+  font-weight:700;
+  font-size:12px;
+  color:var(--muted);
+  white-space:nowrap
+}
+
+.data-table td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+  vertical-align:middle
+}
+
+.data-table tbody tr:hover{
+  background:rgba(15,122,168,.035)
+}
+
+.doc-title{
+  font-weight:700
+}
+
+.doc-code{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px
+}
+
+.file-link{
+  border:none;
+  background:rgba(15,122,168,.08);
+  color:var(--brand);
+  padding:6px 9px;
+  border-radius:7px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:700
+}
+
+.action-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px
+}
+
+.action-buttons button{
+  padding:6px 9px;
+  font-size:11px;
+  border:none;
+  border-radius:7px;
+  cursor:pointer;
+  background:rgba(15,122,168,.10);
+  color:var(--brand);
+  font-weight:700
+}
+
+.action-buttons button:hover{
+  background:rgba(15,122,168,.20)
+}
+
+.action-buttons .approve{
+  background:rgba(30,141,90,.12);
+  color:var(--good)
+}
+
+.action-buttons .delete{
+  background:rgba(207,74,74,.10);
+  color:var(--bad)
+}
+
+.filters{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;
+  gap:8px;
+  margin-bottom:14px
+}
+
+.filters input,
+.filters select{
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:#fff;
+  color:var(--text);
+  outline:none
+}
+
+.empty{
+  text-align:center;
+  padding:35px!important;
+  color:var(--muted)
+}
+
+/* Users */
+
+.users-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:16px;
+  min-width:850px
+}
+
+.users-table thead{
+  background:var(--panel2);
+  border-bottom:1px solid var(--line)
+}
+
+.users-table th{
+  padding:12px 14px;
+  text-align:left;
+  font-weight:700;
+  font-size:13px;
+  color:var(--muted)
+}
+
+.users-table td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+  font-size:14px
+}
+
+.user-status{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:6px;
+  font-size:11px;
+  font-weight:700
+}
+
+.user-status.active{
+  background:rgba(30,141,90,.12);
+  color:var(--good)
+}
+
+.user-status.inactive{
+  background:rgba(207,74,74,.12);
+  color:var(--bad)
+}
+
+.users-filter-row{
+  display:flex;
+  gap:8px;
+  margin-top:16px;
+  margin-bottom:16px
+}
+
+.users-filter-row input,
+.users-filter-row select{
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-size:14px;
+  background:var(--panel);
+  color:var(--text)
+}
+
+.users-filter-row input{flex:1}
+
+/* Modal */
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(11,30,42,.42);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  padding:12px
+}
+
+.modal-overlay.active{display:flex}
+
+.modal-box{
+  width:min(720px,calc(100vw - 24px));
+  background:#fff;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 18px 40px rgba(11,30,42,.20);
+  max-height:92vh;
+  overflow-y:auto
+}
+
+.modal-box.large{
+  width:min(900px,calc(100vw - 24px))
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px
+}
+
+.modal-header h2{
+  margin:0;
+  font-size:20px;
+  font-weight:800
+}
+
+.close-btn{
+  background:rgba(15,122,168,.10);
+  color:var(--brand);
+  border:none;
+  border-radius:8px;
+  padding:8px 12px;
+  cursor:pointer;
+  font-weight:700
+}
+
+.close-btn:hover{
+  background:rgba(15,122,168,.20)
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 12px
+}
+
+.full{
+  grid-column:1/-1
+}
+
+.file-box{
+  border:1px dashed #b7d3df;
+  border-radius:12px;
+  padding:14px;
+  background:#f7fbfc
+}
+
+.file-box input{
+  width:100%;
+  border:none;
+  padding:0;
+  background:transparent
+}
+
+.helper{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:5px
+}
+
+.module-placeholder{
+  display:grid;
+  place-items:center;
+  min-height:430px;
+  text-align:center
+}
+
+.module-placeholder .icon{
+  font-size:48px;
+  margin-bottom:10px
+}
+
+.module-placeholder h2{
+  margin:0 0 8px
+}
+
+.module-placeholder p{
+  max-width:620px;
+  color:var(--muted);
+  line-height:1.6
+}
+
+@media(max-width:1200px){
+  .cards{grid-template-columns:repeat(3,minmax(140px,1fr))}
+  .filters{grid-template-columns:2fr 1fr 1fr}
+}
+
+@media(max-width:980px){
+  .app-shell{flex-direction:column}
+  .sidebar{
+    width:100%;
+    height:auto;
+    position:static
+  }
+  .cards{grid-template-columns:repeat(2,minmax(140px,1fr))}
+  .grid,.bottom{grid-template-columns:1fr}
+  .main{padding:18px 16px 26px}
+  .top{flex-direction:column;align-items:flex-start}
+  .search{width:100%}
+  .top-right{
+    width:100%;
+    justify-content:space-between
+  }
+  .users-filter-row{flex-direction:column}
+  .form-grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+}
+
+@media(max-width:600px){
+  .cards{grid-template-columns:1fr}
+  .login-panel{padding:28px 20px}
+  .login-actions{grid-template-columns:1fr}
+}
+</style>
 </head>
+
 <body>
-  <!-- LOGIN SCREEN -->
-  <div id="login-screen" class="login-screen">
-    <div class="login-panel">
-      <div class="login-brand">
-        <div class="login-logo">❄</div>
-      </div>
-      <div class="login-title">PURE ICE</div>
-      <div class="login-sub">Food Safety Management System</div>
-      <form id="login-form">
-        <div class="field">
-          <label for="login-email">Email</label>
-          <input id="login-email" name="email" type="email" placeholder="name@pureice.com" autocomplete="email" required>
-        </div>
-        <div class="field">
-          <label for="login-password">Password</label>
-          <input id="login-password" name="password" type="password" placeholder="Enter password" autocomplete="current-password" required>
-        </div>
-        <div class="login-actions">
-          <button class="btn" type="submit">Sign In</button>
-          <button class="secondary-btn" type="button" id="forgot-password-btn">Forgot Password</button>
-        </div>
-        <div id="login-status" class="status info"></div>
-      </form>
+
+<!-- LOGIN -->
+<div id="login-screen" class="login-screen">
+  <div class="login-panel">
+
+    <div class="login-brand">
+      <div class="login-logo">❄</div>
     </div>
+
+    <div class="login-title">PURE ICE</div>
+    <div class="login-sub">Food Safety Management System</div>
+
+    <form id="login-form">
+
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input
+          id="login-email"
+          type="email"
+          placeholder="name@pureice.com"
+          autocomplete="email"
+          required>
+      </div>
+
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input
+          id="login-password"
+          type="password"
+          placeholder="Enter password"
+          autocomplete="current-password"
+          required>
+      </div>
+
+      <div class="login-actions">
+        <button class="btn" type="submit">Sign In</button>
+        <button class="secondary-btn" type="button" id="forgot-password-btn">
+          Forgot Password
+        </button>
+      </div>
+
+      <div id="login-status" class="status info"></div>
+
+    </form>
   </div>
+</div>
 
-  <!-- APPLICATION SHELL -->
-  <div id="app-shell" class="app-shell hidden">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="logo">❄</div>
-        <div>
-          <b>PURE ICE</b>
-          <span>Pure Ice Factory · Food Safety</span>
+
+<!-- APPLICATION -->
+<div id="app-shell" class="app-shell hidden">
+
+  <aside class="sidebar">
+
+    <div class="brand">
+      <div class="logo">❄</div>
+      <div>
+        <b>PURE ICE</b>
+        <span>Pure Ice Factory · Food Safety</span>
+      </div>
+    </div>
+
+    <nav>
+
+      <div class="section">Workspace</div>
+
+      <button class="nav active" data-module="dashboard">
+        ⌂ <span>Dashboard</span>
+      </button>
+
+      <button class="nav" data-module="documents">
+        ▣ <span>Document Control</span>
+      </button>
+
+      <button class="nav" data-module="records">
+        ▤ <span>Records & Plans</span>
+      </button>
+
+
+      <div class="section">Food Safety</div>
+
+      <button class="nav" data-module="haccp">
+        ⚠ <span>HACCP / CCP / OPRP</span>
+      </button>
+
+      <button class="nav" data-module="gmp">
+        ✦ <span>PRP / GMP / GHP</span>
+      </button>
+
+      <button class="nav" data-module="water-ro">
+        💧 <span>Water & RO</span>
+      </button>
+
+
+      <div class="section">Management</div>
+
+      <button class="nav" data-module="calibration">
+        ⚙ <span>Calibration</span>
+      </button>
+
+      <button class="nav" data-module="training">
+        ♙ <span>Training</span>
+      </button>
+
+      <button class="nav" data-module="suppliers">
+        ▥ <span>Suppliers</span>
+      </button>
+
+      <button class="nav" data-module="ncr">
+        ! <span>NCR / CAPA</span>
+      </button>
+
+
+      <div class="section">Insights</div>
+
+      <button class="nav" data-module="reports">
+        ◫ <span>Reports</span>
+      </button>
+
+      <button class="nav" data-module="settings">
+        ⚙ <span>Settings</span>
+      </button>
+
+
+      <div class="section">Administration</div>
+
+      <button class="nav" data-module="user-management">
+        👥 <span>User Management</span>
+      </button>
+
+    </nav>
+  </aside>
+
+
+  <main class="main">
+
+    <div class="top">
+
+      <div>
+        <div class="eyebrow">
+          Pure Ice Factory · Quality & Food Safety
+        </div>
+
+        <div class="title" id="page-title">
+          Food Safety Command Center
+        </div>
+
+        <div class="sub" id="page-subtitle">
+          Ice Manufacturing & Flavored Ice · System Status
         </div>
       </div>
-      <nav>
-        <div class="section">Workspace</div>
-        <button class="nav active" data-module="dashboard">⌂ <span>Dashboard</span></button>
-        <button class="nav" data-module="documents">▣ <span>Documents</span></button>
-        <button class="nav" data-module="records">▤ <span>Records</span></button>
-        <div class="section">Food Safety</div>
-        <button class="nav" data-module="haccp">⚠ <span>HACCP / CCP / OPRP</span></button>
-        <button class="nav" data-module="gmp">✦ <span>PRP / GMP</span></button>
-        <button class="nav" data-module="water-ro">💧 <span>Water & RO</span></button>
-        <div class="section">Management</div>
-        <button class="nav" data-module="calibration">⚙ <span>Calibration</span></button>
-        <button class="nav" data-module="training">♙ <span>Training</span></button>
-        <button class="nav" data-module="suppliers">▥ <span>Suppliers</span></button>
-        <button class="nav" data-module="ncr">! <span>NCR / CAPA</span></button>
-        <div class="section">Insights</div>
-        <button class="nav" data-module="reports">◫ <span>Reports</span></button>
-        <button class="nav" data-module="settings">⚙ <span>Settings</span></button>
-        <div class="section">Administration</div>
-        <button class="nav" data-module="user-management">👥 <span>User Management</span></button>
-      </nav>
-    </aside>
 
-    <main class="main">
-      <div class="top">
-        <div>
-          <div class="eyebrow">Pure Ice Factory · Quality & Food Safety</div>
-          <div class="title" id="page-title">Food Safety Command Center</div>
-          <div class="sub" id="page-subtitle">Ice Manufacturing & Flavored Ice · System Status</div>
+      <div class="top-right">
+
+        <div class="search">
+          <span>⌕</span>
+          <input
+            id="global-search"
+            type="text"
+            placeholder="Search current module...">
         </div>
-        <div class="top-right">
-          <div class="search">
-            <span>⌕</span>
-            <input type="text" placeholder="Search documents, records, CAPA, equipment..." oninput="window.filterDashboard(this.value)">
+
+        <button class="profile-btn" id="profile-button">
+          Profile
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- DASHBOARD -->
+    <div id="dashboard-section">
+
+      <section class="cards">
+
+        <div class="card">
+          <div class="label">Total Documents</div>
+          <div class="num" id="kpi-total-documents">0</div>
+          <div class="delta" id="kpi-total-documents-sub">
+            Loading...
           </div>
-          <button class="profile-btn" id="profile-button" type="button">Profile</button>
         </div>
-      </div>
 
-      <!-- DASHBOARD SECTION -->
-      <div id="dashboard-section">
-        <section class="cards">
-          <div class="card"><div class="label">Total Documents</div><div class="num" id="kpi-total-documents">0</div><div class="delta" id="kpi-total-documents-sub">Awaiting data</div></div>
-          <div class="card"><div class="label">Documents Pending Approval</div><div class="num" id="kpi-pending-documents">0</div><div class="delta" id="kpi-pending-documents-sub">Awaiting data</div></div>
-          <div class="card"><div class="label">Documents Near Review</div><div class="num" id="kpi-documents-near-review">0</div><div class="delta" id="kpi-documents-near-review-sub">Awaiting data</div></div>
-          <div class="card"><div class="label">Open NCRs</div><div class="num" id="kpi-open-ncrs">0</div><div class="delta" id="kpi-open-ncrs-sub">Awaiting data</div></div>
-          <div class="card"><div class="label">Open CAPAs</div><div class="num" id="kpi-open-capas">0</div><div class="delta" id="kpi-open-capas-sub">Awaiting data</div></div>
-          <div class="card"><div class="label">Active Suppliers</div><div class="num" id="kpi-active-suppliers">0</div><div class="delta" id="kpi-active-suppliers-sub">Awaiting data</div></div>
+        <div class="card">
+          <div class="label">Pending Approval</div>
+          <div class="num" id="kpi-pending-documents">0</div>
+          <div class="delta" id="kpi-pending-documents-sub">
+            Loading...
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="label">Near Review</div>
+          <div class="num" id="kpi-documents-near-review">0</div>
+          <div class="delta" id="kpi-documents-near-review-sub">
+            Loading...
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="label">Open Tasks</div>
+          <div class="num" id="kpi-open-tasks">0</div>
+          <div class="delta" id="kpi-open-tasks-sub">
+            Loading...
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="label">Active Plans</div>
+          <div class="num" id="kpi-active-plans">0</div>
+          <div class="delta" id="kpi-active-plans-sub">
+            Loading...
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="label">Approved Documents</div>
+          <div class="num" id="kpi-approved-documents">0</div>
+          <div class="delta" id="kpi-approved-documents-sub">
+            Loading...
+          </div>
+        </div>
+
+      </section>
+
+
+      <div class="grid">
+
+        <section class="panel">
+
+          <div class="panelhead">
+            <h3>Document Control Status</h3>
+            <span class="pill info">Live Data</span>
+          </div>
+
+          <div class="chart">
+
+            <div class="barwrap">
+              <div class="bar" id="chart-draft" style="height:20%"></div>
+            </div>
+
+            <div class="barwrap">
+              <div class="bar" id="chart-review" style="height:20%"></div>
+            </div>
+
+            <div class="barwrap">
+              <div class="bar" id="chart-approved" style="height:20%"></div>
+            </div>
+
+            <div class="barwrap">
+              <div class="bar" id="chart-near" style="height:20%"></div>
+            </div>
+
+            <div class="barwrap">
+              <div class="bar" id="chart-tasks" style="height:20%"></div>
+            </div>
+
+          </div>
+
+          <div style="
+            display:flex;
+            justify-content:space-around;
+            color:var(--muted);
+            font-size:11px;
+            margin-top:8px;">
+            <span>Draft</span>
+            <span>Review</span>
+            <span>Approved</span>
+            <span>Near Due</span>
+            <span>Tasks</span>
+          </div>
+
         </section>
 
-        <div class="grid">
-          <section class="panel">
-            <div class="panelhead">
-              <h3>System Trend</h3>
-              <span class="pill">YTD</span>
-            </div>
-            <div class="chart" aria-label="Compliance trend chart">
-              <div class="barwrap"><div class="bar" style="height:68%"></div></div>
-              <div class="barwrap"><div class="bar" style="height:78%"></div></div>
-              <div class="barwrap"><div class="bar" style="height:64%"></div></div>
-              <div class="barwrap"><div class="bar" style="height:82%"></div></div>
-              <div class="barwrap"><div class="bar" style="height:91%"></div></div>
-              <div class="barwrap"><div class="bar" style="height:88%"></div></div>
-            </div>
-          </section>
 
-          <section class="panel">
-            <div class="panelhead">
-              <h3>Attention Required</h3>
-              <span class="muted">Live queue</span>
+        <section class="panel">
+
+          <div class="panelhead">
+            <h3>Attention Required</h3>
+            <span class="muted">Live queue</span>
+          </div>
+
+          <div id="attention-list">
+            <div class="issue">
+              <i class="dot"></i>
+              <div>
+                <b>Loading system status</b>
+                <span>Please wait...</span>
+              </div>
             </div>
-            <div class="issue"><i class="dot bad"></i><div><b>RO Verification</b><span>Pending review · Production</span></div><span class="pill">Today</span></div>
-            <div class="issue"><i class="dot bad"></i><div><b>Cleaning Record</b><span>Missing record · Sanitation</span></div><span class="pill">Overdue</span></div>
-            <div class="issue"><i class="dot"></i><div><b>Supplier Evaluation</b><span>Quarterly review · QA</span></div><span class="pill">5 days</span></div>
-            <div class="issue"><i class="dot"></i><div><b>Calibration</b><span>Due soon · QA</span></div><span class="pill">12 days</span></div>
-          </section>
-        </div>
+          </div>
 
-        <div class="bottom">
-          <section class="panel">
-            <div class="panelhead"><h3>Food Safety Elements</h3><span class="muted">Compliance</span></div>
-            <div class="metric"><span>Water Safety</span><b id="kpi-water-safety">0%</b></div>
-            <div class="metric"><span>HACCP Review</span><b id="kpi-haccp-review">0%</b></div>
-            <div class="metric"><span>Calibration Status</span><b id="kpi-calibration-status">0%</b></div>
-            <div class="metric"><span>Training Completion</span><b id="kpi-training-completion">0%</b></div>
-          </section>
+        </section>
 
-          <section class="panel">
-            <div class="panelhead"><h3>Quick Actions</h3></div>
-            <div class="btn-row">
-              <button class="btn" type="button" onclick="window.openUploadModal()">＋ Upload Record</button>
-              <button class="btn secondary" type="button">＋ New Document</button>
-              <button class="btn secondary" type="button">＋ New CAPA</button>
-              <button class="btn secondary" type="button">＋ Add Training</button>
-            </div>
-          </section>
-
-          <section class="panel">
-            <div class="panelhead"><h3>Audit Readiness</h3><span class="pill">Ready</span></div>
-            <div class="muted">Operational readiness</div>
-            <div class="audit-box" id="kpi-audit-readiness">0%</div>
-            <button class="btn secondary" type="button" style="margin-top: 8px; width: 100%;" id="signout-button">Sign Out</button>
-          </section>
-        </div>
       </div>
 
-      <!-- USER MANAGEMENT SECTION -->
-      <div id="user-management-section" class="hidden">
+
+      <div class="bottom">
+
         <section class="panel">
+
           <div class="panelhead">
+            <h3>Food Safety Elements</h3>
+            <span class="muted">System foundation</span>
+          </div>
+
+          <div class="metric">
+            <span>Document Control</span>
+            <b id="kpi-document-control">0%</b>
+          </div>
+
+          <div class="metric">
+            <span>Plan Coverage</span>
+            <b id="kpi-plan-coverage">0%</b>
+          </div>
+
+          <div class="metric">
+            <span>Task Completion</span>
+            <b id="kpi-task-completion">0%</b>
+          </div>
+
+          <div class="metric">
+            <span>Audit Trail</span>
+            <b id="kpi-audit-trail">Ready</b>
+          </div>
+
+        </section>
+
+
+        <section class="panel">
+
+          <div class="panelhead">
+            <h3>Quick Actions</h3>
+          </div>
+
+          <div class="btn-row">
+
+            <button
+              class="btn"
+              type="button"
+              onclick="window.openDocumentModal()">
+              ＋ New Document
+            </button>
+
+            <button
+              class="btn secondary"
+              type="button"
+              onclick="window.switchModule('documents')">
+              ▣ Document Control
+            </button>
+
+            <button
+              class="btn secondary"
+              type="button"
+              onclick="window.switchModule('records')">
+              ▤ Records & Plans
+            </button>
+
+            <button
+              class="btn secondary"
+              type="button"
+              onclick="window.refreshDashboard()">
+              ↻ Refresh Dashboard
+            </button>
+
+          </div>
+
+        </section>
+
+
+        <section class="panel">
+
+          <div class="panelhead">
+            <h3>Audit Readiness</h3>
+            <span class="pill info">Calculated</span>
+          </div>
+
+          <div class="muted">
+            Based on current Document Control data
+          </div>
+
+          <div class="audit-box" id="kpi-audit-readiness">
+            0%
+          </div>
+
+          <button
+            class="btn secondary"
+            type="button"
+            style="margin-top:8px;width:100%;"
+            id="signout-button">
+            Sign Out
+          </button>
+
+        </section>
+
+      </div>
+
+    </div>
+
+
+    <!-- DOCUMENT CONTROL -->
+    <div id="documents-section" class="hidden">
+
+      <section class="panel">
+
+        <div class="panelhead">
+
+          <div>
+            <h3>Document Control</h3>
+            <div class="muted" style="font-size:12px;margin-top:4px;">
+              Controlled SOPs, procedures, policies, work instructions and documents
+            </div>
+          </div>
+
+          <button
+            class="btn"
+            type="button"
+            onclick="window.openDocumentModal()">
+            ＋ Add Document
+          </button>
+
+        </div>
+
+
+        <div class="filters">
+
+          <input
+            id="document-search"
+            type="text"
+            placeholder="Search code, title, department...">
+
+          <select id="document-type-filter">
+            <option value="">All Types</option>
+            <option value="Policy">Policy</option>
+            <option value="SOP">SOP</option>
+            <option value="Procedure">Procedure</option>
+            <option value="Work Instruction">Work Instruction</option>
+            <option value="Form">Form</option>
+            <option value="Specification">Specification</option>
+            <option value="Manual">Manual</option>
+            <option value="External Document">External Document</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <select id="document-status-filter">
+            <option value="">All Status</option>
+            <option value="Draft">Draft</option>
+            <option value="Under Review">Under Review</option>
+            <option value="Active">Active</option>
+            <option value="Obsolete">Obsolete</option>
+          </select>
+
+          <select id="document-approval-filter">
+            <option value="">All Approval</option>
+            <option value="Draft">Draft</option>
+            <option value="Pending Approval">Pending Approval</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+
+          <select id="document-department-filter">
+            <option value="">All Departments</option>
+          </select>
+
+          <button
+            class="btn secondary"
+            type="button"
+            onclick="window.loadDocuments()">
+            ↻ Refresh
+          </button>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+          <table class="data-table">
+
+            <thead>
+              <tr>
+                <th>Document</th>
+                <th>Type</th>
+                <th>Department</th>
+                <th>Revision</th>
+                <th>Issue Date</th>
+                <th>Review Date</th>
+                <th>Status</th>
+                <th>Approval</th>
+                <th>File</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody id="documents-tbody">
+              <tr>
+                <td colspan="10" class="empty">
+                  Loading documents...
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- RECORDS -->
+    <div id="records-section" class="hidden">
+
+      <section class="panel module-placeholder">
+
+        <div>
+          <div class="icon">▤</div>
+          <h2>Records & Compliance Plans</h2>
+          <p>
+            The database foundation for Records, Compliance Plans,
+            Scheduled Tasks, Attachments, Notifications and Audit Trail
+            is ready. This module will be connected to the operational
+            record forms in the next phase.
+          </p>
+
+          <button
+            class="btn"
+            onclick="window.showComingSoon('Records & Compliance Plans')">
+            Module Foundation Ready
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- OTHER MODULES -->
+    <div id="module-placeholder-section" class="hidden">
+
+      <section class="panel module-placeholder">
+
+        <div>
+
+          <div class="icon" id="placeholder-icon">⚙</div>
+
+          <h2 id="placeholder-title">
+            Module
+          </h2>
+
+          <p id="placeholder-text">
+            This module is part of the Pure Ice Food Safety Management System.
+            Its database foundation and workflow will be connected in the next implementation phase.
+          </p>
+
+          <button
+            class="btn secondary"
+            onclick="window.switchModule('dashboard')">
+            ← Back to Dashboard
+          </button>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- USER MANAGEMENT -->
+    <div id="user-management-section" class="hidden">
+
+      <section class="panel">
+
+        <div class="panelhead">
+
+          <div>
             <h3>User Management</h3>
-            <button class="btn" type="button" id="add-user-btn">＋ Add User</button>
+            <div class="muted" style="font-size:12px;margin-top:4px;">
+              Manage system profiles and access roles
+            </div>
           </div>
 
-          <div class="users-filter-row">
-            <input type="text" id="users-filter" placeholder="Search by name, email, or role...">
-            <select id="role-filter">
-              <option value="">All Roles</option>
-              <option value="Super Admin">Super Admin</option>
-              <option value="General Manager">General Manager</option>
-              <option value="Quality & Food Safety">Quality & Food Safety</option>
-              <option value="Production">Production</option>
-              <option value="Maintenance">Maintenance</option>
-              <option value="Warehouse">Warehouse</option>
-              <option value="Purchasing">Purchasing</option>
-              <option value="Sales">Sales</option>
-              <option value="Auditor / Read Only">Auditor / Read Only</option>
-            </select>
-          </div>
+          <button
+            class="btn"
+            type="button"
+            id="add-user-btn">
+            ＋ Add User
+          </button>
 
-          <table class="users-table" id="users-table">
+        </div>
+
+
+        <div class="users-filter-row">
+
+          <input
+            type="text"
+            id="users-filter"
+            placeholder="Search by name, email, employee code...">
+
+          <select id="role-filter">
+            <option value="">All Roles</option>
+            <option value="Super Admin">Super Admin</option>
+            <option value="General Manager">General Manager</option>
+            <option value="Quality & Food Safety">Quality & Food Safety</option>
+            <option value="Production">Production</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Warehouse">Warehouse</option>
+            <option value="Purchasing">Purchasing</option>
+            <option value="Sales">Sales</option>
+            <option value="Auditor / Read Only">Auditor / Read Only</option>
+          </select>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+          <table class="users-table">
+
             <thead>
               <tr>
                 <th>Name</th>
@@ -403,631 +1443,3379 @@
                 <th>Actions</th>
               </tr>
             </thead>
+
             <tbody id="users-tbody">
-              <tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--muted);">Loading users...</td></tr>
+
+              <tr>
+                <td colspan="7" style="
+                  text-align:center;
+                  padding:20px;
+                  color:var(--muted);">
+                  Loading users...
+                </td>
+              </tr>
+
             </tbody>
+
           </table>
-        </section>
-      </div>
-    </main>
-  </div>
 
-  <!-- UPLOAD MODAL -->
-  <div class="modal-overlay" id="upload-modal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h2>Upload Food Safety Record</h2>
-        <button class="close-btn" type="button" onclick="window.closeUploadModal()">Close</button>
-      </div>
-      <div style="margin-top: 16px; color: var(--muted);">Upload workflow is ready for the document control phase. Connect a Supabase Storage bucket to enable file uploads.</div>
+        </div>
+
+      </section>
+
     </div>
-  </div>
 
-  <!-- USER FORM MODAL -->
-  <div class="modal-overlay" id="user-modal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h2 id="user-modal-title">Add User</h2>
-        <button class="close-btn" type="button" onclick="window.closeUserModal()">Close</button>
+  </main>
+
+</div>
+
+
+<!-- DOCUMENT MODAL -->
+<div class="modal-overlay" id="document-modal">
+
+  <div class="modal-box large">
+
+    <div class="modal-header">
+
+      <div>
+        <h2 id="document-modal-title">
+          Add Document
+        </h2>
+
+        <div class="muted" style="font-size:11px;margin-top:4px;">
+          Controlled document registration
+        </div>
       </div>
-      <form id="user-form" style="margin-top: 16px;">
+
+      <button
+        class="close-btn"
+        type="button"
+        onclick="window.closeDocumentModal()">
+        Close
+      </button>
+
+    </div>
+
+
+    <form id="document-form">
+
+      <div class="form-grid">
+
         <div class="field">
-          <label for="user-full-name">Full Name</label>
-          <input id="user-full-name" type="text" placeholder="John Doe" required>
+          <label for="document-code">
+            Document Code *
+          </label>
+          <input
+            id="document-code"
+            type="text"
+            placeholder="PI-QA-SOP-01"
+            required>
         </div>
+
+
         <div class="field">
-          <label for="user-email">Email</label>
-          <input id="user-email" type="email" placeholder="john@pureice.com" required>
+          <label for="document-type">
+            Document Type *
+          </label>
+
+          <select id="document-type" required>
+            <option value="">Select Type</option>
+            <option value="Policy">Policy</option>
+            <option value="SOP">SOP</option>
+            <option value="Procedure">Procedure</option>
+            <option value="Work Instruction">Work Instruction</option>
+            <option value="Form">Form</option>
+            <option value="Specification">Specification</option>
+            <option value="Manual">Manual</option>
+            <option value="External Document">External Document</option>
+            <option value="Other">Other</option>
+          </select>
+
         </div>
-        <div class="field">
-          <label for="user-employee-code">Employee Code</label>
-          <input id="user-employee-code" type="text" placeholder="PI-001234" required>
+
+
+        <div class="field full">
+          <label for="document-title">
+            Document Title *
+          </label>
+
+          <input
+            id="document-title"
+            type="text"
+            placeholder="Document title"
+            required>
         </div>
+
+
         <div class="field">
-          <label for="user-department">Department</label>
-          <select id="user-department" required>
+          <label for="document-department">
+            Department
+          </label>
+
+          <select id="document-department">
             <option value="">Select Department</option>
-            <option value="Quality & Food Safety">Quality & Food Safety</option>
-            <option value="Production">Production</option>
-            <option value="Maintenance">Maintenance</option>
-            <option value="Warehouse">Warehouse</option>
-            <option value="Purchasing">Purchasing</option>
-            <option value="Sales">Sales</option>
-            <option value="Administration">Administration</option>
           </select>
         </div>
+
+
         <div class="field">
-          <label for="user-role">Role</label>
-          <select id="user-role" required>
-            <option value="">Select Role</option>
-            <option value="Super Admin">Super Admin</option>
-            <option value="General Manager">General Manager</option>
-            <option value="Quality & Food Safety">Quality & Food Safety</option>
-            <option value="Production">Production</option>
-            <option value="Maintenance">Maintenance</option>
-            <option value="Warehouse">Warehouse</option>
-            <option value="Purchasing">Purchasing</option>
-            <option value="Sales">Sales</option>
-            <option value="Auditor / Read Only">Auditor / Read Only</option>
+          <label for="document-revision">
+            Revision
+          </label>
+
+          <input
+            id="document-revision"
+            type="text"
+            placeholder="Rev. 01">
+        </div>
+
+
+        <div class="field">
+          <label for="document-issue-date">
+            Issue Date
+          </label>
+
+          <input
+            id="document-issue-date"
+            type="date">
+        </div>
+
+
+        <div class="field">
+          <label for="document-review-date">
+            Review Date
+          </label>
+
+          <input
+            id="document-review-date"
+            type="date">
+        </div>
+
+
+        <div class="field">
+          <label for="document-status">
+            Status
+          </label>
+
+          <select id="document-status">
+            <option value="Draft">Draft</option>
+            <option value="Under Review">Under Review</option>
+            <option value="Active">Active</option>
+            <option value="Obsolete">Obsolete</option>
           </select>
+
         </div>
+
+
         <div class="field">
-          <label for="user-job-title">Job Title</label>
-          <input id="user-job-title" type="text" placeholder="Quality Manager" required>
-        </div>
-        <div class="field">
-          <label for="user-phone">Phone</label>
-          <input id="user-phone" type="tel" placeholder="+966 50 0000000">
-        </div>
-        <div class="field">
-          <label for="user-status">Status</label>
-          <select id="user-status" required>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+          <label for="document-approval-status">
+            Approval Status
+          </label>
+
+          <select id="document-approval-status">
+            <option value="Draft">Draft</option>
+            <option value="Pending Approval">Pending Approval</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
           </select>
+
         </div>
-        <div id="user-form-status" class="status" style="margin-top: 16px;"></div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px;">
-          <button class="btn secondary" type="button" onclick="window.closeUserModal()">Cancel</button>
-          <button class="btn" type="submit">Save User</button>
+
+
+        <div class="field full">
+
+          <label for="document-file">
+            Controlled File
+          </label>
+
+          <div class="file-box">
+
+            <input
+              id="document-file"
+              type="file"
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+
+            <div class="helper">
+              Supported: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG.
+              File will be stored in the private FSMS Storage bucket.
+            </div>
+
+            <div
+              id="current-file-info"
+              class="helper"
+              style="margin-top:8px;">
+            </div>
+
+          </div>
+
         </div>
-      </form>
-    </div>
+
+
+        <div class="field full">
+
+          <label for="document-description">
+            Description / Notes
+          </label>
+
+          <textarea
+            id="document-description"
+            placeholder="Purpose, scope or additional notes..."></textarea>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="document-form-status"
+        class="status">
+      </div>
+
+
+      <div style="
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+        margin-top:18px;">
+
+        <button
+          class="btn secondary"
+          type="button"
+          onclick="window.closeDocumentModal()">
+          Cancel
+        </button>
+
+        <button
+          class="btn"
+          type="submit">
+          Save Document
+        </button>
+
+      </div>
+
+    </form>
+
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script>
-    const ROLE_ACCESS = {
-      'Super Admin': ['dashboard', 'documents', 'records', 'haccp', 'gmp', 'water-ro', 'calibration', 'training', 'suppliers', 'ncr', 'reports', 'settings', 'user-management'],
-      'General Manager': ['dashboard', 'documents', 'records', 'haccp', 'gmp', 'water-ro', 'calibration', 'training', 'suppliers', 'ncr', 'reports', 'settings'],
-      'Quality & Food Safety': ['dashboard', 'documents', 'records', 'haccp', 'gmp', 'water-ro', 'calibration', 'training', 'suppliers', 'ncr', 'reports'],
-      'Production': ['dashboard', 'documents', 'records', 'haccp', 'gmp', 'water-ro', 'ncr'],
-      'Maintenance': ['dashboard', 'records', 'water-ro', 'calibration'],
-      'Warehouse': ['dashboard', 'records', 'suppliers'],
-      'Purchasing': ['dashboard', 'documents', 'suppliers'],
-      'Sales': ['dashboard', 'documents', 'records'],
-      'Auditor / Read Only': ['dashboard', 'documents', 'records', 'reports']
-    };
+</div>
 
-    const appState = {
-      supabase: null,
-      session: null,
-      profile: null,
-      role: 'Auditor / Read Only',
-      currentModule: 'dashboard',
-      users: [],
-      departments: {},
-      editingUserId: null
-    };
 
-    function setStatus(elementId, message, type) {
-      const el = document.getElementById(elementId);
-      if (!el) return;
-      el.textContent = message || '';
-      el.className = 'status ' + (type || 'info');
+<!-- USER MODAL -->
+<div class="modal-overlay" id="user-modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h2 id="user-modal-title">
+        Edit User
+      </h2>
+
+      <button
+        class="close-btn"
+        type="button"
+        onclick="window.closeUserModal()">
+        Close
+      </button>
+
+    </div>
+
+
+    <form id="user-form">
+
+      <div class="field">
+        <label>Full Name</label>
+        <input id="user-full-name" required>
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input id="user-email" type="email" required>
+        <div class="helper">
+          Editing an email here updates the profile only.
+          Auth account email requires Supabase Auth administration.
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Employee Code</label>
+        <input id="user-employee-code" required>
+      </div>
+
+      <div class="field">
+        <label>Department</label>
+
+        <select id="user-department" required>
+          <option value="">Select Department</option>
+        </select>
+
+      </div>
+
+      <div class="field">
+        <label>Role</label>
+
+        <select id="user-role" required>
+          <option value="">Select Role</option>
+          <option value="Super Admin">Super Admin</option>
+          <option value="General Manager">General Manager</option>
+          <option value="Quality & Food Safety">Quality & Food Safety</option>
+          <option value="Production">Production</option>
+          <option value="Maintenance">Maintenance</option>
+          <option value="Warehouse">Warehouse</option>
+          <option value="Purchasing">Purchasing</option>
+          <option value="Sales">Sales</option>
+          <option value="Auditor / Read Only">Auditor / Read Only</option>
+        </select>
+
+      </div>
+
+      <div class="field">
+        <label>Job Title</label>
+        <input id="user-job-title" placeholder="Quality Officer" required>
+      </div>
+
+      <div class="field">
+        <label>Phone</label>
+        <input id="user-phone" type="tel">
+      </div>
+
+      <div class="field">
+        <label>Status</label>
+
+        <select id="user-status">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+
+      </div>
+
+      <div id="user-form-status" class="status"></div>
+
+
+      <div style="
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+        margin-top:18px;">
+
+        <button
+          class="btn secondary"
+          type="button"
+          onclick="window.closeUserModal()">
+          Cancel
+        </button>
+
+        <button
+          class="btn"
+          type="submit">
+          Save User
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+
+<script>
+
+const ROLE_ACCESS = {
+
+  'Super Admin': [
+    'dashboard',
+    'documents',
+    'records',
+    'haccp',
+    'gmp',
+    'water-ro',
+    'calibration',
+    'training',
+    'suppliers',
+    'ncr',
+    'reports',
+    'settings',
+    'user-management'
+  ],
+
+  'General Manager': [
+    'dashboard',
+    'documents',
+    'records',
+    'haccp',
+    'gmp',
+    'water-ro',
+    'calibration',
+    'training',
+    'suppliers',
+    'ncr',
+    'reports',
+    'settings'
+  ],
+
+  'Quality & Food Safety': [
+    'dashboard',
+    'documents',
+    'records',
+    'haccp',
+    'gmp',
+    'water-ro',
+    'calibration',
+    'training',
+    'suppliers',
+    'ncr',
+    'reports'
+  ],
+
+  'Production': [
+    'dashboard',
+    'documents',
+    'records',
+    'haccp',
+    'gmp',
+    'water-ro',
+    'ncr'
+  ],
+
+  'Maintenance': [
+    'dashboard',
+    'records',
+    'water-ro',
+    'calibration'
+  ],
+
+  'Warehouse': [
+    'dashboard',
+    'records',
+    'suppliers'
+  ],
+
+  'Purchasing': [
+    'dashboard',
+    'documents',
+    'suppliers'
+  ],
+
+  'Sales': [
+    'dashboard',
+    'documents',
+    'records'
+  ],
+
+  'Auditor / Read Only': [
+    'dashboard',
+    'documents',
+    'records',
+    'reports'
+  ]
+
+};
+
+
+const appState = {
+
+  supabase:null,
+
+  session:null,
+
+  profile:null,
+
+  role:'Auditor / Read Only',
+
+  currentModule:'dashboard',
+
+  users:[],
+
+  departments:{},
+
+  documents:[],
+
+  editingUserId:null,
+
+  editingDocumentId:null,
+
+  oldDocumentPath:null
+
+};
+
+
+/* =========================
+   BASIC HELPERS
+========================= */
+
+function setStatus(id,message,type='info'){
+
+  const el=document.getElementById(id);
+
+  if(!el)return;
+
+  el.textContent=message||'';
+
+  el.className='status '+type;
+
+}
+
+
+function escapeHtml(value){
+
+  return String(value??'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+
+}
+
+
+function formatDate(value){
+
+  if(!value)return '—';
+
+  const d=new Date(value);
+
+  if(Number.isNaN(d.getTime()))return '—';
+
+  return d.toLocaleDateString('en-GB');
+
+}
+
+
+function safeNumber(value){
+
+  return Number.isFinite(Number(value))
+    ? Number(value)
+    : 0;
+
+}
+
+
+function todayIso(){
+
+  return new Date().toISOString().slice(0,10);
+
+}
+
+
+function daysFromToday(dateValue){
+
+  if(!dateValue)return null;
+
+  const today=new Date(todayIso()+'T00:00:00');
+
+  const date=new Date(dateValue+'T00:00:00');
+
+  return Math.ceil((date-today)/86400000);
+
+}
+
+
+function reviewClass(dateValue){
+
+  const days=daysFromToday(dateValue);
+
+  if(days===null)return 'pill info';
+
+  if(days<0)return 'pill bad';
+
+  if(days<=30)return 'pill warn';
+
+  return 'pill';
+
+}
+
+
+function statusClass(status){
+
+  if(status==='Active')return 'pill';
+
+  if(status==='Obsolete')return 'pill bad';
+
+  if(status==='Under Review')return 'pill warn';
+
+  return 'pill info';
+
+}
+
+
+function approvalClass(status){
+
+  if(status==='Approved')return 'pill';
+
+  if(status==='Rejected')return 'pill bad';
+
+  if(status==='Pending Approval')return 'pill warn';
+
+  return 'pill info';
+
+}
+
+
+/* =========================
+   AUTH UI
+========================= */
+
+function showLogin(){
+
+  document.getElementById('login-screen')
+    .classList.remove('hidden');
+
+  document.getElementById('app-shell')
+    .classList.add('hidden');
+
+}
+
+
+function showDashboard(){
+
+  document.getElementById('login-screen')
+    .classList.add('hidden');
+
+  document.getElementById('app-shell')
+    .classList.remove('hidden');
+
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+async function loadProfile(sessionUser){
+
+  if(!sessionUser || !appState.supabase)return null;
+
+  try{
+
+    const {data,error}=await appState.supabase
+      .from('profiles')
+      .select('*')
+      .eq('id',sessionUser.id)
+      .maybeSingle();
+
+    if(error){
+      console.warn('Profile query:',error.message);
     }
 
-    function showLogin() {
-      document.getElementById('login-screen').classList.remove('hidden');
-      document.getElementById('app-shell').classList.add('hidden');
-    }
+    if(data){
 
-    function showDashboard() {
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('app-shell').classList.remove('hidden');
-    }
+      appState.profile=data;
 
-    function setKpi(id, value, suffix = '') {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.textContent = value + suffix;
-    }
+      appState.role=data.role||'Auditor / Read Only';
 
-    function safeNumber(value) {
-      return Number.isFinite(Number(value)) ? Number(value) : 0;
-    }
+    }else{
 
-    function switchModule(moduleName) {
-      appState.currentModule = moduleName;
-      const dashboardSection = document.getElementById('dashboard-section');
-      const userMgmtSection = document.getElementById('user-management-section');
-
-      if (moduleName === 'user-management') {
-        dashboardSection.classList.add('hidden');
-        userMgmtSection.classList.remove('hidden');
-        document.getElementById('page-title').textContent = 'User Management';
-        document.getElementById('page-subtitle').textContent = 'Manage system users and permissions';
-        window.loadUsers();
-      } else {
-        dashboardSection.classList.remove('hidden');
-        userMgmtSection.classList.add('hidden');
-        document.getElementById('page-title').textContent = 'Food Safety Command Center';
-        document.getElementById('page-subtitle').textContent = 'Ice Manufacturing & Flavored Ice · System Status';
-      }
-
-      document.querySelectorAll('.nav').forEach((btn) => {
-        btn.classList.remove('active');
-        if (btn.dataset.module === moduleName) {
-          btn.classList.add('active');
-        }
-      });
-    }
-
-    function applyRoleAccess() {
-      console.log('[applyRoleAccess] Current role:', appState.role);
-      const allowed = ROLE_ACCESS[appState.role] || ROLE_ACCESS['Auditor / Read Only'];
-      console.log('[applyRoleAccess] Allowed modules:', allowed);
-      
-      document.querySelectorAll('.nav').forEach((button) => {
-        const key = button.dataset.module || 'dashboard';
-        const isAllowed = allowed.includes(key);
-        button.disabled = !isAllowed;
-        
-        if (key === 'user-management') {
-          console.log('[applyRoleAccess] user-management button:', { isAllowed, disabled: !isAllowed, role: appState.role });
-        }
-      });
-
-      const profileLabel = document.getElementById('profile-button');
-      if (profileLabel) {
-        profileLabel.textContent = appState.profile?.full_name || 'Profile';
-      }
-    }
-
-    async function loadProfile(sessionUser) {
-      if (!sessionUser || !appState.supabase) return null;
-
-      try {
-        // Query the profiles table to get the actual role from database
-        const { data: dbProfile, error: dbError } = await appState.supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', sessionUser.id)
-          .maybeSingle();
-
-        if (dbError) {
-          console.warn('[loadProfile] Database query error:', dbError.message);
-        }
-
-        if (dbProfile) {
-          console.log('[loadProfile] Found profile in database:', dbProfile);
-          appState.profile = dbProfile;
-          appState.role = dbProfile.role || 'Auditor / Read Only';
-        } else {
-          console.log('[loadProfile] No profile in database, using defaults');
-          appState.profile = {
-            id: sessionUser.id,
-            full_name: sessionUser.user_metadata?.full_name || sessionUser.email?.split('@')[0] || 'Pure Ice User',
-            email: sessionUser.email,
-            role: sessionUser.user_metadata?.role || 'Auditor / Read Only',
-            status: 'active'
-          };
-          appState.role = appState.profile.role;
-        }
-
-        console.log('[loadProfile] Final appState.role:', appState.role);
-        applyRoleAccess();
-        return appState.profile;
-      } catch (err) {
-        console.error('[loadProfile] Unexpected error:', err);
-        appState.profile = { full_name: sessionUser.email?.split('@')[0] || 'User', role: 'Auditor / Read Only' };
-        appState.role = 'Auditor / Read Only';
-        applyRoleAccess();
-        return appState.profile;
-      }
-    }
-
-    async function queryTableCount(tableName, filters) {
-      if (!appState.supabase) return 0;
-      try {
-        let builder = appState.supabase.from(tableName).select('*', { count: 'exact', head: true });
-        if (filters && typeof filters === 'function') builder = filters(builder);
-        const { count, error } = await builder;
-        if (error) {
-          console.warn(`Unable to read ${tableName}:`, error.message);
-          return 0;
-        }
-        return safeNumber(count);
-      } catch (error) {
-        console.warn(`Table check failed for ${tableName}:`, error.message);
-        return 0;
-      }
-    }
-
-    async function hydrateKpis() {
-      const counts = {
-        totalDocuments: await queryTableCount('documents'),
-        pendingDocuments: await queryTableCount('documents', (q) => q.in('status', ['Draft', 'Under Review'])),
-        nearReview: await queryTableCount('documents', (q) => q.gte('review_date', new Date().toISOString()).lt('review_date', new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString())),
-        openNCR: await queryTableCount('ncrs', (q) => q.in('status', ['Open', 'In Progress'])),
-        openCAPA: await queryTableCount('capas', (q) => q.in('status', ['Open', 'In Progress', 'Pending Verification'])),
-        activeSuppliers: await queryTableCount('suppliers'),
-        calibrationStatus: await queryTableCount('calibrations', (q) => q.gte('next_due_date', new Date().toISOString()).lte('next_due_date', new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString())),
-        trainingCompletion: await queryTableCount('trainings', (q) => q.gte('expiry_date', new Date().toISOString()).lte('expiry_date', new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString())),
-        auditReadiness: 0
+      appState.profile={
+        id:sessionUser.id,
+        full_name:
+          sessionUser.user_metadata?.full_name ||
+          sessionUser.email?.split('@')[0] ||
+          'Pure Ice User',
+        email:sessionUser.email,
+        role:'Auditor / Read Only',
+        status:'active'
       };
 
-      setKpi('kpi-total-documents', counts.totalDocuments);
-      setKpi('kpi-pending-documents', counts.pendingDocuments);
-      setKpi('kpi-documents-near-review', counts.nearReview);
-      setKpi('kpi-open-ncrs', counts.openNCR);
-      setKpi('kpi-open-capas', counts.openCAPA);
-      setKpi('kpi-active-suppliers', counts.activeSuppliers);
-      setKpi('kpi-water-safety', counts.totalDocuments ? '98%' : '0%');
-      setKpi('kpi-haccp-review', counts.totalDocuments ? '96%' : '0%');
-      setKpi('kpi-calibration-status', counts.calibrationStatus ? '92%' : '0%');
-      setKpi('kpi-training-completion', counts.trainingCompletion ? '94%' : '0%');
-      setKpi('kpi-audit-readiness', counts.auditReadiness || '0%', '');
+      appState.role='Auditor / Read Only';
 
-      const labels = [
-        document.getElementById('kpi-total-documents-sub'),
-        document.getElementById('kpi-pending-documents-sub'),
-        document.getElementById('kpi-documents-near-review-sub'),
-        document.getElementById('kpi-open-ncrs-sub'),
-        document.getElementById('kpi-open-capas-sub'),
-        document.getElementById('kpi-active-suppliers-sub')
-      ];
-
-      labels[0].textContent = counts.totalDocuments ? 'Live data connected' : 'Awaiting Supabase schema';
-      labels[1].textContent = counts.pendingDocuments ? 'Requires review' : 'No pending records';
-      labels[2].textContent = counts.nearReview ? 'Due soon' : 'No reviews due';
-      labels[3].textContent = counts.openNCR ? 'Needs action' : 'No open NCRs';
-      labels[4].textContent = counts.openCAPA ? 'Follow-up required' : 'No open CAPAs';
-      labels[5].textContent = counts.activeSuppliers ? 'Approved suppliers' : 'No supplier data';
     }
 
-    async function loadUsers() {
-      if (!appState.supabase) return;
+    applyRoleAccess();
 
-      try {
-        const { data: depts, error: deptsError } = await appState.supabase.from('departments').select('id, name');
-        if (!deptsError && depts) {
-          depts.forEach(d => {
-            appState.departments[d.id] = d.name;
-          });
-        }
+    return appState.profile;
 
-        const { data: users, error } = await appState.supabase
-          .from('profiles')
-          .select('id, full_name, email, employee_code, department_id, role, job_title, phone, status')
-          .order('full_name');
+  }catch(error){
 
-        if (error) {
-          console.error('Error loading users:', error.message);
-          return;
-        }
+    console.error(error);
 
-        appState.users = users || [];
-        renderUsersTable();
-      } catch (err) {
-        console.error('Failed to load users:', err);
+    appState.role='Auditor / Read Only';
+
+    applyRoleAccess();
+
+    return null;
+
+  }
+
+}
+
+
+function applyRoleAccess(){
+
+  const allowed=
+    ROLE_ACCESS[appState.role] ||
+    ROLE_ACCESS['Auditor / Read Only'];
+
+  document.querySelectorAll('.nav').forEach(button=>{
+
+    const module=button.dataset.module;
+
+    button.disabled=!allowed.includes(module);
+
+  });
+
+  const profileButton=
+    document.getElementById('profile-button');
+
+  if(profileButton){
+
+    profileButton.textContent=
+      appState.profile?.full_name ||
+      'Profile';
+
+  }
+
+}
+
+
+/* =========================
+   MODULE SWITCH
+========================= */
+
+const MODULE_NAMES={
+
+  'haccp':'HACCP / CCP / OPRP',
+
+  'gmp':'PRP / GMP / GHP',
+
+  'water-ro':'Water & RO',
+
+  'calibration':'Calibration',
+
+  'training':'Training',
+
+  'suppliers':'Suppliers',
+
+  'ncr':'NCR / CAPA',
+
+  'reports':'Reports',
+
+  'settings':'Settings'
+
+};
+
+
+function hideAllSections(){
+
+  document
+    .querySelectorAll(
+      '#dashboard-section,'+
+      '#documents-section,'+
+      '#records-section,'+
+      '#user-management-section,'+
+      '#module-placeholder-section'
+    )
+    .forEach(el=>el.classList.add('hidden'));
+
+}
+
+
+function switchModule(moduleName){
+
+  appState.currentModule=moduleName;
+
+  hideAllSections();
+
+  document
+    .querySelectorAll('.nav')
+    .forEach(btn=>btn.classList.remove('active'));
+
+  const activeButton=
+    document.querySelector(
+      `.nav[data-module="${moduleName}"]`
+    );
+
+  if(activeButton)
+    activeButton.classList.add('active');
+
+
+  if(moduleName==='dashboard'){
+
+    document
+      .getElementById('dashboard-section')
+      .classList.remove('hidden');
+
+    document.getElementById('page-title').textContent=
+      'Food Safety Command Center';
+
+    document.getElementById('page-subtitle').textContent=
+      'Ice Manufacturing & Flavored Ice · System Status';
+
+    refreshDashboard();
+
+    return;
+
+  }
+
+
+  if(moduleName==='documents'){
+
+    document
+      .getElementById('documents-section')
+      .classList.remove('hidden');
+
+    document.getElementById('page-title').textContent=
+      'Document Control';
+
+    document.getElementById('page-subtitle').textContent=
+      'Controlled documents, revisions, approvals and review dates';
+
+    loadDocuments();
+
+    return;
+
+  }
+
+
+  if(moduleName==='records'){
+
+    document
+      .getElementById('records-section')
+      .classList.remove('hidden');
+
+    document.getElementById('page-title').textContent=
+      'Records & Compliance Plans';
+
+    document.getElementById('page-subtitle').textContent=
+      'Plans, scheduled tasks, records and evidence';
+
+    return;
+
+  }
+
+
+  if(moduleName==='user-management'){
+
+    document
+      .getElementById('user-management-section')
+      .classList.remove('hidden');
+
+    document.getElementById('page-title').textContent=
+      'User Management';
+
+    document.getElementById('page-subtitle').textContent=
+      'Manage system users, roles and access';
+
+    loadUsers();
+
+    return;
+
+  }
+
+
+  document
+    .getElementById('module-placeholder-section')
+    .classList.remove('hidden');
+
+  document.getElementById('page-title').textContent=
+    MODULE_NAMES[moduleName]||'Module';
+
+  document.getElementById('page-subtitle').textContent=
+    'Pure Ice Food Safety Management System';
+
+  document.getElementById('placeholder-title').textContent=
+    MODULE_NAMES[moduleName]||'Module';
+
+  document.getElementById('placeholder-text').textContent=
+    'This module is part of the Pure Ice Food Safety Management System. The database foundation is being prepared and the operational workflow will be connected in the next implementation phase.';
+
+}
+
+
+function showComingSoon(name){
+
+  alert(
+    name+
+    ' foundation is ready. Operational workflow will be connected in the next phase.'
+  );
+
+}
+
+
+/* =========================
+   AUDIT LOG
+========================= */
+
+async function writeAudit(
+  action,
+  module,
+  tableName,
+  recordId,
+  description,
+  oldData=null,
+  newData=null
+){
+
+  if(!appState.supabase)return;
+
+  try{
+
+    const payload={
+
+      user_id:appState.profile?.id||null,
+
+      action,
+
+      module,
+
+      table_name:tableName,
+
+      record_id:recordId||null,
+
+      description,
+
+      old_data:oldData,
+
+      new_data:newData
+
+    };
+
+    const {error}=await appState.supabase
+      .from('fsms_audit_log')
+      .insert(payload);
+
+    if(error)
+      console.warn('Audit log:',error.message);
+
+  }catch(error){
+
+    console.warn('Audit error:',error.message);
+
+  }
+
+}
+
+
+/* =========================
+   DOCUMENT DEPARTMENTS
+========================= */
+
+async function loadDepartments(){
+
+  if(!appState.supabase)return;
+
+  const {data,error}=await appState.supabase
+    .from('departments')
+    .select('id,name')
+    .order('name');
+
+  if(error){
+
+    console.warn('Departments:',error.message);
+
+    return;
+
+  }
+
+  appState.departments={};
+
+  (data||[]).forEach(d=>{
+    appState.departments[d.id]=d.name;
+  });
+
+  populateDepartmentSelects();
+
+}
+
+
+function populateDepartmentSelects(){
+
+  const names=Object.values(appState.departments);
+
+  const documentSelect=
+    document.getElementById('document-department');
+
+  const filterSelect=
+    document.getElementById('document-department-filter');
+
+  const userSelect=
+    document.getElementById('user-department');
+
+
+  if(documentSelect){
+
+    const current=documentSelect.value;
+
+    documentSelect.innerHTML=
+      '<option value="">Select Department</option>'+
+      names.map(name=>
+        `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`
+      ).join('');
+
+    documentSelect.value=current;
+
+  }
+
+
+  if(filterSelect){
+
+    const current=filterSelect.value;
+
+    filterSelect.innerHTML=
+      '<option value="">All Departments</option>'+
+      names.map(name=>
+        `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`
+      ).join('');
+
+    filterSelect.value=current;
+
+  }
+
+
+  if(userSelect){
+
+    const current=userSelect.value;
+
+    userSelect.innerHTML=
+      '<option value="">Select Department</option>'+
+      names.map(name=>
+        `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`
+      ).join('');
+
+    userSelect.value=current;
+
+  }
+
+}
+
+
+/* =========================
+   DOCUMENT CONTROL
+========================= */
+
+async function loadDocuments(){
+
+  if(!appState.supabase)return;
+
+  const tbody=
+    document.getElementById('documents-tbody');
+
+  if(tbody){
+
+    tbody.innerHTML=
+      '<tr><td colspan="10" class="empty">Loading documents...</td></tr>';
+
+  }
+
+  try{
+
+    const {data,error}=await appState.supabase
+      .from('documents')
+      .select('*')
+      .order('created_at',{ascending:false});
+
+    if(error){
+
+      console.error('Documents:',error.message);
+
+      if(tbody){
+
+        tbody.innerHTML=
+          `<tr><td colspan="10" class="empty">
+            Unable to load documents: ${escapeHtml(error.message)}
+          </td></tr>`;
+
       }
+
+      return;
+
     }
 
-    function renderUsersTable() {
-      const tbody = document.getElementById('users-tbody');
-      const filterText = (document.getElementById('users-filter')?.value || '').toLowerCase();
-      const filterRole = document.getElementById('role-filter')?.value || '';
+    appState.documents=data||[];
 
-      let filtered = appState.users.filter(u => {
-        const matchText = !filterText || u.full_name?.toLowerCase().includes(filterText) || u.email?.toLowerCase().includes(filterText);
-        const matchRole = !filterRole || u.role === filterRole;
-        return matchText && matchRole;
-      });
+    renderDocuments();
 
-      if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--muted);">No users found</td></tr>';
-        return;
+    await refreshDashboard();
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+
+function renderDocuments(){
+
+  const tbody=
+    document.getElementById('documents-tbody');
+
+  if(!tbody)return;
+
+  const search=
+    (
+      document.getElementById('document-search')?.value||''
+    ).toLowerCase();
+
+  const type=
+    document.getElementById('document-type-filter')?.value||'';
+
+  const status=
+    document.getElementById('document-status-filter')?.value||'';
+
+  const approval=
+    document.getElementById('document-approval-filter')?.value||'';
+
+  const department=
+    document.getElementById('document-department-filter')?.value||'';
+
+
+  const filtered=appState.documents.filter(d=>{
+
+    const departmentName=
+      d.department||'';
+
+    const text=[
+      d.document_code,
+      d.title,
+      d.document_type,
+      departmentName,
+      d.revision
+    ]
+    .join(' ')
+    .toLowerCase();
+
+    return(
+      (!search||text.includes(search)) &&
+      (!type||d.document_type===type) &&
+      (!status||d.status===status) &&
+      (!approval||d.approval_status===approval) &&
+      (!department||departmentName===department)
+    );
+
+  });
+
+
+  if(!filtered.length){
+
+    tbody.innerHTML=
+      `<tr>
+        <td colspan="10" class="empty">
+          No documents found.
+        </td>
+      </tr>`;
+
+    return;
+
+  }
+
+
+  tbody.innerHTML=
+    filtered.map(d=>{
+
+      const days=daysFromToday(d.review_date);
+
+      let reviewText='—';
+
+      if(days!==null){
+
+        if(days<0)
+          reviewText=`Overdue ${Math.abs(days)}d`;
+
+        else if(days===0)
+          reviewText='Due today';
+
+        else
+          reviewText=`${formatDate(d.review_date)}`;
+
       }
 
-      tbody.innerHTML = filtered.map(user => `
-        <tr>
-          <td>${user.full_name || 'N/A'}</td>
-          <td>${user.email || 'N/A'}</td>
-          <td>${user.employee_code || 'N/A'}</td>
-          <td>${appState.departments[user.department_id] || 'N/A'}</td>
-          <td>${user.role || 'N/A'}</td>
-          <td><span class="user-status ${user.status}">${user.status || 'unknown'}</span></td>
-          <td>
-            <div class="action-buttons">
-              <button type="button" onclick="window.editUser('${user.id}')">Edit</button>
-              <button type="button" onclick="window.toggleUserStatus('${user.id}', '${user.status}')">
-                ${user.status === 'active' ? 'Deactivate' : 'Activate'}
-              </button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
-    }
 
-    async function handleSession() {
-      if (!appState.supabase) return;
-      const { data: { session }, error } = await appState.supabase.auth.getSession();
-      if (error) {
-        console.warn('Session error:', error.message);
-        showLogin();
-        return;
-      }
-      if (!session) {
-        showLogin();
-        return;
-      }
-      appState.session = session;
-      await loadProfile(session.user);
-      showDashboard();
-      await hydrateKpis();
-    }
+      const canApprove=
+        appState.role==='Super Admin' &&
+        d.approval_status!=='Approved';
 
-    async function handleLogin(event) {
-      event.preventDefault();
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value;
 
-      if (!email || !password) {
-        setStatus('login-status', 'Please enter both email and password.', 'error');
-        return;
-      }
+      return `
 
-      setStatus('login-status', 'Signing in...', 'info');
+      <tr>
 
-      const { data, error } = await appState.supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        setStatus('login-status', error.message || 'Unable to sign in.', 'error');
-        return;
-      }
+        <td>
+          <div class="doc-title">
+            ${escapeHtml(d.title||'Untitled')}
+          </div>
 
-      appState.session = data.session;
-      await loadProfile(data.user);
-      showDashboard();
-      await hydrateKpis();
-      setStatus('login-status', 'Signed in successfully.', 'success');
-    }
+          <div class="doc-code">
+            ${escapeHtml(d.document_code||'No code')}
+          </div>
+        </td>
 
-    async function handleForgotPassword() {
-      const email = document.getElementById('login-email').value.trim();
-      if (!email) {
-        setStatus('login-status', 'Enter your email to receive reset instructions.', 'error');
-        return;
-      }
 
-      const { error } = await appState.supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}${window.location.pathname}`
-      });
+        <td>
+          ${escapeHtml(d.document_type||'—')}
+        </td>
 
-      if (error) {
-        setStatus('login-status', error.message || 'Password reset failed.', 'error');
-        return;
-      }
 
-      setStatus('login-status', 'Password reset instructions sent to your email.', 'success');
-    }
+        <td>
+          ${escapeHtml(d.department||'—')}
+        </td>
 
-    async function handleSignOut() {
-      if (!appState.supabase) return;
-      const { error } = await appState.supabase.auth.signOut();
-      if (error) {
-        console.warn('Logout failed:', error.message);
-      }
-      appState.session = null;
-      appState.profile = null;
-      appState.role = 'Auditor / Read Only';
-      showLogin();
-      setStatus('login-status', 'Signed out successfully.', 'success');
-    }
 
-    function filterDashboard(value) {
-      const query = (value || '').toLowerCase();
-      document.querySelectorAll('#dashboard-section .issue, #dashboard-section .metric, #dashboard-section .card, #dashboard-section .panel').forEach((element) => {
-        const text = (element.textContent || '').toLowerCase();
-        element.style.display = (!query || text.includes(query)) ? '' : 'none';
-      });
-    }
+        <td>
+          ${escapeHtml(d.revision||'—')}
+        </td>
 
-    function openUploadModal() {
-      const modal = document.getElementById('upload-modal');
-      if (modal) modal.classList.add('active');
-    }
 
-    function closeUploadModal() {
-      const modal = document.getElementById('upload-modal');
-      if (modal) modal.classList.remove('active');
-    }
+        <td>
+          ${formatDate(d.issue_date)}
+        </td>
 
-    function openUserModal() {
-      appState.editingUserId = null;
-      document.getElementById('user-modal-title').textContent = 'Add User';
-      document.getElementById('user-form').reset();
-      setStatus('user-form-status', '', 'info');
-      const modal = document.getElementById('user-modal');
-      if (modal) modal.classList.add('active');
-    }
 
-    function closeUserModal() {
-      const modal = document.getElementById('user-modal');
-      if (modal) modal.classList.remove('active');
-    }
+        <td>
+          <span class="${reviewClass(d.review_date)}">
+            ${escapeHtml(reviewText)}
+          </span>
+        </td>
 
-    async function editUser(userId) {
-      const user = appState.users.find(u => u.id === userId);
-      if (!user) return;
 
-      appState.editingUserId = userId;
-      document.getElementById('user-modal-title').textContent = 'Edit User';
-      document.getElementById('user-full-name').value = user.full_name || '';
-      document.getElementById('user-email').value = user.email || '';
-      document.getElementById('user-employee-code').value = user.employee_code || '';
-      document.getElementById('user-department').value = appState.departments[user.department_id] || '';
-      document.getElementById('user-role').value = user.role || '';
-      document.getElementById('user-job-title').value = user.job_title || '';
-      document.getElementById('user-phone').value = user.phone || '';
-      document.getElementById('user-status').value = user.status || 'active';
-      setStatus('user-form-status', '', 'info');
+        <td>
+          <span class="${statusClass(d.status)}">
+            ${escapeHtml(d.status||'Draft')}
+          </span>
+        </td>
 
-      openUserModal();
-    }
 
-    async function toggleUserStatus(userId, currentStatus) {
-      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-      if (!appState.supabase) return;
+        <td>
+          <span class="${approvalClass(d.approval_status)}">
+            ${escapeHtml(d.approval_status||'Draft')}
+          </span>
+        </td>
 
-      try {
-        const { error } = await appState.supabase
-          .from('profiles')
-          .update({ status: newStatus })
-          .eq('id', userId);
 
-        if (error) {
-          console.error('Error updating status:', error.message);
-          return;
-        }
+        <td>
 
-        await loadUsers();
-      } catch (err) {
-        console.error('Failed to update user status:', err);
-      }
-    }
-
-    async function handleUserFormSubmit(event) {
-      event.preventDefault();
-      if (!appState.supabase) return;
-
-      const fullName = document.getElementById('user-full-name').value.trim();
-      const email = document.getElementById('user-email').value.trim();
-      const employeeCode = document.getElementById('user-employee-code').value.trim();
-      const departmentName = document.getElementById('user-department').value;
-      const role = document.getElementById('user-role').value;
-      const jobTitle = document.getElementById('user-job-title').value.trim();
-      const phone = document.getElementById('user-phone').value.trim() || null;
-      const status = document.getElementById('user-status').value;
-
-      if (!fullName || !email || !employeeCode || !departmentName || !role || !jobTitle) {
-        setStatus('user-form-status', 'All required fields must be filled.', 'error');
-        return;
-      }
-
-      try {
-        setStatus('user-form-status', 'Saving...', 'info');
-
-        const dept = Object.entries(appState.departments).find(([, name]) => name === departmentName);
-        const departmentId = dept ? dept[0] : null;
-
-        if (!departmentId) {
-          setStatus('user-form-status', 'Invalid department selected.', 'error');
-          return;
-        }
-
-        const profileData = {
-          full_name: fullName,
-          email: email,
-          employee_code: employeeCode,
-          department_id: departmentId,
-          role: role,
-          job_title: jobTitle,
-          phone: phone,
-          status: status,
-          updated_at: new Date().toISOString()
-        };
-
-        if (appState.editingUserId) {
-          const { error } = await appState.supabase
-            .from('profiles')
-            .update(profileData)
-            .eq('id', appState.editingUserId);
-
-          if (error) {
-            setStatus('user-form-status', 'Error updating user: ' + error.message, 'error');
-            return;
+          ${
+            d.file_path
+            ?
+            `<button
+              class="file-link"
+              onclick="window.openDocumentFile('${d.id}')">
+              View
+            </button>`
+            :
+            '<span class="muted">No file</span>'
           }
 
-          setStatus('user-form-status', 'User updated successfully.', 'success');
-        } else {
-          setStatus('user-form-status', 'Profile form ready. New Auth accounts require backend setup by administrator.', 'info');
-        }
+        </td>
 
-        await loadUsers();
-        closeUserModal();
-      } catch (err) {
-        console.error('Failed to save user:', err);
-        setStatus('user-form-status', 'Error saving user: ' + err.message, 'error');
-      }
+
+        <td>
+
+          <div class="action-buttons">
+
+            <button
+              onclick="window.editDocument('${d.id}')">
+              Edit
+            </button>
+
+            ${
+              canApprove
+              ?
+              `<button
+                class="approve"
+                onclick="window.approveDocument('${d.id}')">
+                Approve
+              </button>`
+              :
+              ''
+            }
+
+            <button
+              class="delete"
+              onclick="window.deleteDocument('${d.id}')">
+              Delete
+            </button>
+
+          </div>
+
+        </td>
+
+      </tr>
+
+      `;
+
+    }).join('');
+
+}
+
+
+function openDocumentModal(documentId=null){
+
+  appState.editingDocumentId=documentId;
+
+  appState.oldDocumentPath=null;
+
+  const modal=
+    document.getElementById('document-modal');
+
+  const form=
+    document.getElementById('document-form');
+
+  form.reset();
+
+  setStatus('document-form-status','','info');
+
+  document.getElementById('current-file-info').textContent='';
+
+
+  if(documentId){
+
+    const d=
+      appState.documents.find(x=>x.id===documentId);
+
+    if(!d)return;
+
+    document.getElementById('document-modal-title')
+      .textContent='Edit Document';
+
+    document.getElementById('document-code').value=
+      d.document_code||'';
+
+    document.getElementById('document-type').value=
+      d.document_type||'';
+
+    document.getElementById('document-title').value=
+      d.title||'';
+
+    document.getElementById('document-department').value=
+      d.department||'';
+
+    document.getElementById('document-revision').value=
+      d.revision||'';
+
+    document.getElementById('document-issue-date').value=
+      d.issue_date||'';
+
+    document.getElementById('document-review-date').value=
+      d.review_date||'';
+
+    document.getElementById('document-status').value=
+      d.status||'Draft';
+
+    document.getElementById('document-approval-status').value=
+      d.approval_status||'Draft';
+
+    document.getElementById('document-description').value=
+      d.description||'';
+
+    appState.oldDocumentPath=d.file_path||null;
+
+    if(d.file_name){
+
+      document.getElementById('current-file-info')
+        .textContent=
+        'Current file: '+d.file_name;
+
     }
 
-    function init() {
-      if (!window.PURE_ICE_CONFIG || !window.PURE_ICE_CONFIG.supabaseUrl || !window.PURE_ICE_CONFIG.supabaseAnonKey) {
-        setStatus('login-status', 'Supabase configuration is missing. Update config.js with your project URL and publishable anon key.', 'error');
+  }else{
+
+    document.getElementById('document-modal-title')
+      .textContent='Add Document';
+
+    document.getElementById('document-status').value='Draft';
+
+    document.getElementById('document-approval-status').value='Draft';
+
+  }
+
+
+  modal.classList.add('active');
+
+}
+
+
+function closeDocumentModal(){
+
+  document
+    .getElementById('document-modal')
+    .classList.remove('active');
+
+  appState.editingDocumentId=null;
+
+  appState.oldDocumentPath=null;
+
+}
+
+
+function sanitizeFileName(name){
+
+  return name
+    .normalize('NFKD')
+    .replace(/[^\w.\-]+/g,'_')
+    .replace(/_+/g,'_')
+    .replace(/^_+|_+$/g,'');
+
+}
+
+
+async function uploadDocumentFile(file,documentCode){
+
+  if(!file)return null;
+
+  const safeName=sanitizeFileName(file.name);
+
+  const folder=sanitizeFileName(documentCode||'general');
+
+  const path=
+    `documents/${folder}/${Date.now()}_${safeName}`;
+
+
+  const {error}=await appState.supabase
+    .storage
+    .from('fsms-documents')
+    .upload(path,file,{
+      upsert:false,
+      contentType:file.type||undefined
+    });
+
+
+  if(error)throw error;
+
+  return path;
+
+}
+
+
+async function removeStorageFile(path){
+
+  if(!path)return;
+
+  try{
+
+    const {error}=await appState.supabase
+      .storage
+      .from('fsms-documents')
+      .remove([path]);
+
+    if(error)
+      console.warn('Storage remove:',error.message);
+
+  }catch(error){
+
+    console.warn('Storage remove:',error.message);
+
+  }
+
+}
+
+
+async function handleDocumentSubmit(event){
+
+  event.preventDefault();
+
+  if(!appState.supabase)return;
+
+
+  const code=
+    document.getElementById('document-code').value.trim();
+
+  const type=
+    document.getElementById('document-type').value;
+
+  const title=
+    document.getElementById('document-title').value.trim();
+
+  const department=
+    document.getElementById('document-department').value||null;
+
+  const revision=
+    document.getElementById('document-revision').value.trim()||null;
+
+  const issueDate=
+    document.getElementById('document-issue-date').value||null;
+
+  const reviewDate=
+    document.getElementById('document-review-date').value||null;
+
+  const status=
+    document.getElementById('document-status').value;
+
+  const approvalStatus=
+    document.getElementById('document-approval-status').value;
+
+  const description=
+    document.getElementById('document-description').value.trim()||null;
+
+  const file=
+    document.getElementById('document-file').files[0]||null;
+
+
+  if(!code||!type||!title){
+
+    setStatus(
+      'document-form-status',
+      'Document Code, Type and Title are required.',
+      'error'
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    setStatus(
+      'document-form-status',
+      'Saving document...',
+      'info'
+    );
+
+
+    let uploadedPath=null;
+
+
+    /* NEW FILE */
+
+    if(file){
+
+      setStatus(
+        'document-form-status',
+        'Uploading file...',
+        'info'
+      );
+
+      uploadedPath=
+        await uploadDocumentFile(file,code);
+
+    }
+
+
+    const baseData={
+
+      document_code:code,
+
+      title,
+
+      document_type:type,
+
+      department,
+
+      revision,
+
+      issue_date:issueDate,
+
+      review_date:reviewDate,
+
+      status,
+
+      approval_status:approvalStatus,
+
+      description,
+
+      updated_at:new Date().toISOString()
+
+    };
+
+
+    let savedId=null;
+
+
+    /* EDIT */
+
+    if(appState.editingDocumentId){
+
+      const old=
+        appState.documents.find(
+          d=>d.id===appState.editingDocumentId
+        );
+
+
+      const updateData={
+        ...baseData
+      };
+
+
+      if(uploadedPath){
+
+        updateData.file_path=uploadedPath;
+
+        updateData.file_name=file.name;
+
+        updateData.file_size=file.size;
+
+        updateData.file_type=file.type||null;
+
       }
 
-      const supabaseUrl = (window.PURE_ICE_CONFIG && window.PURE_ICE_CONFIG.supabaseUrl) || 'https://your-project.supabase.co';
-      const supabaseAnonKey = (window.PURE_ICE_CONFIG && window.PURE_ICE_CONFIG.supabaseAnonKey) || 'your-anon-key-here';
-      appState.supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-      document.getElementById('login-form').addEventListener('submit', handleLogin);
-      document.getElementById('forgot-password-btn').addEventListener('click', handleForgotPassword);
-      document.getElementById('signout-button').addEventListener('click', handleSignOut);
-      document.getElementById('profile-button').addEventListener('click', () => {
-        alert('Profile management will be connected to the Supabase profiles table during the next phase.');
-      });
+      const {data,error}=
+        await appState.supabase
+          .from('documents')
+          .update(updateData)
+          .eq('id',appState.editingDocumentId)
+          .select()
+          .single();
 
-      document.getElementById('add-user-btn').addEventListener('click', openUserModal);
-      document.getElementById('user-form').addEventListener('submit', handleUserFormSubmit);
-      document.getElementById('users-filter').addEventListener('input', renderUsersTable);
-      document.getElementById('role-filter').addEventListener('change', renderUsersTable);
 
-      document.querySelectorAll('.nav').forEach((button) => {
-        button.addEventListener('click', () => {
-          const module = button.dataset.module;
-          if (module) switchModule(module);
+      if(error){
+
+        if(uploadedPath)
+          await removeStorageFile(uploadedPath);
+
+        throw error;
+
+      }
+
+
+      savedId=data.id;
+
+
+      if(uploadedPath && old?.file_path){
+
+        await removeStorageFile(old.file_path);
+
+      }
+
+
+      await writeAudit(
+        'UPDATE',
+        'Document Control',
+        'documents',
+        savedId,
+        `Document updated: ${code}`,
+        old||null,
+        data||null
+      );
+
+
+      setStatus(
+        'document-form-status',
+        'Document updated successfully.',
+        'success'
+      );
+
+
+    }else{
+
+      /* CREATE */
+
+      const insertData={
+
+        ...baseData,
+
+        owner_id:appState.profile?.id||null,
+
+        created_by:appState.profile?.id||null
+
+      };
+
+
+      if(uploadedPath){
+
+        insertData.file_path=uploadedPath;
+
+        insertData.file_name=file.name;
+
+        insertData.file_size=file.size;
+
+        insertData.file_type=file.type||null;
+
+      }
+
+
+      const {data,error}=
+        await appState.supabase
+          .from('documents')
+          .insert(insertData)
+          .select()
+          .single();
+
+
+      if(error){
+
+        if(uploadedPath)
+          await removeStorageFile(uploadedPath);
+
+        throw error;
+
+      }
+
+
+      savedId=data.id;
+
+
+      await writeAudit(
+        'CREATE',
+        'Document Control',
+        'documents',
+        savedId,
+        `Document created: ${code}`,
+        null,
+        data
+      );
+
+
+      setStatus(
+        'document-form-status',
+        'Document created successfully.',
+        'success'
+      );
+
+    }
+
+
+    await loadDocuments();
+
+    setTimeout(
+      closeDocumentModal,
+      600
+    );
+
+
+  }catch(error){
+
+    console.error(error);
+
+    setStatus(
+      'document-form-status',
+      'Error: '+(error.message||'Unable to save document.'),
+      'error'
+    );
+
+  }
+
+}
+
+
+async function editDocument(id){
+
+  openDocumentModal(id);
+
+}
+
+
+async function openDocumentFile(id){
+
+  const d=
+    appState.documents.find(x=>x.id===id);
+
+  if(!d?.file_path){
+
+    alert('No file is attached to this document.');
+
+    return;
+
+  }
+
+
+  try{
+
+    const {data,error}=
+      await appState.supabase
+        .storage
+        .from('fsms-documents')
+        .createSignedUrl(
+          d.file_path,
+          3600
+        );
+
+
+    if(error)throw error;
+
+    if(data?.signedUrl){
+
+      window.open(
+        data.signedUrl,
+        '_blank',
+        'noopener,noreferrer'
+      );
+
+    }
+
+  }catch(error){
+
+    alert(
+      'Unable to open file: '+
+      (error.message||'Storage error')
+    );
+
+  }
+
+}
+
+
+async function approveDocument(id){
+
+  if(appState.role!=='Super Admin'){
+
+    alert('Only Super Admin can approve documents.');
+
+    return;
+
+  }
+
+
+  const d=
+    appState.documents.find(x=>x.id===id);
+
+  if(!d)return;
+
+
+  const confirmed=
+    confirm(
+      `Approve this document?\n\n${d.document_code||''} - ${d.title||''}`
+    );
+
+  if(!confirmed)return;
+
+
+  try{
+
+    const updateData={
+
+      approval_status:'Approved',
+
+      approved_by:appState.profile?.id||null,
+
+      approved_at:new Date().toISOString(),
+
+      status:'Active',
+
+      updated_at:new Date().toISOString()
+
+    };
+
+
+    const {data,error}=
+      await appState.supabase
+        .from('documents')
+        .update(updateData)
+        .eq('id',id)
+        .select()
+        .single();
+
+
+    if(error)throw error;
+
+
+    await writeAudit(
+      'APPROVE',
+      'Document Control',
+      'documents',
+      id,
+      `Document approved: ${d.document_code||d.title}`,
+      d,
+      data
+    );
+
+
+    await loadDocuments();
+
+    alert('Document approved successfully.');
+
+  }catch(error){
+
+    alert(
+      'Approval failed: '+
+      (error.message||'Unknown error')
+    );
+
+  }
+
+}
+
+
+async function deleteDocument(id){
+
+  const d=
+    appState.documents.find(x=>x.id===id);
+
+  if(!d)return;
+
+
+  const confirmed=
+    confirm(
+      `Delete this document?\n\n${d.document_code||''} - ${d.title||''}\n\nThis action cannot be undone.`
+    );
+
+  if(!confirmed)return;
+
+
+  try{
+
+    const {error}=
+      await appState.supabase
+        .from('documents')
+        .delete()
+        .eq('id',id);
+
+
+    if(error)throw error;
+
+
+    if(d.file_path)
+      await removeStorageFile(d.file_path);
+
+
+    await writeAudit(
+      'DELETE',
+      'Document Control',
+      'documents',
+      id,
+      `Document deleted: ${d.document_code||d.title}`,
+      d,
+      null
+    );
+
+
+    await loadDocuments();
+
+  }catch(error){
+
+    alert(
+      'Delete failed: '+
+      (error.message||'Unknown error')
+    );
+
+  }
+
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+async function queryCount(table,filter=null){
+
+  try{
+
+    let query=
+      appState.supabase
+        .from(table)
+        .select('*',{count:'exact',head:true});
+
+    if(filter)
+      query=filter(query);
+
+    const {count,error}=await query;
+
+    if(error){
+
+      console.warn(table,error.message);
+
+      return null;
+
+    }
+
+    return safeNumber(count);
+
+  }catch(error){
+
+    return null;
+
+  }
+
+}
+
+
+async function refreshDashboard(){
+
+  if(!appState.supabase)return;
+
+
+  const today=todayIso();
+
+  const next30=
+    new Date(
+      Date.now()+30*86400000
+    )
+    .toISOString()
+    .slice(0,10);
+
+
+  const totalDocuments=
+    await queryCount('documents');
+
+
+  const pendingDocuments=
+    await queryCount(
+      'documents',
+      q=>q.in(
+        'approval_status',
+        ['Draft','Pending Approval','Rejected']
+      )
+    );
+
+
+  const nearReview=
+    await queryCount(
+      'documents',
+      q=>
+        q.gte('review_date',today)
+         .lte('review_date',next30)
+         .neq('status','Obsolete')
+    );
+
+
+  const approvedDocuments=
+    await queryCount(
+      'documents',
+      q=>q.eq(
+        'approval_status',
+        'Approved'
+      )
+    );
+
+
+  const activePlans=
+    await queryCount(
+      'compliance_plans',
+      q=>q.eq(
+        'status',
+        'Active'
+      )
+    );
+
+
+  const openTasks=
+    await queryCount(
+      'compliance_tasks',
+      q=>q.in(
+        'status',
+        ['Pending','In Progress','Overdue']
+      )
+    );
+
+
+  setKpiValue(
+    'kpi-total-documents',
+    totalDocuments
+  );
+
+  setKpiValue(
+    'kpi-pending-documents',
+    pendingDocuments
+  );
+
+  setKpiValue(
+    'kpi-documents-near-review',
+    nearReview
+  );
+
+  setKpiValue(
+    'kpi-open-tasks',
+    openTasks
+  );
+
+  setKpiValue(
+    'kpi-active-plans',
+    activePlans
+  );
+
+  setKpiValue(
+    'kpi-approved-documents',
+    approvedDocuments
+  );
+
+
+  setText(
+    'kpi-total-documents-sub',
+    totalDocuments===null
+      ? 'Not configured'
+      : 'Live data connected'
+  );
+
+  setText(
+    'kpi-pending-documents-sub',
+    pendingDocuments===null
+      ? 'Not configured'
+      : pendingDocuments
+        ? 'Requires action'
+        : 'No pending approval'
+  );
+
+  setText(
+    'kpi-documents-near-review-sub',
+    nearReview===null
+      ? 'Not configured'
+      : nearReview
+        ? 'Due within 30 days'
+        : 'No reviews due soon'
+  );
+
+  setText(
+    'kpi-open-tasks-sub',
+    openTasks===null
+      ? 'Not configured'
+      : openTasks
+        ? 'Needs action'
+        : 'No open tasks'
+  );
+
+  setText(
+    'kpi-active-plans-sub',
+    activePlans===null
+      ? 'Not configured'
+      : 'Active compliance plans'
+  );
+
+  setText(
+    'kpi-approved-documents-sub',
+    approvedDocuments===null
+      ? 'Not configured'
+      : 'Controlled documents'
+  );
+
+
+  /* DOCUMENT CONTROL % */
+
+  let documentControl=0;
+
+  if(totalDocuments!==null && totalDocuments>0){
+
+    documentControl=
+      Math.round(
+        (approvedDocuments||0)/
+        totalDocuments*100
+      );
+
+  }
+
+
+  setKpiValue(
+    'kpi-document-control',
+    documentControl+'%'
+  );
+
+
+  /* PLAN COVERAGE */
+
+  let planCoverage=0;
+
+  if(activePlans!==null){
+
+    planCoverage=
+      activePlans>0
+        ? 100
+        : 0;
+
+  }
+
+
+  setKpiValue(
+    'kpi-plan-coverage',
+    planCoverage+'%'
+  );
+
+
+  /* TASK COMPLETION */
+
+  let taskCompletion=0;
+
+
+  if(openTasks!==null){
+
+    const completed=
+      await queryCount(
+        'compliance_tasks',
+        q=>q.eq(
+          'status',
+          'Completed'
+        )
+      );
+
+
+    const totalTasks=
+      await queryCount(
+        'compliance_tasks'
+      );
+
+
+    if(
+      totalTasks!==null &&
+      totalTasks>0
+    ){
+
+      taskCompletion=
+        Math.round(
+          (completed||0)/
+          totalTasks*100
+        );
+
+    }
+
+  }
+
+
+  setKpiValue(
+    'kpi-task-completion',
+    taskCompletion+'%'
+  );
+
+
+  setText(
+    'kpi-audit-trail',
+    'Ready'
+  );
+
+
+  /* AUDIT READINESS */
+
+  let readiness=0;
+
+  if(totalDocuments!==null){
+
+    const docScore=
+      totalDocuments>0
+        ? documentControl
+        : 0;
+
+    const reviewScore=
+      totalDocuments>0
+        ? Math.max(
+            0,
+            100-
+            Math.min(
+              100,
+              (nearReview||0)/
+              totalDocuments*100
+            )
+          )
+        : 0;
+
+    readiness=
+      Math.round(
+        (docScore+reviewScore)/2
+      );
+
+  }
+
+
+  setKpiValue(
+    'kpi-audit-readiness',
+    readiness+'%'
+  );
+
+
+  updateChart(
+    'chart-draft',
+    totalDocuments||0,
+    await queryCount(
+      'documents',
+      q=>q.eq('approval_status','Draft')
+    )
+  );
+
+
+  updateChart(
+    'chart-review',
+    totalDocuments||0,
+    await queryCount(
+      'documents',
+      q=>q.eq('approval_status','Pending Approval')
+    )
+  );
+
+
+  updateChart(
+    'chart-approved',
+    totalDocuments||0,
+    approvedDocuments
+  );
+
+
+  updateChart(
+    'chart-near',
+    totalDocuments||0,
+    nearReview
+  );
+
+
+  updateChart(
+    'chart-tasks',
+    openTasks||0,
+    openTasks
+  );
+
+
+  renderAttention(
+    nearReview,
+    pendingDocuments,
+    openTasks
+  );
+
+}
+
+
+function setKpiValue(id,value){
+
+  const el=document.getElementById(id);
+
+  if(el)
+    el.textContent=
+      value===null
+        ? '—'
+        : value;
+
+}
+
+
+function setText(id,value){
+
+  const el=document.getElementById(id);
+
+  if(el)
+    el.textContent=value;
+
+}
+
+
+function updateChart(id,total,value){
+
+  const el=document.getElementById(id);
+
+  if(!el)return;
+
+  if(!total||value===null){
+
+    el.style.height='15%';
+
+    return;
+
+  }
+
+  const percentage=
+    Math.max(
+      10,
+      Math.min(
+        100,
+        value/total*100
+      )
+    );
+
+  el.style.height=percentage+'%';
+
+}
+
+
+function renderAttention(
+  nearReview,
+  pendingDocuments,
+  openTasks
+){
+
+  const box=
+    document.getElementById('attention-list');
+
+  if(!box)return;
+
+
+  const items=[];
+
+
+  if(pendingDocuments){
+
+    items.push(`
+      <div class="issue">
+        <i class="dot bad"></i>
+        <div>
+          <b>Document Approval</b>
+          <span>${pendingDocuments} document(s) require approval</span>
+        </div>
+        <span class="pill warn">Action</span>
+      </div>
+    `);
+
+  }
+
+
+  if(nearReview){
+
+    items.push(`
+      <div class="issue">
+        <i class="dot"></i>
+        <div>
+          <b>Document Review</b>
+          <span>${nearReview} document(s) due within 30 days</span>
+        </div>
+        <span class="pill warn">Due Soon</span>
+      </div>
+    `);
+
+  }
+
+
+  if(openTasks){
+
+    items.push(`
+      <div class="issue">
+        <i class="dot bad"></i>
+        <div>
+          <b>Compliance Tasks</b>
+          <span>${openTasks} open task(s)</span>
+        </div>
+        <span class="pill bad">Open</span>
+      </div>
+    `);
+
+  }
+
+
+  if(!items.length){
+
+    items.push(`
+      <div class="issue">
+        <i class="dot good"></i>
+        <div>
+          <b>No Critical Attention Items</b>
+          <span>Current system data shows no open alerts</span>
+        </div>
+        <span class="pill">OK</span>
+      </div>
+    `);
+
+  }
+
+
+  box.innerHTML=items.join('');
+
+}
+
+
+/* =========================
+   USERS
+========================= */
+
+async function loadUsers(){
+
+  if(!appState.supabase)return;
+
+
+  try{
+
+    await loadDepartments();
+
+
+    const {data,error}=
+      await appState.supabase
+        .from('profiles')
+        .select(
+          'id,full_name,email,employee_code,department_id,role,job_title,phone,status'
+        )
+        .order('full_name');
+
+
+    if(error)throw error;
+
+
+    appState.users=data||[];
+
+    renderUsersTable();
+
+  }catch(error){
+
+    console.error('Users:',error.message);
+
+    const tbody=
+      document.getElementById('users-tbody');
+
+    if(tbody){
+
+      tbody.innerHTML=
+        `<tr>
+          <td colspan="7" style="
+            text-align:center;
+            padding:20px;
+            color:var(--bad);">
+            Unable to load users:
+            ${escapeHtml(error.message)}
+          </td>
+        </tr>`;
+
+    }
+
+  }
+
+}
+
+
+function renderUsersTable(){
+
+  const tbody=
+    document.getElementById('users-tbody');
+
+  if(!tbody)return;
+
+
+  const text=
+    (
+      document.getElementById('users-filter')?.value||''
+    ).toLowerCase();
+
+  const role=
+    document.getElementById('role-filter')?.value||'';
+
+
+  const filtered=
+    appState.users.filter(u=>{
+
+      const haystack=[
+        u.full_name,
+        u.email,
+        u.employee_code,
+        u.role,
+        u.job_title
+      ]
+      .join(' ')
+      .toLowerCase();
+
+      return(
+        (!text||haystack.includes(text)) &&
+        (!role||u.role===role)
+      );
+
+    });
+
+
+  if(!filtered.length){
+
+    tbody.innerHTML=
+      `<tr>
+        <td colspan="7" style="
+          text-align:center;
+          padding:20px;
+          color:var(--muted);">
+          No users found
+        </td>
+      </tr>`;
+
+    return;
+
+  }
+
+
+  tbody.innerHTML=
+    filtered.map(user=>`
+
+      <tr>
+
+        <td>
+          <b>${escapeHtml(user.full_name||'N/A')}</b>
+          <div class="helper">
+            ${escapeHtml(user.job_title||'')}
+          </div>
+        </td>
+
+        <td>
+          ${escapeHtml(user.email||'N/A')}
+        </td>
+
+        <td>
+          ${escapeHtml(user.employee_code||'N/A')}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            appState.departments[user.department_id]||'N/A'
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(user.role||'N/A')}
+        </td>
+
+        <td>
+          <span class="user-status ${escapeHtml(user.status||'inactive')}">
+            ${escapeHtml(user.status||'unknown')}
+          </span>
+        </td>
+
+        <td>
+
+          <div class="action-buttons">
+
+            <button
+              onclick="window.editUser('${user.id}')">
+              Edit
+            </button>
+
+            <button
+              onclick="window.toggleUserStatus('${user.id}','${user.status}')">
+              ${user.status==='active'
+                ?'Deactivate'
+                :'Activate'}
+            </button>
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    `).join('');
+
+}
+
+
+function openUserModal(){
+
+  appState.editingUserId=null;
+
+  document.getElementById('user-modal-title')
+    .textContent='Edit User';
+
+  document.getElementById('user-form')
+    .reset();
+
+  setStatus('user-form-status','','info');
+
+  document
+    .getElementById('user-modal')
+    .classList.add('active');
+
+}
+
+
+function closeUserModal(){
+
+  document
+    .getElementById('user-modal')
+    .classList.remove('active');
+
+}
+
+
+function editUser(userId){
+
+  const user=
+    appState.users.find(u=>u.id===userId);
+
+  if(!user)return;
+
+
+  appState.editingUserId=userId;
+
+  document.getElementById('user-modal-title')
+    .textContent='Edit User';
+
+
+  document.getElementById('user-full-name').value=
+    user.full_name||'';
+
+  document.getElementById('user-email').value=
+    user.email||'';
+
+  document.getElementById('user-employee-code').value=
+    user.employee_code||'';
+
+  document.getElementById('user-department').value=
+    appState.departments[user.department_id]||'';
+
+  document.getElementById('user-role').value=
+    user.role||'';
+
+  document.getElementById('user-job-title').value=
+    user.job_title||'';
+
+  document.getElementById('user-phone').value=
+    user.phone||'';
+
+  document.getElementById('user-status').value=
+    user.status||'active';
+
+
+  setStatus(
+    'user-form-status',
+    '',
+    'info'
+  );
+
+
+  document
+    .getElementById('user-modal')
+    .classList.add('active');
+
+}
+
+
+async function toggleUserStatus(
+  userId,
+  currentStatus
+){
+
+  const newStatus=
+    currentStatus==='active'
+      ?'inactive'
+      :'active';
+
+
+  try{
+
+    const {data,error}=
+      await appState.supabase
+        .from('profiles')
+        .update({
+          status:newStatus,
+          updated_at:new Date().toISOString()
+        })
+        .eq('id',userId)
+        .select()
+        .single();
+
+
+    if(error)throw error;
+
+
+    await writeAudit(
+      'STATUS_CHANGE',
+      'User Management',
+      'profiles',
+      userId,
+      `User status changed to ${newStatus}`,
+      null,
+      data
+    );
+
+
+    await loadUsers();
+
+  }catch(error){
+
+    alert(
+      'Unable to update status: '+
+      error.message
+    );
+
+  }
+
+}
+
+
+async function handleUserFormSubmit(event){
+
+  event.preventDefault();
+
+
+  if(!appState.editingUserId){
+
+    setStatus(
+      'user-form-status',
+      'New Auth users must first be created in Supabase Authentication. After creation, their profile can be managed here.',
+      'info'
+    );
+
+    return;
+
+  }
+
+
+  const fullName=
+    document.getElementById('user-full-name').value.trim();
+
+  const email=
+    document.getElementById('user-email').value.trim();
+
+  const employeeCode=
+    document.getElementById('user-employee-code').value.trim();
+
+  const departmentName=
+    document.getElementById('user-department').value;
+
+  const role=
+    document.getElementById('user-role').value;
+
+  const jobTitle=
+    document.getElementById('user-job-title').value.trim();
+
+  const phone=
+    document.getElementById('user-phone').value.trim()||null;
+
+  const status=
+    document.getElementById('user-status').value;
+
+
+  const departmentId=
+    Object.entries(appState.departments)
+      .find(([,name])=>name===departmentName)?.[0];
+
+
+  if(
+    !fullName||
+    !email||
+    !employeeCode||
+    !departmentId||
+    !role||
+    !jobTitle
+  ){
+
+    setStatus(
+      'user-form-status',
+      'Please complete all required fields.',
+      'error'
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    setStatus(
+      'user-form-status',
+      'Saving...',
+      'info'
+    );
+
+
+    const old=
+      appState.users.find(
+        u=>u.id===appState.editingUserId
+      );
+
+
+    const {data,error}=
+      await appState.supabase
+        .from('profiles')
+        .update({
+
+          full_name:fullName,
+
+          email,
+
+          employee_code:employeeCode,
+
+          department_id:departmentId,
+
+          role,
+
+          job_title:jobTitle,
+
+          phone,
+
+          status,
+
+          updated_at:new Date().toISOString()
+
+        })
+        .eq('id',appState.editingUserId)
+        .select()
+        .single();
+
+
+    if(error)throw error;
+
+
+    await writeAudit(
+      'UPDATE',
+      'User Management',
+      'profiles',
+      appState.editingUserId,
+      `Profile updated: ${fullName}`,
+      old||null,
+      data
+    );
+
+
+    await loadUsers();
+
+    closeUserModal();
+
+
+  }catch(error){
+
+    setStatus(
+      'user-form-status',
+      'Error: '+error.message,
+      'error'
+    );
+
+  }
+
+}
+
+
+/* =========================
+   AUTH
+========================= */
+
+async function handleLogin(event){
+
+  event.preventDefault();
+
+
+  const email=
+    document.getElementById('login-email')
+      .value.trim();
+
+  const password=
+    document.getElementById('login-password')
+      .value;
+
+
+  if(!email||!password){
+
+    setStatus(
+      'login-status',
+      'Please enter both email and password.',
+      'error'
+    );
+
+    return;
+
+  }
+
+
+  setStatus(
+    'login-status',
+    'Signing in...',
+    'info'
+  );
+
+
+  try{
+
+    const {data,error}=
+      await appState.supabase.auth
+        .signInWithPassword({
+          email,
+          password
         });
-      });
 
-      window.filterDashboard = filterDashboard;
-      window.openUploadModal = openUploadModal;
-      window.closeUploadModal = closeUploadModal;
-      window.openUserModal = openUserModal;
-      window.closeUserModal = closeUserModal;
-      window.editUser = editUser;
-      window.toggleUserStatus = toggleUserStatus;
-      window.loadUsers = loadUsers;
 
-      appState.supabase.auth.onAuthStateChange(async (_event, session) => {
-        if (session) {
-          appState.session = session;
-          await loadProfile(session.user);
-          showDashboard();
-          await hydrateKpis();
-        } else {
-          appState.session = null;
-          appState.profile = null;
-          appState.role = 'Auditor / Read Only';
-          showLogin();
+    if(error)throw error;
+
+
+    appState.session=data.session;
+
+    await loadProfile(data.user);
+
+    showDashboard();
+
+    await refreshDashboard();
+
+
+    setStatus(
+      'login-status',
+      'Signed in successfully.',
+      'success'
+    );
+
+  }catch(error){
+
+    setStatus(
+      'login-status',
+      error.message||'Unable to sign in.',
+      'error'
+    );
+
+  }
+
+}
+
+
+async function handleForgotPassword(){
+
+  const email=
+    document.getElementById('login-email')
+      .value.trim();
+
+
+  if(!email){
+
+    setStatus(
+      'login-status',
+      'Enter your email first.',
+      'error'
+    );
+
+    return;
+
+  }
+
+
+  const {error}=
+    await appState.supabase.auth
+      .resetPasswordForEmail(
+        email,
+        {
+          redirectTo:
+            `${window.location.origin}${window.location.pathname}`
         }
-      });
+      );
 
-      handleSession();
+
+  if(error){
+
+    setStatus(
+      'login-status',
+      error.message,
+      'error'
+    );
+
+    return;
+
+  }
+
+
+  setStatus(
+    'login-status',
+    'Password reset instructions sent.',
+    'success'
+  );
+
+}
+
+
+async function handleSignOut(){
+
+  if(!appState.supabase)return;
+
+  await appState.supabase.auth.signOut();
+
+  appState.session=null;
+
+  appState.profile=null;
+
+  appState.role='Auditor / Read Only';
+
+  showLogin();
+
+}
+
+
+/* =========================
+   GLOBAL SEARCH
+========================= */
+
+function filterCurrentModule(value){
+
+  const query=
+    (value||'').toLowerCase();
+
+
+  if(
+    appState.currentModule==='documents'
+  ){
+
+    const input=
+      document.getElementById('document-search');
+
+    if(input){
+
+      input.value=value;
+
+      renderDocuments();
+
     }
 
-    document.addEventListener('DOMContentLoaded', init);
-  </script>
+    return;
+
+  }
+
+
+  if(
+    appState.currentModule==='user-management'
+  ){
+
+    const input=
+      document.getElementById('users-filter');
+
+    if(input){
+
+      input.value=value;
+
+      renderUsersTable();
+
+    }
+
+  }
+
+}
+
+
+/* =========================
+   SESSION
+========================= */
+
+async function handleSession(){
+
+  if(!appState.supabase)return;
+
+
+  const {
+    data:{session},
+    error
+  }=
+    await appState.supabase.auth.getSession();
+
+
+  if(error||!session){
+
+    showLogin();
+
+    return;
+
+  }
+
+
+  appState.session=session;
+
+  await loadProfile(session.user);
+
+  await loadDepartments();
+
+  showDashboard();
+
+  await refreshDashboard();
+
+}
+
+
+function init(){
+
+  if(
+    !window.PURE_ICE_CONFIG||
+    !window.PURE_ICE_CONFIG.supabaseUrl||
+    !window.PURE_ICE_CONFIG.supabaseAnonKey
+  ){
+
+    setStatus(
+      'login-status',
+      'Supabase configuration is missing. Check config.js.',
+      'error'
+    );
+
+    return;
+
+  }
+
+
+  appState.supabase=
+    window.supabase.createClient(
+      window.PURE_ICE_CONFIG.supabaseUrl,
+      window.PURE_ICE_CONFIG.supabaseAnonKey
+    );
+
+
+  /* EVENTS */
+
+  document
+    .getElementById('login-form')
+    .addEventListener(
+      'submit',
+      handleLogin
+    );
+
+
+  document
+    .getElementById('forgot-password-btn')
+    .addEventListener(
+      'click',
+      handleForgotPassword
+    );
+
+
+  document
+    .getElementById('signout-button')
+    .addEventListener(
+      'click',
+      handleSignOut
+    );
+
+
+  document
+    .getElementById('profile-button')
+    .addEventListener(
+      'click',
+      ()=>{
+        alert(
+          `User: ${appState.profile?.full_name||'—'}\n`+
+          `Role: ${appState.role||'—'}\n`+
+          `Job Title: ${appState.profile?.job_title||'—'}`
+        );
+      }
+    );
+
+
+  document
+    .getElementById('add-user-btn')
+    .addEventListener(
+      'click',
+      openUserModal
+    );
+
+
+  document
+    .getElementById('user-form')
+    .addEventListener(
+      'submit',
+      handleUserFormSubmit
+    );
+
+
+  document
+    .getElementById('users-filter')
+    .addEventListener(
+      'input',
+      renderUsersTable
+    );
+
+
+  document
+    .getElementById('role-filter')
+    .addEventListener(
+      'change',
+      renderUsersTable
+    );
+
+
+  document
+    .getElementById('document-form')
+    .addEventListener(
+      'submit',
+      handleDocumentSubmit
+    );
+
+
+  document
+    .getElementById('document-search')
+    .addEventListener(
+      'input',
+      renderDocuments
+    );
+
+
+  document
+    .getElementById('document-type-filter')
+    .addEventListener(
+      'change',
+      renderDocuments
+    );
+
+
+  document
+    .getElementById('document-status-filter')
+    .addEventListener(
+      'change',
+      renderDocuments
+    );
+
+
+  document
+    .getElementById('document-approval-filter')
+    .addEventListener(
+      'change',
+      renderDocuments
+    );
+
+
+  document
+    .getElementById('document-department-filter')
+    .addEventListener(
+      'change',
+      renderDocuments
+    );
+
+
+  document
+    .getElementById('global-search')
+    .addEventListener(
+      'input',
+      event=>
+        filterCurrentModule(event.target.value)
+    );
+
+
+  document
+    .querySelectorAll('.nav')
+    .forEach(button=>{
+
+      button.addEventListener(
+        'click',
+        ()=>{
+          if(!button.disabled)
+            switchModule(button.dataset.module);
+        }
+      );
+
+    });
+
+
+  /* GLOBAL FUNCTIONS */
+
+  window.switchModule=switchModule;
+
+  window.openDocumentModal=openDocumentModal;
+
+  window.closeDocumentModal=closeDocumentModal;
+
+  window.editDocument=editDocument;
+
+  window.deleteDocument=deleteDocument;
+
+  window.approveDocument=approveDocument;
+
+  window.openDocumentFile=openDocumentFile;
+
+  window.loadDocuments=loadDocuments;
+
+  window.refreshDashboard=refreshDashboard;
+
+  window.openUserModal=openUserModal;
+
+  window.closeUserModal=closeUserModal;
+
+  window.editUser=editUser;
+
+  window.toggleUserStatus=toggleUserStatus;
+
+  window.showComingSoon=showComingSoon;
+
+
+  /* AUTH STATE */
+
+  appState.supabase.auth
+    .onAuthStateChange(
+      async(_event,session)=>{
+
+        if(session){
+
+          appState.session=session;
+
+          await loadProfile(session.user);
+
+          await loadDepartments();
+
+          showDashboard();
+
+          await refreshDashboard();
+
+        }else{
+
+          appState.session=null;
+
+          appState.profile=null;
+
+          appState.role='Auditor / Read Only';
+
+          showLogin();
+
+        }
+
+      }
+    );
+
+
+  handleSession();
+
+}
+
+
+document.addEventListener(
+  'DOMContentLoaded',
+  init
+);
+
+</script>
+
 </body>
 </html>
