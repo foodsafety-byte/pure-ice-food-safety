@@ -1,3 +1,1828 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pure Ice | Food Safety Management System</title>
+
+<style>
+:root{
+  --bg:#edf7fa;
+  --panel:#fff;
+  --panel2:#eef8fa;
+  --text:#10232c;
+  --muted:#607783;
+  --line:#dfeaf1;
+  --brand:#0f7aa8;
+  --brand2:#18a0c3;
+  --accent:#0d8c7d;
+  --warn:#efb53c;
+  --bad:#cf4a4a;
+  --good:#1e8d5a;
+  --shadow:0 16px 40px rgba(13,61,74,.08);
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text)
+}
+body{min-height:100vh}
+button,input,select,textarea{font:inherit}
+.hidden{display:none!important}
+
+.app-shell{
+  display:flex;
+  min-height:100vh;
+  background:linear-gradient(180deg,#f4fafc 0%,#edf7fa 100%)
+}
+
+.sidebar{
+  width:270px;
+  background:#0b1e2a;
+  color:#edf7fa;
+  padding:22px 16px 18px;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 8px 18px;
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
+
+.logo{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  font-size:25px
+}
+
+.brand b{
+  display:block;
+  letter-spacing:.14em;
+  font-size:14px
+}
+
+.brand span{
+  color:rgba(237,247,250,.72);
+  font-size:11px
+}
+
+nav{margin-top:12px}
+
+.section{
+  color:rgba(255,255,255,.44);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-size:10px;
+  padding:18px 10px 8px
+}
+
+.nav{
+  width:100%;
+  border:none;
+  background:transparent;
+  color:#edf7fa;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-align:left;
+  padding:12px 10px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:14px
+}
+
+.nav:hover:not(:disabled){background:rgba(255,255,255,.05)}
+
+.nav.active{
+  background:linear-gradient(
+    90deg,
+    rgba(39,171,204,.22),
+    rgba(39,171,204,.08)
+  );
+  box-shadow:inset 0 0 0 1px rgba(39,171,204,.18)
+}
+
+.nav:disabled{
+  cursor:not-allowed;
+  opacity:.4
+}
+
+.main{
+  flex:1;
+  padding:26px 22px 30px;
+  min-width:0;
+  overflow-y:auto
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-bottom:18px
+}
+
+.eyebrow{
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+
+.title{
+  font-size:clamp(24px,3vw,38px);
+  font-weight:800;
+  margin:4px 0 6px
+}
+
+.sub{color:var(--muted)}
+
+.top-right{
+  display:flex;
+  align-items:center;
+  gap:12px
+}
+
+.search{
+  align-items:center;
+  display:flex;
+  gap:8px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 12px;
+  width:min(420px,42vw);
+  box-shadow:var(--shadow)
+}
+
+.search input{
+  background:transparent;
+  border:none;
+  width:100%;
+  outline:none;
+  color:var(--text)
+}
+
+.profile-btn,.btn{
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  color:#fff;
+  cursor:pointer;
+  padding:10px 14px;
+  font-weight:700;
+  box-shadow:0 12px 24px rgba(15,122,168,.14)
+}
+
+.btn.secondary{
+  background:rgba(15,122,168,.10);
+  color:var(--brand);
+  box-shadow:none
+}
+
+.btn.danger{
+  background:rgba(207,74,74,.10);
+  color:var(--bad);
+  box-shadow:none
+}
+
+.btn.small{
+  padding:7px 10px;
+  font-size:12px
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(140px,1fr));
+  gap:14px;
+  margin-bottom:18px
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:18px 16px
+}
+
+.card .label{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:600
+}
+
+.card .num{
+  font-size:clamp(22px,2vw,32px);
+  font-weight:800;
+  margin-top:8px
+}
+
+.card .delta{
+  color:var(--good);
+  font-size:12px;
+  margin-top:6px
+}
+
+.card .delta.warn{color:var(--warn)}
+.card .delta.bad{color:var(--bad)}
+
+.grid{
+  display:grid;
+  grid-template-columns:2fr 1.1fr;
+  gap:18px;
+  margin-bottom:18px
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px 16px;
+  box-shadow:var(--shadow)
+}
+
+.panelhead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px
+}
+
+.panel h3{
+  margin:0;
+  font-size:18px
+}
+
+.pill{
+  background:rgba(17,165,119,.12);
+  color:var(--good);
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap
+}
+
+.pill.warn{
+  background:rgba(239,181,60,.15);
+  color:#9b6d00
+}
+
+.pill.bad{
+  background:rgba(207,74,74,.12);
+  color:var(--bad)
+}
+
+.pill.info{
+  background:rgba(15,122,168,.10);
+  color:var(--brand)
+}
+
+.chart{
+  height:220px;
+  display:flex;
+  align-items:end;
+  gap:12px;
+  padding-top:16px
+}
+
+.barwrap{
+  flex:1;
+  display:flex;
+  align-items:end;
+  justify-content:center;
+  height:100%
+}
+
+.bar{
+  width:100%;
+  max-width:42px;
+  border-radius:10px 10px 0 0;
+  background:linear-gradient(180deg,var(--brand2),var(--brand));
+  min-height:10px
+}
+
+.issue{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:10px 8px;
+  border-bottom:1px solid var(--line)
+}
+
+.issue:last-child{border-bottom:none}
+
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--warn);
+  display:inline-block;
+  flex-shrink:0
+}
+
+.dot.bad{background:var(--bad)}
+.dot.good{background:var(--good)}
+
+.issue b{display:block}
+.issue span{color:var(--muted);font-size:12px}
+
+.bottom{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:18px
+}
+
+.metric{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid var(--line)
+}
+
+.metric:last-child{border-bottom:none}
+.metric b{font-size:18px}
+
+.btn-row{
+  display:grid;
+  gap:8px
+}
+
+.audit-box{
+  font-size:32px;
+  font-weight:800;
+  margin-top:10px
+}
+
+/* Login */
+
+.login-screen{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at top,rgba(23,123,160,.12),transparent 38%),
+    linear-gradient(180deg,#edf7fa 0%,#eef8fa 100%);
+  padding:24px
+}
+
+.login-panel{
+  width:min(480px,100%);
+  background:rgba(255,255,255,.87);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--line);
+  border-radius:28px;
+  box-shadow:0 18px 40px rgba(8,37,51,.12);
+  padding:36px 32px
+}
+
+.login-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  justify-content:center;
+  margin-bottom:12px
+}
+
+.login-logo{
+  width:52px;
+  height:52px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  color:#fff;
+  font-size:30px;
+  font-weight:700
+}
+
+.login-title{
+  font-size:clamp(26px,3vw,32px);
+  font-weight:800;
+  letter-spacing:.08em;
+  text-align:center
+}
+
+.login-sub{
+  text-align:center;
+  color:var(--muted);
+  margin:8px 0 20px
+}
+
+.field{
+  display:grid;
+  gap:8px;
+  margin-bottom:12px
+}
+
+.field label{
+  font-size:12px;
+  font-weight:700;
+  color:var(--muted)
+}
+
+.field input,
+.field select,
+.field textarea{
+  border:1px solid var(--line);
+  background:#f5fafb;
+  border-radius:12px;
+  padding:12px 14px;
+  outline:none;
+  color:var(--text)
+}
+
+.field textarea{
+  min-height:90px;
+  resize:vertical
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:rgba(18,138,184,.5);
+  box-shadow:0 0 0 4px rgba(18,138,184,.10)
+}
+
+.login-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:16px
+}
+
+.secondary-btn{
+  background:rgba(24,142,182,.08);
+  color:var(--brand);
+  border:1px solid rgba(24,142,182,.18);
+  border-radius:12px;
+  cursor:pointer;
+  padding:11px 14px;
+  font-weight:700
+}
+
+.status{
+  margin-top:14px;
+  min-height:20px;
+  font-size:13px;
+  font-weight:600;
+  display:block
+}
+
+.status.error{color:var(--bad)}
+.status.success{color:var(--good)}
+.status.info{color:var(--brand)}
+
+/* Tables */
+
+.table-wrap{
+  width:100%;
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:14px
+}
+
+.data-table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1050px
+}
+
+.data-table thead{
+  background:var(--panel2);
+  border-bottom:1px solid var(--line)
+}
+
+.data-table th{
+  padding:12px 14px;
+  text-align:left;
+  font-weight:700;
+  font-size:12px;
+  color:var(--muted);
+  white-space:nowrap
+}
+
+.data-table td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+  vertical-align:middle
+}
+
+.data-table tbody tr:hover{
+  background:rgba(15,122,168,.035)
+}
+
+.doc-title{
+  font-weight:700
+}
+
+.doc-code{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px
+}
+
+.file-link{
+  border:none;
+  background:rgba(15,122,168,.08);
+  color:var(--brand);
+  padding:6px 9px;
+  border-radius:7px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:700
+}
+
+.action-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px
+}
+
+.action-buttons button{
+  padding:6px 9px;
+  font-size:11px;
+  border:none;
+  border-radius:7px;
+  cursor:pointer;
+  background:rgba(15,122,168,.10);
+  color:var(--brand);
+  font-weight:700
+}
+
+.action-buttons button:hover{
+  background:rgba(15,122,168,.20)
+}
+
+.action-buttons .approve{
+  background:rgba(30,141,90,.12);
+  color:var(--good)
+}
+
+.action-buttons .delete{
+  background:rgba(207,74,74,.10);
+  color:var(--bad)
+}
+
+.filters{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;
+  gap:8px;
+  margin-bottom:14px
+}
+
+.filters input,
+.filters select{
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:#fff;
+  color:var(--text);
+  outline:none
+}
+
+.empty{
+  text-align:center;
+  padding:35px!important;
+  color:var(--muted)
+}
+
+/* Users */
+
+.users-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:16px;
+  min-width:850px
+}
+
+.users-table thead{
+  background:var(--panel2);
+  border-bottom:1px solid var(--line)
+}
+
+.users-table th{
+  padding:12px 14px;
+  text-align:left;
+  font-weight:700;
+  font-size:13px;
+  color:var(--muted)
+}
+
+.users-table td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+  font-size:14px
+}
+
+.user-status{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:6px;
+  font-size:11px;
+  font-weight:700
+}
+
+.user-status.active{
+  background:rgba(30,141,90,.12);
+  color:var(--good)
+}
+
+.user-status.inactive{
+  background:rgba(207,74,74,.12);
+  color:var(--bad)
+}
+
+.users-filter-row{
+  display:flex;
+  gap:8px;
+  margin-top:16px;
+  margin-bottom:16px
+}
+
+.users-filter-row input,
+.users-filter-row select{
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-size:14px;
+  background:var(--panel);
+  color:var(--text)
+}
+
+.users-filter-row input{flex:1}
+
+/* Modal */
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(11,30,42,.42);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  padding:12px
+}
+
+.modal-overlay.active{display:flex}
+
+.modal-box{
+  width:min(720px,calc(100vw - 24px));
+  background:#fff;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 18px 40px rgba(11,30,42,.20);
+  max-height:92vh;
+  overflow-y:auto
+}
+
+.modal-box.large{
+  width:min(900px,calc(100vw - 24px))
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px
+}
+
+.modal-header h2{
+  margin:0;
+  font-size:20px;
+  font-weight:800
+}
+
+.close-btn{
+  background:rgba(15,122,168,.10);
+  color:var(--brand);
+  border:none;
+  border-radius:8px;
+  padding:8px 12px;
+  cursor:pointer;
+  font-weight:700
+}
+
+.close-btn:hover{
+  background:rgba(15,122,168,.20)
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 12px
+}
+
+.full{
+  grid-column:1/-1
+}
+
+.file-box{
+  border:1px dashed #b7d3df;
+  border-radius:12px;
+  padding:14px;
+  background:#f7fbfc
+}
+
+.file-box input{
+  width:100%;
+  border:none;
+  padding:0;
+  background:transparent
+}
+
+.helper{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:5px
+}
+
+.module-placeholder{
+  display:grid;
+  place-items:center;
+  min-height:430px;
+  text-align:center
+}
+
+.module-placeholder .icon{
+  font-size:48px;
+  margin-bottom:10px
+}
+
+.module-placeholder h2{
+  margin:0 0 8px
+}
+
+.module-placeholder p{
+  max-width:620px;
+  color:var(--muted);
+  line-height:1.6
+}
+
+@media(max-width:1200px){
+  .cards{grid-template-columns:repeat(3,minmax(140px,1fr))}
+  .filters{grid-template-columns:2fr 1fr 1fr}
+}
+
+@media(max-width:980px){
+  .app-shell{flex-direction:column}
+  .sidebar{
+    width:100%;
+    height:auto;
+    position:static
+  }
+  .cards{grid-template-columns:repeat(2,minmax(140px,1fr))}
+  .grid,.bottom{grid-template-columns:1fr}
+  .main{padding:18px 16px 26px}
+  .top{flex-direction:column;align-items:flex-start}
+  .search{width:100%}
+  .top-right{
+    width:100%;
+    justify-content:space-between
+  }
+  .users-filter-row{flex-direction:column}
+  .form-grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+}
+
+@media(max-width:600px){
+  .cards{grid-template-columns:1fr}
+  .login-panel{padding:28px 20px}
+  .login-actions{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen" class="login-screen">
+  <div class="login-panel">
+
+    <div class="login-brand">
+      <div class="login-logo">❄</div>
+    </div>
+
+    <div class="login-title">PURE ICE</div>
+    <div class="login-sub">Food Safety Management System</div>
+
+    <form id="login-form">
+
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input
+          id="login-email"
+          type="email"
+          placeholder="name@pureice.com"
+          autocomplete="email"
+          required>
+      </div>
+
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input
+          id="login-password"
+          type="password"
+          placeholder="Enter password"
+          autocomplete="current-password"
+          required>
+      </div>
+
+      <div class="login-actions">
+        <button class="btn" type="submit">Sign In</button>
+        <button class="secondary-btn" type="button" id="forgot-password-btn">
+          Forgot Password
+        </button>
+      </div>
+
+      <div id="login-status" class="status info"></div>
+
+    </form>
+  </div>
+</div>
+
+
+<!-- APPLICATION -->
+<div id="app-shell" class="app-shell hidden">
+
+  <aside class="sidebar">
+
+    <div class="brand">
+      <div class="logo">❄</div>
+      <div>
+        <b>PURE ICE</b>
+        <span>Pure Ice Factory · Food Safety</span>
+      </div>
+    </div>
+
+    <nav>
+
+      <div class="section">Workspace</div>
+
+      <button class="nav active" data-module="dashboard">
+        ⌂ <span>Dashboard</span>
+      </button>
+
+      <button class="nav" data-module="documents">
+        ▣ <span>Document Control</span>
+      </button>
+
+      <button class="nav" data-module="records">
+        ▤ <span>Records & Plans</span>
+      </button>
+
+
+      <div class="section">Food Safety</div>
+
+      <button class="nav" data-module="haccp">
+        ⚠ <span>HACCP / CCP / OPRP</span>
+      </button>
+
+      <button class="nav" data-module="gmp">
+        ✦ <span>PRP / GMP / GHP</span>
+      </button>
+
+      <button class="nav" data-module="water-ro">
+        💧 <span>Water & RO</span>
+      </button>
+
+
+      <div class="section">Management</div>
+
+      <button class="nav" data-module="calibration">
+        ⚙ <span>Calibration</span>
+      </button>
+
+      <button class="nav" data-module="training">
+        ♙ <span>Training</span>
+      </button>
+
+      <button class="nav" data-module="suppliers">
+        ▥ <span>Suppliers</span>
+      </button>
+
+      <button class="nav" data-module="ncr">
+        ! <span>NCR / CAPA</span>
+      </button>
+
+
+      <div class="section">Insights</div>
+
+      <button class="nav" data-module="reports">
+        ◫ <span>Reports</span>
+      </button>
+
+      <button class="nav" data-module="settings">
+        ⚙ <span>Settings</span>
+      </button>
+
+
+      <div class="section">Administration</div>
+
+      <button class="nav" data-module="user-management">
+        👥 <span>User Management</span>
+      </button>
+
+    </nav>
+  </aside>
+
+
+  <main class="main">
+
+    <div class="top">
+
+      <div>
+        <div class="eyebrow">
+          Pure Ice Factory · Quality & Food Safety
+        </div>
+
+        <div class="title" id="page-title">
+          Food Safety Command Center
+        </div>
+
+        <div class="sub" id="page-subtitle">
+          Ice Manufacturing & Flavored Ice · System Status
+        </div>
+      </div>
+
+      <div class="top-right">
+
+        <div class="search">
+          <span>⌕</span>
+          <input
+            id="global-search"
+            type="text"
+            placeholder="Search current module...">
+        </div>
+
+        <button class="profile-btn" id="profile-button">
+          Profile
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- DASHBOARD -->
+    <div id="dashboard-section">
+
+      <section class="cards">
+
+        <div class="card">
+          <div class="label">Total Documents</div>
+          <div class="num" id="kpi-total-documents">0</div>
+          <div class="delta" id="kpi-total-documents-sub">
+            Loading...
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="label">Pending Approval</div>
+          <div class="num" id="kpi-pending-documents">0</div>
+          <div class="delta" id="kpi-pending-documents-sub">
+            Loading...
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="label">Near Review</div>
+          <div class="num" id="kpi-documents-near-review">0</div>
+          <div class="delta" id="kpi-documents-near-review-sub">
+            Loading...
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="label">Open Tasks</div>
+          <div class="num" id="kpi-open-tasks">0</div>
+          <div class="delta" id="kpi-open-tasks-sub">
+            Loading...
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="label">Active Plans</div>
+          <div class="num" id="kpi-active-plans">0</div>
+          <div class="delta" id="kpi-active-plans-sub">
+            Loading...
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="label">Approved Documents</div>
+          <div class="num" id="kpi-approved-documents">0</div>
+          <div class="delta" id="kpi-approved-documents-sub">
+            Loading...
+          </div>
+        </div>
+
+      </section>
+
+
+      <div class="grid">
+
+        <section class="panel">
+
+          <div class="panelhead">
+            <h3>Document Control Status</h3>
+            <span class="pill info">Live Data</span>
+          </div>
+
+          <div class="chart">
+
+            <div class="barwrap">
+              <div class="bar" id="chart-draft" style="height:20%"></div>
+            </div>
+
+            <div class="barwrap">
+              <div class="bar" id="chart-review" style="height:20%"></div>
+            </div>
+
+            <div class="barwrap">
+              <div class="bar" id="chart-approved" style="height:20%"></div>
+            </div>
+
+            <div class="barwrap">
+              <div class="bar" id="chart-near" style="height:20%"></div>
+            </div>
+
+            <div class="barwrap">
+              <div class="bar" id="chart-tasks" style="height:20%"></div>
+            </div>
+
+          </div>
+
+          <div style="
+            display:flex;
+            justify-content:space-around;
+            color:var(--muted);
+            font-size:11px;
+            margin-top:8px;">
+            <span>Draft</span>
+            <span>Review</span>
+            <span>Approved</span>
+            <span>Near Due</span>
+            <span>Tasks</span>
+          </div>
+
+        </section>
+
+
+        <section class="panel">
+
+          <div class="panelhead">
+            <h3>Attention Required</h3>
+            <span class="muted">Live queue</span>
+          </div>
+
+          <div id="attention-list">
+            <div class="issue">
+              <i class="dot"></i>
+              <div>
+                <b>Loading system status</b>
+                <span>Please wait...</span>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <div class="bottom">
+
+        <section class="panel">
+
+          <div class="panelhead">
+            <h3>Food Safety Elements</h3>
+            <span class="muted">System foundation</span>
+          </div>
+
+          <div class="metric">
+            <span>Document Control</span>
+            <b id="kpi-document-control">0%</b>
+          </div>
+
+          <div class="metric">
+            <span>Plan Coverage</span>
+            <b id="kpi-plan-coverage">0%</b>
+          </div>
+
+          <div class="metric">
+            <span>Task Completion</span>
+            <b id="kpi-task-completion">0%</b>
+          </div>
+
+          <div class="metric">
+            <span>Audit Trail</span>
+            <b id="kpi-audit-trail">Ready</b>
+          </div>
+
+        </section>
+
+
+        <section class="panel">
+
+          <div class="panelhead">
+            <h3>Quick Actions</h3>
+          </div>
+
+          <div class="btn-row">
+
+            <button
+              class="btn"
+              type="button"
+              onclick="window.openDocumentModal()">
+              ＋ New Document
+            </button>
+
+            <button
+              class="btn secondary"
+              type="button"
+              onclick="window.switchModule('documents')">
+              ▣ Document Control
+            </button>
+
+            <button
+              class="btn secondary"
+              type="button"
+              onclick="window.switchModule('records')">
+              ▤ Records & Plans
+            </button>
+
+            <button
+              class="btn secondary"
+              type="button"
+              onclick="window.refreshDashboard()">
+              ↻ Refresh Dashboard
+            </button>
+
+          </div>
+
+        </section>
+
+
+        <section class="panel">
+
+          <div class="panelhead">
+            <h3>Audit Readiness</h3>
+            <span class="pill info">Calculated</span>
+          </div>
+
+          <div class="muted">
+            Based on current Document Control data
+          </div>
+
+          <div class="audit-box" id="kpi-audit-readiness">
+            0%
+          </div>
+
+          <button
+            class="btn secondary"
+            type="button"
+            style="margin-top:8px;width:100%;"
+            id="signout-button">
+            Sign Out
+          </button>
+
+        </section>
+
+      </div>
+
+    </div>
+
+
+    <!-- DOCUMENT CONTROL -->
+    <div id="documents-section" class="hidden">
+
+      <section class="panel">
+
+        <div class="panelhead">
+
+          <div>
+            <h3>Document Control</h3>
+            <div class="muted" style="font-size:12px;margin-top:4px;">
+              Controlled SOPs, procedures, policies, work instructions and documents
+            </div>
+          </div>
+
+          <button
+            class="btn"
+            type="button"
+            onclick="window.openDocumentModal()">
+            ＋ Add Document
+          </button>
+
+        </div>
+
+
+        <div class="filters">
+
+          <input
+            id="document-search"
+            type="text"
+            placeholder="Search code, title, department...">
+
+          <select id="document-type-filter">
+            <option value="">All Types</option>
+            <option value="Policy">Policy</option>
+            <option value="SOP">SOP</option>
+            <option value="Procedure">Procedure</option>
+            <option value="Work Instruction">Work Instruction</option>
+            <option value="Form">Form</option>
+            <option value="Specification">Specification</option>
+            <option value="Manual">Manual</option>
+            <option value="External Document">External Document</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <select id="document-status-filter">
+            <option value="">All Status</option>
+            <option value="Draft">Draft</option>
+            <option value="Under Review">Under Review</option>
+            <option value="Active">Active</option>
+            <option value="Obsolete">Obsolete</option>
+          </select>
+
+          <select id="document-approval-filter">
+            <option value="">All Approval</option>
+            <option value="Draft">Draft</option>
+            <option value="Pending Approval">Pending Approval</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+
+          <select id="document-department-filter">
+            <option value="">All Departments</option>
+          </select>
+
+          <button
+            class="btn secondary"
+            type="button"
+            onclick="window.loadDocuments()">
+            ↻ Refresh
+          </button>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+          <table class="data-table">
+
+            <thead>
+              <tr>
+                <th>Document</th>
+                <th>Type</th>
+                <th>Department</th>
+                <th>Revision</th>
+                <th>Issue Date</th>
+                <th>Review Date</th>
+                <th>Status</th>
+                <th>Approval</th>
+                <th>File</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody id="documents-tbody">
+              <tr>
+                <td colspan="10" class="empty">
+                  Loading documents...
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- RECORDS -->
+    <div id="records-section" class="hidden">
+
+      <section class="panel module-placeholder">
+
+        <div>
+          <div class="icon">▤</div>
+          <h2>Records & Compliance Plans</h2>
+          <p>
+            The database foundation for Records, Compliance Plans,
+            Scheduled Tasks, Attachments, Notifications and Audit Trail
+            is ready. This module will be connected to the operational
+            record forms in the next phase.
+          </p>
+
+          <button
+            class="btn"
+            onclick="window.showComingSoon('Records & Compliance Plans')">
+            Module Foundation Ready
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- OTHER MODULES -->
+    <div id="module-placeholder-section" class="hidden">
+
+      <section class="panel module-placeholder">
+
+        <div>
+
+          <div class="icon" id="placeholder-icon">⚙</div>
+
+          <h2 id="placeholder-title">
+            Module
+          </h2>
+
+          <p id="placeholder-text">
+            This module is part of the Pure Ice Food Safety Management System.
+            Its database foundation and workflow will be connected in the next implementation phase.
+          </p>
+
+          <button
+            class="btn secondary"
+            onclick="window.switchModule('dashboard')">
+            ← Back to Dashboard
+          </button>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- USER MANAGEMENT -->
+    <div id="user-management-section" class="hidden">
+
+      <section class="panel">
+
+        <div class="panelhead">
+
+          <div>
+            <h3>User Management</h3>
+            <div class="muted" style="font-size:12px;margin-top:4px;">
+              Manage system profiles and access roles
+            </div>
+          </div>
+
+          <button
+            class="btn"
+            type="button"
+            id="add-user-btn">
+            ＋ Add User
+          </button>
+
+        </div>
+
+
+        <div class="users-filter-row">
+
+          <input
+            type="text"
+            id="users-filter"
+            placeholder="Search by name, email, employee code...">
+
+          <select id="role-filter">
+            <option value="">All Roles</option>
+            <option value="Super Admin">Super Admin</option>
+            <option value="General Manager">General Manager</option>
+            <option value="Quality & Food Safety">Quality & Food Safety</option>
+            <option value="Production">Production</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Warehouse">Warehouse</option>
+            <option value="Purchasing">Purchasing</option>
+            <option value="Sales">Sales</option>
+            <option value="Auditor / Read Only">Auditor / Read Only</option>
+          </select>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+          <table class="users-table">
+
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Employee Code</th>
+                <th>Department</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody id="users-tbody">
+
+              <tr>
+                <td colspan="7" style="
+                  text-align:center;
+                  padding:20px;
+                  color:var(--muted);">
+                  Loading users...
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<!-- DOCUMENT MODAL -->
+<div class="modal-overlay" id="document-modal">
+
+  <div class="modal-box large">
+
+    <div class="modal-header">
+
+      <div>
+        <h2 id="document-modal-title">
+          Add Document
+        </h2>
+
+        <div class="muted" style="font-size:11px;margin-top:4px;">
+          Controlled document registration
+        </div>
+      </div>
+
+      <button
+        class="close-btn"
+        type="button"
+        onclick="window.closeDocumentModal()">
+        Close
+      </button>
+
+    </div>
+
+
+    <form id="document-form">
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label for="document-code">
+            Document Code *
+          </label>
+          <input
+            id="document-code"
+            type="text"
+            placeholder="PI-QA-SOP-01"
+            required>
+        </div>
+
+
+        <div class="field">
+          <label for="document-type">
+            Document Type *
+          </label>
+
+          <select id="document-type" required>
+            <option value="">Select Type</option>
+            <option value="Policy">Policy</option>
+            <option value="SOP">SOP</option>
+            <option value="Procedure">Procedure</option>
+            <option value="Work Instruction">Work Instruction</option>
+            <option value="Form">Form</option>
+            <option value="Specification">Specification</option>
+            <option value="Manual">Manual</option>
+            <option value="External Document">External Document</option>
+            <option value="Other">Other</option>
+          </select>
+
+        </div>
+
+
+        <div class="field full">
+          <label for="document-title">
+            Document Title *
+          </label>
+
+          <input
+            id="document-title"
+            type="text"
+            placeholder="Document title"
+            required>
+        </div>
+
+
+        <div class="field">
+          <label for="document-department">
+            Department
+          </label>
+
+          <select id="document-department">
+            <option value="">Select Department</option>
+          </select>
+        </div>
+
+
+        <div class="field">
+          <label for="document-revision">
+            Revision
+          </label>
+
+          <input
+            id="document-revision"
+            type="text"
+            placeholder="Rev. 01">
+        </div>
+
+
+        <div class="field">
+          <label for="document-issue-date">
+            Issue Date
+          </label>
+
+          <input
+            id="document-issue-date"
+            type="date">
+        </div>
+
+
+        <div class="field">
+          <label for="document-review-date">
+            Review Date
+          </label>
+
+          <input
+            id="document-review-date"
+            type="date">
+        </div>
+
+
+        <div class="field">
+          <label for="document-status">
+            Status
+          </label>
+
+          <select id="document-status">
+            <option value="Draft">Draft</option>
+            <option value="Under Review">Under Review</option>
+            <option value="Active">Active</option>
+            <option value="Obsolete">Obsolete</option>
+          </select>
+
+        </div>
+
+
+        <div class="field">
+          <label for="document-approval-status">
+            Approval Status
+          </label>
+
+          <select id="document-approval-status">
+            <option value="Draft">Draft</option>
+            <option value="Pending Approval">Pending Approval</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+
+        </div>
+
+
+        <div class="field full">
+
+          <label for="document-file">
+            Controlled File
+          </label>
+
+          <div class="file-box">
+
+            <input
+              id="document-file"
+              type="file"
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+
+            <div class="helper">
+              Supported: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG.
+              File will be stored in the private FSMS Storage bucket.
+            </div>
+
+            <div
+              id="current-file-info"
+              class="helper"
+              style="margin-top:8px;">
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="field full">
+
+          <label for="document-description">
+            Description / Notes
+          </label>
+
+          <textarea
+            id="document-description"
+            placeholder="Purpose, scope or additional notes..."></textarea>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="document-form-status"
+        class="status">
+      </div>
+
+
+      <div style="
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+        margin-top:18px;">
+
+        <button
+          class="btn secondary"
+          type="button"
+          onclick="window.closeDocumentModal()">
+          Cancel
+        </button>
+
+        <button
+          class="btn"
+          type="submit">
+          Save Document
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- USER MODAL -->
+<div class="modal-overlay" id="user-modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h2 id="user-modal-title">
+        Edit User
+      </h2>
+
+      <button
+        class="close-btn"
+        type="button"
+        onclick="window.closeUserModal()">
+        Close
+      </button>
+
+    </div>
+
+
+    <form id="user-form">
+
+      <div class="field">
+        <label>Full Name</label>
+        <input id="user-full-name" required>
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input id="user-email" type="email" required>
+        <div class="helper">
+          Editing an email here updates the profile only.
+          Auth account email requires Supabase Auth administration.
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Employee Code</label>
+        <input id="user-employee-code" required>
+      </div>
+
+      <div class="field">
+        <label>Department</label>
+
+        <select id="user-department" required>
+          <option value="">Select Department</option>
+        </select>
+
+      </div>
+
+      <div class="field">
+        <label>Role</label>
+
+        <select id="user-role" required>
+          <option value="">Select Role</option>
+          <option value="Super Admin">Super Admin</option>
+          <option value="General Manager">General Manager</option>
+          <option value="Quality & Food Safety">Quality & Food Safety</option>
+          <option value="Production">Production</option>
+          <option value="Maintenance">Maintenance</option>
+          <option value="Warehouse">Warehouse</option>
+          <option value="Purchasing">Purchasing</option>
+          <option value="Sales">Sales</option>
+          <option value="Auditor / Read Only">Auditor / Read Only</option>
+        </select>
+
+      </div>
+
+      <div class="field">
+        <label>Job Title</label>
+        <input id="user-job-title" placeholder="Quality Officer" required>
+      </div>
+
+      <div class="field">
+        <label>Phone</label>
+        <input id="user-phone" type="tel">
+      </div>
+
+      <div class="field">
+        <label>Status</label>
+
+        <select id="user-status">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+
+      </div>
+
+      <div id="user-form-status" class="status"></div>
+
+
+      <div style="
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+        margin-top:18px;">
+
+        <button
+          class="btn secondary"
+          type="button"
+          onclick="window.closeUserModal()">
+          Cancel
+        </button>
+
+        <button
+          class="btn"
+          type="submit">
+          Save User
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+
 <script>
 
 const ROLE_ACCESS = {
@@ -92,10 +1917,6 @@ const ROLE_ACCESS = {
 };
 
 
-/* =========================
-   APP STATE
-========================= */
-
 const appState = {
 
   supabase:null,
@@ -118,13 +1939,7 @@ const appState = {
 
   editingDocumentId:null,
 
-  oldDocumentPath:null,
-
-  initialized:false,
-
-  loadingSession:false,
-
-  dashboardLoading:false
+  oldDocumentPath:null
 
 };
 
@@ -182,15 +1997,7 @@ function safeNumber(value){
 
 function todayIso(){
 
-  const d=new Date();
-
-  const year=d.getFullYear();
-
-  const month=String(d.getMonth()+1).padStart(2,'0');
-
-  const day=String(d.getDate()).padStart(2,'0');
-
-  return `${year}-${month}-${day}`;
+  return new Date().toISOString().slice(0,10);
 
 }
 
@@ -255,26 +2062,22 @@ function approvalClass(status){
 
 function showLogin(){
 
-  const login=document.getElementById('login-screen');
+  document.getElementById('login-screen')
+    .classList.remove('hidden');
 
-  const app=document.getElementById('app-shell');
-
-  if(login)login.classList.remove('hidden');
-
-  if(app)app.classList.add('hidden');
+  document.getElementById('app-shell')
+    .classList.add('hidden');
 
 }
 
 
 function showDashboard(){
 
-  const login=document.getElementById('login-screen');
+  document.getElementById('login-screen')
+    .classList.add('hidden');
 
-  const app=document.getElementById('app-shell');
-
-  if(login)login.classList.add('hidden');
-
-  if(app)app.classList.remove('hidden');
+  document.getElementById('app-shell')
+    .classList.remove('hidden');
 
 }
 
@@ -296,12 +2099,7 @@ async function loadProfile(sessionUser){
       .maybeSingle();
 
     if(error){
-
-      console.warn(
-        '[loadProfile] Profile query:',
-        error.message
-      );
-
+      console.warn('Profile query:',error.message);
     }
 
     if(data){
@@ -310,35 +2108,20 @@ async function loadProfile(sessionUser){
 
       appState.role=data.role||'Auditor / Read Only';
 
-      console.log(
-        '[loadProfile] Found profile in database:',
-        data
-      );
-
     }else{
 
       appState.profile={
-
         id:sessionUser.id,
-
         full_name:
           sessionUser.user_metadata?.full_name ||
           sessionUser.email?.split('@')[0] ||
           'Pure Ice User',
-
         email:sessionUser.email,
-
         role:'Auditor / Read Only',
-
         status:'active'
-
       };
 
       appState.role='Auditor / Read Only';
-
-      console.warn(
-        '[loadProfile] No profile found.'
-      );
 
     }
 
@@ -348,10 +2131,7 @@ async function loadProfile(sessionUser){
 
   }catch(error){
 
-    console.error(
-      '[loadProfile] Error:',
-      error
-    );
+    console.error(error);
 
     appState.role='Auditor / Read Only';
 
@@ -374,15 +2154,7 @@ function applyRoleAccess(){
 
     const module=button.dataset.module;
 
-    const isAllowed=
-      allowed.includes(module);
-
-    button.disabled=!isAllowed;
-
-    button.setAttribute(
-      'aria-disabled',
-      String(!isAllowed)
-    );
+    button.disabled=!allowed.includes(module);
 
   });
 
@@ -397,16 +2169,6 @@ function applyRoleAccess(){
 
   }
 
-  console.log(
-    '[applyRoleAccess] Current role:',
-    appState.role
-  );
-
-  console.log(
-    '[applyRoleAccess] Allowed modules:',
-    allowed
-  );
-
 }
 
 
@@ -416,175 +2178,72 @@ function applyRoleAccess(){
 
 const MODULE_NAMES={
 
-  dashboard:'Food Safety Command Center',
+  'haccp':'HACCP / CCP / OPRP',
 
-  documents:'Document Control',
-
-  records:'Records & Compliance Plans',
-
-  haccp:'HACCP / CCP / OPRP',
-
-  gmp:'PRP / GMP / GHP',
+  'gmp':'PRP / GMP / GHP',
 
   'water-ro':'Water & RO',
 
-  calibration:'Calibration',
+  'calibration':'Calibration',
 
-  training:'Training',
+  'training':'Training',
 
-  suppliers:'Suppliers',
+  'suppliers':'Suppliers',
 
-  ncr:'NCR / CAPA',
+  'ncr':'NCR / CAPA',
 
-  reports:'Reports',
+  'reports':'Reports',
 
-  settings:'Settings',
-
-  'user-management':'User Management'
-
-};
-
-
-const MODULE_SUBTITLES={
-
-  dashboard:
-    'Ice Manufacturing & Flavored Ice · System Status',
-
-  documents:
-    'Controlled documents, revisions, approvals and review dates',
-
-  records:
-    'Plans, scheduled tasks, records and evidence',
-
-  haccp:
-    'Hazard Analysis, CCPs, OPRPs and monitoring',
-
-  gmp:
-    'PRP, GMP, GHP and operational hygiene controls',
-
-  'water-ro':
-    'Water treatment, RO monitoring and disinfection',
-
-  calibration:
-    'Equipment calibration and verification',
-
-  training:
-    'Food safety training, competence and awareness',
-
-  suppliers:
-    'Supplier approval, evaluation and monitoring',
-
-  ncr:
-    'Nonconformity, corrective action and CAPA',
-
-  reports:
-    'FSMS reports, KPIs and management information',
-
-  settings:
-    'System configuration and FSMS settings',
-
-  'user-management':
-    'Manage system users, roles and access'
+  'settings':'Settings'
 
 };
 
 
 function hideAllSections(){
 
-  const sections=[
-
-    '#dashboard-section',
-
-    '#documents-section',
-
-    '#records-section',
-
-    '#user-management-section',
-
-    '#module-placeholder-section'
-
-  ];
-
-  sections.forEach(selector=>{
-
-    const el=document.querySelector(selector);
-
-    if(el)
-      el.classList.add('hidden');
-
-  });
+  document
+    .querySelectorAll(
+      '#dashboard-section,'+
+      '#documents-section,'+
+      '#records-section,'+
+      '#user-management-section,'+
+      '#module-placeholder-section'
+    )
+    .forEach(el=>el.classList.add('hidden'));
 
 }
 
 
 function switchModule(moduleName){
 
-  if(!moduleName)return;
-
-  const allowed=
-    ROLE_ACCESS[appState.role] ||
-    ROLE_ACCESS['Auditor / Read Only'];
-
-  if(!allowed.includes(moduleName)){
-
-    console.warn(
-      '[switchModule] Access denied:',
-      moduleName
-    );
-
-    return;
-
-  }
-
-
   appState.currentModule=moduleName;
-
 
   hideAllSections();
 
-
   document
     .querySelectorAll('.nav')
-    .forEach(btn=>{
-      btn.classList.remove('active');
-    });
-
+    .forEach(btn=>btn.classList.remove('active'));
 
   const activeButton=
     document.querySelector(
-      `.nav[data-module="${CSS.escape(moduleName)}"]`
+      `.nav[data-module="${moduleName}"]`
     );
-
 
   if(activeButton)
     activeButton.classList.add('active');
 
 
-  const title=
-    document.getElementById('page-title');
-
-  const subtitle=
-    document.getElementById('page-subtitle');
-
-
-  if(title)
-    title.textContent=
-      MODULE_NAMES[moduleName]||'Module';
-
-
-  if(subtitle)
-    subtitle.textContent=
-      MODULE_SUBTITLES[moduleName]||
-      'Pure Ice Food Safety Management System';
-
-
   if(moduleName==='dashboard'){
 
-    const section=
-      document.getElementById('dashboard-section');
+    document
+      .getElementById('dashboard-section')
+      .classList.remove('hidden');
 
-    if(section)
-      section.classList.remove('hidden');
+    document.getElementById('page-title').textContent=
+      'Food Safety Command Center';
+
+    document.getElementById('page-subtitle').textContent=
+      'Ice Manufacturing & Flavored Ice · System Status';
 
     refreshDashboard();
 
@@ -595,11 +2254,15 @@ function switchModule(moduleName){
 
   if(moduleName==='documents'){
 
-    const section=
-      document.getElementById('documents-section');
+    document
+      .getElementById('documents-section')
+      .classList.remove('hidden');
 
-    if(section)
-      section.classList.remove('hidden');
+    document.getElementById('page-title').textContent=
+      'Document Control';
+
+    document.getElementById('page-subtitle').textContent=
+      'Controlled documents, revisions, approvals and review dates';
 
     loadDocuments();
 
@@ -610,11 +2273,15 @@ function switchModule(moduleName){
 
   if(moduleName==='records'){
 
-    const section=
-      document.getElementById('records-section');
+    document
+      .getElementById('records-section')
+      .classList.remove('hidden');
 
-    if(section)
-      section.classList.remove('hidden');
+    document.getElementById('page-title').textContent=
+      'Records & Compliance Plans';
+
+    document.getElementById('page-subtitle').textContent=
+      'Plans, scheduled tasks, records and evidence';
 
     return;
 
@@ -623,11 +2290,15 @@ function switchModule(moduleName){
 
   if(moduleName==='user-management'){
 
-    const section=
-      document.getElementById('user-management-section');
+    document
+      .getElementById('user-management-section')
+      .classList.remove('hidden');
 
-    if(section)
-      section.classList.remove('hidden');
+    document.getElementById('page-title').textContent=
+      'User Management';
+
+    document.getElementById('page-subtitle').textContent=
+      'Manage system users, roles and access';
 
     loadUsers();
 
@@ -636,43 +2307,24 @@ function switchModule(moduleName){
   }
 
 
-  const placeholder=
-    document.getElementById(
-      'module-placeholder-section'
-    );
+  document
+    .getElementById('module-placeholder-section')
+    .classList.remove('hidden');
 
-  if(placeholder)
-    placeholder.classList.remove('hidden');
+  document.getElementById('page-title').textContent=
+    MODULE_NAMES[moduleName]||'Module';
 
+  document.getElementById('page-subtitle').textContent=
+    'Pure Ice Food Safety Management System';
 
-  const placeholderTitle=
-    document.getElementById(
-      'placeholder-title'
-    );
+  document.getElementById('placeholder-title').textContent=
+    MODULE_NAMES[moduleName]||'Module';
 
-  if(placeholderTitle)
-    placeholderTitle.textContent=
-      MODULE_NAMES[moduleName]||'Module';
-
-
-  const placeholderText=
-    document.getElementById(
-      'placeholder-text'
-    );
-
-  if(placeholderText){
-
-    placeholderText.textContent=
-      'This module is part of the Pure Ice Food Safety Management System. The operational workflow will be connected to the FSMS engine in the next implementation phase.';
-
-  }
+  document.getElementById('placeholder-text').textContent=
+    'This module is part of the Pure Ice Food Safety Management System. The database foundation is being prepared and the operational workflow will be connected in the next implementation phase.';
 
 }
 
-
-/* =========================
-   COMING SOON
-========================= */
 
 function showComingSoon(name){
 
@@ -704,10 +2356,7 @@ async function writeAudit(
 
     const payload={
 
-      user_id:
-        appState.profile?.id||
-        appState.session?.user?.id||
-        null,
+      user_id:appState.profile?.id||null,
 
       action,
 
@@ -725,28 +2374,16 @@ async function writeAudit(
 
     };
 
+    const {error}=await appState.supabase
+      .from('fsms_audit_log')
+      .insert(payload);
 
-    const {error}=
-      await appState.supabase
-        .from('fsms_audit_log')
-        .insert(payload);
-
-
-    if(error){
-
-      console.warn(
-        '[Audit Log]',
-        error.message
-      );
-
-    }
+    if(error)
+      console.warn('Audit log:',error.message);
 
   }catch(error){
 
-    console.warn(
-      '[Audit Log]',
-      error.message
-    );
+    console.warn('Audit error:',error.message);
 
   }
 
@@ -754,85 +2391,54 @@ async function writeAudit(
 
 
 /* =========================
-   DEPARTMENTS
+   DOCUMENT DEPARTMENTS
 ========================= */
 
 async function loadDepartments(){
 
   if(!appState.supabase)return;
 
+  const {data,error}=await appState.supabase
+    .from('departments')
+    .select('id,name')
+    .order('name');
 
-  try{
+  if(error){
 
-    const {data,error}=
-      await appState.supabase
-        .from('departments')
-        .select('id,name')
-        .order('name');
+    console.warn('Departments:',error.message);
 
-
-    if(error){
-
-      console.warn(
-        '[Departments]',
-        error.message
-      );
-
-      return;
-
-    }
-
-
-    appState.departments={};
-
-
-    (data||[]).forEach(d=>{
-
-      appState.departments[d.id]=d.name;
-
-    });
-
-
-    populateDepartmentSelects();
-
-  }catch(error){
-
-    console.warn(
-      '[Departments]',
-      error.message
-    );
+    return;
 
   }
+
+  appState.departments={};
+
+  (data||[]).forEach(d=>{
+    appState.departments[d.id]=d.name;
+  });
+
+  populateDepartmentSelects();
 
 }
 
 
 function populateDepartmentSelects(){
 
-  const names=
-    Object.values(appState.departments);
-
+  const names=Object.values(appState.departments);
 
   const documentSelect=
-    document.getElementById(
-      'document-department'
-    );
+    document.getElementById('document-department');
 
   const filterSelect=
-    document.getElementById(
-      'document-department-filter'
-    );
+    document.getElementById('document-department-filter');
 
   const userSelect=
-    document.getElementById(
-      'user-department'
-    );
+    document.getElementById('user-department');
 
 
   if(documentSelect){
 
-    const current=
-      documentSelect.value;
+    const current=documentSelect.value;
 
     documentSelect.innerHTML=
       '<option value="">Select Department</option>'+
@@ -847,8 +2453,7 @@ function populateDepartmentSelects(){
 
   if(filterSelect){
 
-    const current=
-      filterSelect.value;
+    const current=filterSelect.value;
 
     filterSelect.innerHTML=
       '<option value="">All Departments</option>'+
@@ -863,8 +2468,7 @@ function populateDepartmentSelects(){
 
   if(userSelect){
 
-    const current=
-      userSelect.value;
+    const current=userSelect.value;
 
     userSelect.innerHTML=
       '<option value="">Select Department</option>'+
@@ -880,19 +2484,15 @@ function populateDepartmentSelects(){
 
 
 /* =========================
-   DOCUMENTS
+   DOCUMENT CONTROL
 ========================= */
 
 async function loadDocuments(){
 
   if(!appState.supabase)return;
 
-
   const tbody=
-    document.getElementById(
-      'documents-tbody'
-    );
-
+    document.getElementById('documents-tbody');
 
   if(tbody){
 
@@ -901,46 +2501,39 @@ async function loadDocuments(){
 
   }
 
-
   try{
 
-    const {data,error}=
-      await appState.supabase
-        .from('documents')
-        .select('*')
-        .order(
-          'created_at',
-          {ascending:false}
-        );
+    const {data,error}=await appState.supabase
+      .from('documents')
+      .select('*')
+      .order('created_at',{ascending:false});
 
+    if(error){
 
-    if(error)throw error;
+      console.error('Documents:',error.message);
 
+      if(tbody){
+
+        tbody.innerHTML=
+          `<tr><td colspan="10" class="empty">
+            Unable to load documents: ${escapeHtml(error.message)}
+          </td></tr>`;
+
+      }
+
+      return;
+
+    }
 
     appState.documents=data||[];
 
-
     renderDocuments();
+
+    await refreshDashboard();
 
   }catch(error){
 
-    console.error(
-      '[Documents]',
-      error.message
-    );
-
-
-    if(tbody){
-
-      tbody.innerHTML=
-        `<tr>
-          <td colspan="10" class="empty">
-            Unable to load documents:
-            ${escapeHtml(error.message)}
-          </td>
-        </tr>`;
-
-    }
+    console.error(error);
 
   }
 
@@ -950,81 +2543,52 @@ async function loadDocuments(){
 function renderDocuments(){
 
   const tbody=
-    document.getElementById(
-      'documents-tbody'
-    );
-
+    document.getElementById('documents-tbody');
 
   if(!tbody)return;
 
-
   const search=
     (
-      document.getElementById(
-        'document-search'
-      )?.value||''
+      document.getElementById('document-search')?.value||''
     ).toLowerCase();
 
-
   const type=
-    document.getElementById(
-      'document-type-filter'
-    )?.value||'';
-
+    document.getElementById('document-type-filter')?.value||'';
 
   const status=
-    document.getElementById(
-      'document-status-filter'
-    )?.value||'';
-
+    document.getElementById('document-status-filter')?.value||'';
 
   const approval=
-    document.getElementById(
-      'document-approval-filter'
-    )?.value||'';
-
+    document.getElementById('document-approval-filter')?.value||'';
 
   const department=
-    document.getElementById(
-      'document-department-filter'
-    )?.value||'';
+    document.getElementById('document-department-filter')?.value||'';
 
 
-  const filtered=
-    appState.documents.filter(d=>{
+  const filtered=appState.documents.filter(d=>{
 
-      const text=[
+    const departmentName=
+      d.department||'';
 
-        d.document_code,
+    const text=[
+      d.document_code,
+      d.title,
+      d.document_type,
+      departmentName,
+      d.revision
+    ]
+    .join(' ')
+    .toLowerCase();
 
-        d.title,
+    return(
+      (!search||text.includes(search)) &&
+      (!type||d.document_type===type) &&
+      (!status||d.status===status) &&
+      (!approval||d.approval_status===approval) &&
+      (!department||departmentName===department)
+    );
 
-        d.document_type,
-
-        d.department,
-
-        d.revision
-
-      ]
-      .join(' ')
-      .toLowerCase();
-
-
-      return(
-
-        (!search||text.includes(search)) &&
-
-        (!type||d.document_type===type) &&
-
-        (!status||d.status===status) &&
-
-        (!approval||d.approval_status===approval) &&
-
-        (!department||d.department===department)
-
-      );
-
-    });
+  });
 
 
   if(!filtered.length){
@@ -1044,25 +2608,20 @@ function renderDocuments(){
   tbody.innerHTML=
     filtered.map(d=>{
 
-      const days=
-        daysFromToday(d.review_date);
-
+      const days=daysFromToday(d.review_date);
 
       let reviewText='—';
-
 
       if(days!==null){
 
         if(days<0)
-          reviewText=
-            `Overdue ${Math.abs(days)}d`;
+          reviewText=`Overdue ${Math.abs(days)}d`;
 
         else if(days===0)
           reviewText='Due today';
 
         else
-          reviewText=
-            formatDate(d.review_date);
+          reviewText=`${formatDate(d.review_date)}`;
 
       }
 
@@ -1077,126 +2636,98 @@ function renderDocuments(){
       <tr>
 
         <td>
-
           <div class="doc-title">
-            ${escapeHtml(
-              d.title||'Untitled'
-            )}
+            ${escapeHtml(d.title||'Untitled')}
           </div>
 
           <div class="doc-code">
-            ${escapeHtml(
-              d.document_code||'No code'
-            )}
+            ${escapeHtml(d.document_code||'No code')}
           </div>
-
         </td>
 
-        <td>
-          ${escapeHtml(
-            d.document_type||'—'
-          )}
-        </td>
 
         <td>
-          ${escapeHtml(
-            d.department||'—'
-          )}
+          ${escapeHtml(d.document_type||'—')}
         </td>
 
+
         <td>
-          ${escapeHtml(
-            d.revision||'—'
-          )}
+          ${escapeHtml(d.department||'—')}
         </td>
+
+
+        <td>
+          ${escapeHtml(d.revision||'—')}
+        </td>
+
 
         <td>
           ${formatDate(d.issue_date)}
         </td>
 
-        <td>
 
+        <td>
           <span class="${reviewClass(d.review_date)}">
             ${escapeHtml(reviewText)}
           </span>
-
         </td>
 
-        <td>
 
+        <td>
           <span class="${statusClass(d.status)}">
-            ${escapeHtml(
-              d.status||'Draft'
-            )}
+            ${escapeHtml(d.status||'Draft')}
           </span>
-
         </td>
+
 
         <td>
-
           <span class="${approvalClass(d.approval_status)}">
-            ${escapeHtml(
-              d.approval_status||'Draft'
-            )}
+            ${escapeHtml(d.approval_status||'Draft')}
           </span>
-
         </td>
+
 
         <td>
 
           ${
             d.file_path
-
             ?
-
             `<button
               class="file-link"
-              type="button"
-              data-action="open-document-file"
-              data-id="${escapeHtml(d.id)}">
+              onclick="window.openDocumentFile('${d.id}')">
               View
             </button>`
-
             :
-
             '<span class="muted">No file</span>'
           }
 
         </td>
+
 
         <td>
 
           <div class="action-buttons">
 
             <button
-              type="button"
-              data-action="edit-document"
-              data-id="${escapeHtml(d.id)}">
+              onclick="window.editDocument('${d.id}')">
               Edit
             </button>
 
             ${
               canApprove
               ?
-
               `<button
-                type="button"
                 class="approve"
-                data-action="approve-document"
-                data-id="${escapeHtml(d.id)}">
+                onclick="window.approveDocument('${d.id}')">
                 Approve
               </button>`
-
               :
-
               ''
             }
 
             <button
-              type="button"
               class="delete"
-              data-action="delete-document"
-              data-id="${escapeHtml(d.id)}">
+              onclick="window.deleteDocument('${d.id}')">
               Delete
             </button>
 
@@ -1213,141 +2744,83 @@ function renderDocuments(){
 }
 
 
-/* =========================
-   DOCUMENT MODAL
-========================= */
-
 function openDocumentModal(documentId=null){
 
   appState.editingDocumentId=documentId;
 
   appState.oldDocumentPath=null;
 
-
   const modal=
-    document.getElementById(
-      'document-modal'
-    );
+    document.getElementById('document-modal');
 
   const form=
-    document.getElementById(
-      'document-form'
-    );
-
-
-  if(!modal||!form)return;
-
+    document.getElementById('document-form');
 
   form.reset();
 
+  setStatus('document-form-status','','info');
 
-  setStatus(
-    'document-form-status',
-    '',
-    'info'
-  );
-
-
-  const fileInfo=
-    document.getElementById(
-      'current-file-info'
-    );
-
-
-  if(fileInfo)
-    fileInfo.textContent='';
+  document.getElementById('current-file-info').textContent='';
 
 
   if(documentId){
 
     const d=
-      appState.documents.find(
-        x=>x.id===documentId
-      );
-
+      appState.documents.find(x=>x.id===documentId);
 
     if(!d)return;
 
+    document.getElementById('document-modal-title')
+      .textContent='Edit Document';
 
-    document.getElementById(
-      'document-modal-title'
-    ).textContent='Edit Document';
+    document.getElementById('document-code').value=
+      d.document_code||'';
 
+    document.getElementById('document-type').value=
+      d.document_type||'';
 
-    document.getElementById(
-      'document-code'
-    ).value=d.document_code||'';
+    document.getElementById('document-title').value=
+      d.title||'';
 
+    document.getElementById('document-department').value=
+      d.department||'';
 
-    document.getElementById(
-      'document-type'
-    ).value=d.document_type||'';
+    document.getElementById('document-revision').value=
+      d.revision||'';
 
+    document.getElementById('document-issue-date').value=
+      d.issue_date||'';
 
-    document.getElementById(
-      'document-title'
-    ).value=d.title||'';
+    document.getElementById('document-review-date').value=
+      d.review_date||'';
 
+    document.getElementById('document-status').value=
+      d.status||'Draft';
 
-    document.getElementById(
-      'document-department'
-    ).value=d.department||'';
+    document.getElementById('document-approval-status').value=
+      d.approval_status||'Draft';
 
+    document.getElementById('document-description').value=
+      d.description||'';
 
-    document.getElementById(
-      'document-revision'
-    ).value=d.revision||'';
+    appState.oldDocumentPath=d.file_path||null;
 
+    if(d.file_name){
 
-    document.getElementById(
-      'document-issue-date'
-    ).value=d.issue_date||'';
-
-
-    document.getElementById(
-      'document-review-date'
-    ).value=d.review_date||'';
-
-
-    document.getElementById(
-      'document-status'
-    ).value=d.status||'Draft';
-
-
-    document.getElementById(
-      'document-approval-status'
-    ).value=d.approval_status||'Draft';
-
-
-    document.getElementById(
-      'document-description'
-    ).value=d.description||'';
-
-
-    appState.oldDocumentPath=
-      d.file_path||null;
-
-
-    if(fileInfo&&d.file_name){
-
-      fileInfo.textContent=
+      document.getElementById('current-file-info')
+        .textContent=
         'Current file: '+d.file_name;
 
     }
 
   }else{
 
-    document.getElementById(
-      'document-modal-title'
-    ).textContent='Add Document';
+    document.getElementById('document-modal-title')
+      .textContent='Add Document';
 
-    document.getElementById(
-      'document-status'
-    ).value='Draft';
+    document.getElementById('document-status').value='Draft';
 
-    document.getElementById(
-      'document-approval-status'
-    ).value='Draft';
+    document.getElementById('document-approval-status').value='Draft';
 
   }
 
@@ -1359,14 +2832,9 @@ function openDocumentModal(documentId=null){
 
 function closeDocumentModal(){
 
-  const modal=
-    document.getElementById(
-      'document-modal'
-    );
-
-  if(modal)
-    modal.classList.remove('active');
-
+  document
+    .getElementById('document-modal')
+    .classList.remove('active');
 
   appState.editingDocumentId=null;
 
@@ -1386,45 +2854,28 @@ function sanitizeFileName(name){
 }
 
 
-async function uploadDocumentFile(
-  file,
-  documentCode
-){
+async function uploadDocumentFile(file,documentCode){
 
   if(!file)return null;
 
+  const safeName=sanitizeFileName(file.name);
 
-  const safeName=
-    sanitizeFileName(file.name);
-
-
-  const folder=
-    sanitizeFileName(
-      documentCode||'general'
-    );
-
+  const folder=sanitizeFileName(documentCode||'general');
 
   const path=
     `documents/${folder}/${Date.now()}_${safeName}`;
 
 
-  const {error}=
-    await appState.supabase
-      .storage
-      .from('fsms-documents')
-      .upload(
-        path,
-        file,
-        {
-          upsert:false,
-          contentType:
-            file.type||undefined
-        }
-      );
+  const {error}=await appState.supabase
+    .storage
+    .from('fsms-documents')
+    .upload(path,file,{
+      upsert:false,
+      contentType:file.type||undefined
+    });
 
 
   if(error)throw error;
-
 
   return path;
 
@@ -1435,31 +2886,19 @@ async function removeStorageFile(path){
 
   if(!path)return;
 
-
   try{
 
-    const {error}=
-      await appState.supabase
-        .storage
-        .from('fsms-documents')
-        .remove([path]);
+    const {error}=await appState.supabase
+      .storage
+      .from('fsms-documents')
+      .remove([path]);
 
-
-    if(error){
-
-      console.warn(
-        '[Storage Remove]',
-        error.message
-      );
-
-    }
+    if(error)
+      console.warn('Storage remove:',error.message);
 
   }catch(error){
 
-    console.warn(
-      '[Storage Remove]',
-      error.message
-    );
+    console.warn('Storage remove:',error.message);
 
   }
 
@@ -1470,74 +2909,41 @@ async function handleDocumentSubmit(event){
 
   event.preventDefault();
 
-
   if(!appState.supabase)return;
 
 
   const code=
-    document.getElementById(
-      'document-code'
-    ).value.trim();
-
+    document.getElementById('document-code').value.trim();
 
   const type=
-    document.getElementById(
-      'document-type'
-    ).value;
-
+    document.getElementById('document-type').value;
 
   const title=
-    document.getElementById(
-      'document-title'
-    ).value.trim();
-
+    document.getElementById('document-title').value.trim();
 
   const department=
-    document.getElementById(
-      'document-department'
-    ).value||null;
-
+    document.getElementById('document-department').value||null;
 
   const revision=
-    document.getElementById(
-      'document-revision'
-    ).value.trim()||null;
-
+    document.getElementById('document-revision').value.trim()||null;
 
   const issueDate=
-    document.getElementById(
-      'document-issue-date'
-    ).value||null;
-
+    document.getElementById('document-issue-date').value||null;
 
   const reviewDate=
-    document.getElementById(
-      'document-review-date'
-    ).value||null;
-
+    document.getElementById('document-review-date').value||null;
 
   const status=
-    document.getElementById(
-      'document-status'
-    ).value;
-
+    document.getElementById('document-status').value;
 
   const approvalStatus=
-    document.getElementById(
-      'document-approval-status'
-    ).value;
-
+    document.getElementById('document-approval-status').value;
 
   const description=
-    document.getElementById(
-      'document-description'
-    ).value.trim()||null;
-
+    document.getElementById('document-description').value.trim()||null;
 
   const file=
-    document.getElementById(
-      'document-file'
-    ).files[0]||null;
+    document.getElementById('document-file').files[0]||null;
 
 
   if(!code||!type||!title){
@@ -1565,6 +2971,8 @@ async function handleDocumentSubmit(event){
     let uploadedPath=null;
 
 
+    /* NEW FILE */
+
     if(file){
 
       setStatus(
@@ -1573,12 +2981,8 @@ async function handleDocumentSubmit(event){
         'info'
       );
 
-
       uploadedPath=
-        await uploadDocumentFile(
-          file,
-          code
-        );
+        await uploadDocumentFile(file,code);
 
     }
 
@@ -1605,8 +3009,7 @@ async function handleDocumentSubmit(event){
 
       description,
 
-      updated_at:
-        new Date().toISOString()
+      updated_at:new Date().toISOString()
 
     };
 
@@ -1614,12 +3017,13 @@ async function handleDocumentSubmit(event){
     let savedId=null;
 
 
+    /* EDIT */
+
     if(appState.editingDocumentId){
 
       const old=
         appState.documents.find(
-          d=>d.id===
-            appState.editingDocumentId
+          d=>d.id===appState.editingDocumentId
         );
 
 
@@ -1630,17 +3034,13 @@ async function handleDocumentSubmit(event){
 
       if(uploadedPath){
 
-        updateData.file_path=
-          uploadedPath;
+        updateData.file_path=uploadedPath;
 
-        updateData.file_name=
-          file.name;
+        updateData.file_name=file.name;
 
-        updateData.file_size=
-          file.size;
+        updateData.file_size=file.size;
 
-        updateData.file_type=
-          file.type||null;
+        updateData.file_type=file.type||null;
 
       }
 
@@ -1649,10 +3049,7 @@ async function handleDocumentSubmit(event){
         await appState.supabase
           .from('documents')
           .update(updateData)
-          .eq(
-            'id',
-            appState.editingDocumentId
-          )
+          .eq('id',appState.editingDocumentId)
           .select()
           .single();
 
@@ -1660,9 +3057,7 @@ async function handleDocumentSubmit(event){
       if(error){
 
         if(uploadedPath)
-          await removeStorageFile(
-            uploadedPath
-          );
+          await removeStorageFile(uploadedPath);
 
         throw error;
 
@@ -1672,14 +3067,9 @@ async function handleDocumentSubmit(event){
       savedId=data.id;
 
 
-      if(
-        uploadedPath &&
-        old?.file_path
-      ){
+      if(uploadedPath && old?.file_path){
 
-        await removeStorageFile(
-          old.file_path
-        );
+        await removeStorageFile(old.file_path);
 
       }
 
@@ -1701,34 +3091,31 @@ async function handleDocumentSubmit(event){
         'success'
       );
 
+
     }else{
+
+      /* CREATE */
 
       const insertData={
 
         ...baseData,
 
-        owner_id:
-          appState.profile?.id||null,
+        owner_id:appState.profile?.id||null,
 
-        created_by:
-          appState.profile?.id||null
+        created_by:appState.profile?.id||null
 
       };
 
 
       if(uploadedPath){
 
-        insertData.file_path=
-          uploadedPath;
+        insertData.file_path=uploadedPath;
 
-        insertData.file_name=
-          file.name;
+        insertData.file_name=file.name;
 
-        insertData.file_size=
-          file.size;
+        insertData.file_size=file.size;
 
-        insertData.file_type=
-          file.type||null;
+        insertData.file_type=file.type||null;
 
       }
 
@@ -1744,9 +3131,7 @@ async function handleDocumentSubmit(event){
       if(error){
 
         if(uploadedPath)
-          await removeStorageFile(
-            uploadedPath
-          );
+          await removeStorageFile(uploadedPath);
 
         throw error;
 
@@ -1778,25 +3163,19 @@ async function handleDocumentSubmit(event){
 
     await loadDocuments();
 
-
     setTimeout(
       closeDocumentModal,
       600
     );
 
+
   }catch(error){
 
-    console.error(
-      '[Document Save]',
-      error
-    );
-
+    console.error(error);
 
     setStatus(
       'document-form-status',
-      'Error: '+
-      (error.message||
-       'Unable to save document.'),
+      'Error: '+(error.message||'Unable to save document.'),
       'error'
     );
 
@@ -1815,16 +3194,11 @@ async function editDocument(id){
 async function openDocumentFile(id){
 
   const d=
-    appState.documents.find(
-      x=>x.id===id
-    );
-
+    appState.documents.find(x=>x.id===id);
 
   if(!d?.file_path){
 
-    alert(
-      'No file is attached to this document.'
-    );
+    alert('No file is attached to this document.');
 
     return;
 
@@ -1845,7 +3219,6 @@ async function openDocumentFile(id){
 
     if(error)throw error;
 
-
     if(data?.signedUrl){
 
       window.open(
@@ -1860,10 +3233,7 @@ async function openDocumentFile(id){
 
     alert(
       'Unable to open file: '+
-      (
-        error.message||
-        'Storage error'
-      )
+      (error.message||'Storage error')
     );
 
   }
@@ -1875,9 +3245,7 @@ async function approveDocument(id){
 
   if(appState.role!=='Super Admin'){
 
-    alert(
-      'Only Super Admin can approve documents.'
-    );
+    alert('Only Super Admin can approve documents.');
 
     return;
 
@@ -1885,23 +3253,15 @@ async function approveDocument(id){
 
 
   const d=
-    appState.documents.find(
-      x=>x.id===id
-    );
-
+    appState.documents.find(x=>x.id===id);
 
   if(!d)return;
 
 
   const confirmed=
     confirm(
-      `Approve this document?\n\n${
-        d.document_code||''
-      } - ${
-        d.title||''
-      }`
+      `Approve this document?\n\n${d.document_code||''} - ${d.title||''}`
     );
-
 
   if(!confirmed)return;
 
@@ -1912,16 +3272,13 @@ async function approveDocument(id){
 
       approval_status:'Approved',
 
-      approved_by:
-        appState.profile?.id||null,
+      approved_by:appState.profile?.id||null,
 
-      approved_at:
-        new Date().toISOString(),
+      approved_at:new Date().toISOString(),
 
       status:'Active',
 
-      updated_at:
-        new Date().toISOString()
+      updated_at:new Date().toISOString()
 
     };
 
@@ -1943,9 +3300,7 @@ async function approveDocument(id){
       'Document Control',
       'documents',
       id,
-      `Document approved: ${
-        d.document_code||d.title
-      }`,
+      `Document approved: ${d.document_code||d.title}`,
       d,
       data
     );
@@ -1953,19 +3308,13 @@ async function approveDocument(id){
 
     await loadDocuments();
 
-
-    alert(
-      'Document approved successfully.'
-    );
+    alert('Document approved successfully.');
 
   }catch(error){
 
     alert(
       'Approval failed: '+
-      (
-        error.message||
-        'Unknown error'
-      )
+      (error.message||'Unknown error')
     );
 
   }
@@ -1976,23 +3325,15 @@ async function approveDocument(id){
 async function deleteDocument(id){
 
   const d=
-    appState.documents.find(
-      x=>x.id===id
-    );
-
+    appState.documents.find(x=>x.id===id);
 
   if(!d)return;
 
 
   const confirmed=
     confirm(
-      `Delete this document?\n\n${
-        d.document_code||''
-      } - ${
-        d.title||''
-      }\n\nThis action cannot be undone.`
+      `Delete this document?\n\n${d.document_code||''} - ${d.title||''}\n\nThis action cannot be undone.`
     );
-
 
   if(!confirmed)return;
 
@@ -2010,9 +3351,7 @@ async function deleteDocument(id){
 
 
     if(d.file_path)
-      await removeStorageFile(
-        d.file_path
-      );
+      await removeStorageFile(d.file_path);
 
 
     await writeAudit(
@@ -2020,9 +3359,7 @@ async function deleteDocument(id){
       'Document Control',
       'documents',
       id,
-      `Document deleted: ${
-        d.document_code||d.title
-      }`,
+      `Document deleted: ${d.document_code||d.title}`,
       d,
       null
     );
@@ -2034,74 +3371,8 @@ async function deleteDocument(id){
 
     alert(
       'Delete failed: '+
-      (
-        error.message||
-        'Unknown error'
-      )
+      (error.message||'Unknown error')
     );
-
-  }
-
-}
-
-
-/* =========================
-   SAFE COUNTS
-========================= */
-
-async function queryCount(
-  table,
-  filter=null
-){
-
-  if(!appState.supabase)
-    return null;
-
-
-  try{
-
-    let query=
-      appState.supabase
-        .from(table)
-        .select(
-          '*',
-          {
-            count:'exact',
-            head:true
-          }
-        );
-
-
-    if(filter)
-      query=filter(query);
-
-
-    const {count,error}=
-      await query;
-
-
-    if(error){
-
-      console.warn(
-        `[Dashboard] ${table}:`,
-        error.message
-      );
-
-      return null;
-
-    }
-
-
-    return safeNumber(count);
-
-  }catch(error){
-
-    console.warn(
-      `[Dashboard] ${table}:`,
-      error.message
-    );
-
-    return null;
 
   }
 
@@ -2112,460 +3383,384 @@ async function queryCount(
    DASHBOARD
 ========================= */
 
-async function refreshDashboard(){
-
-  if(
-    !appState.supabase ||
-    appState.dashboardLoading
-  )
-    return;
-
-
-  appState.dashboardLoading=true;
-
+async function queryCount(table,filter=null){
 
   try{
 
-    const today=
-      todayIso();
+    let query=
+      appState.supabase
+        .from(table)
+        .select('*',{count:'exact',head:true});
+
+    if(filter)
+      query=filter(query);
+
+    const {count,error}=await query;
+
+    if(error){
+
+      console.warn(table,error.message);
+
+      return null;
+
+    }
+
+    return safeNumber(count);
+
+  }catch(error){
+
+    return null;
+
+  }
+
+}
 
 
-    const next30Date=
-      new Date();
+async function refreshDashboard(){
+
+  if(!appState.supabase)return;
 
 
-    next30Date.setDate(
-      next30Date.getDate()+30
-    );
+  const today=todayIso();
+
+  const next30=
+    new Date(
+      Date.now()+30*86400000
+    )
+    .toISOString()
+    .slice(0,10);
 
 
-    const next30=
-      next30Date
-        .toISOString()
-        .slice(0,10);
+  const totalDocuments=
+    await queryCount('documents');
 
 
-    const [
-
-      totalDocuments,
-
-      pendingDocuments,
-
-      nearReview,
-
-      approvedDocuments,
-
-      activePlans,
-
-      openTasks
-
-    ]=await Promise.all([
-
-      queryCount('documents'),
-
-      queryCount(
-        'documents',
-        q=>q.in(
-          'approval_status',
-          [
-            'Draft',
-            'Pending Approval',
-            'Rejected'
-          ]
-        )
-      ),
-
-      queryCount(
-        'documents',
-        q=>
-          q.gte(
-            'review_date',
-            today
-          )
-          .lte(
-            'review_date',
-            next30
-          )
-          .neq(
-            'status',
-            'Obsolete'
-          )
-      ),
-
-      queryCount(
-        'documents',
-        q=>q.eq(
-          'approval_status',
-          'Approved'
-        )
-      ),
-
-      queryCount(
-        'compliance_plans',
-        q=>q.eq(
-          'status',
-          'Active'
-        )
-      ),
-
-      queryCount(
-        'compliance_tasks',
-        q=>q.in(
-          'status',
-          [
-            'Pending',
-            'In Progress',
-            'Overdue'
-          ]
-        )
+  const pendingDocuments=
+    await queryCount(
+      'documents',
+      q=>q.in(
+        'approval_status',
+        ['Draft','Pending Approval','Rejected']
       )
-
-    ]);
-
-
-    setKpiValue(
-      'kpi-total-documents',
-      totalDocuments
     );
 
 
-    setKpiValue(
-      'kpi-pending-documents',
-      pendingDocuments
+  const nearReview=
+    await queryCount(
+      'documents',
+      q=>
+        q.gte('review_date',today)
+         .lte('review_date',next30)
+         .neq('status','Obsolete')
     );
 
 
-    setKpiValue(
-      'kpi-documents-near-review',
-      nearReview
+  const approvedDocuments=
+    await queryCount(
+      'documents',
+      q=>q.eq(
+        'approval_status',
+        'Approved'
+      )
     );
 
 
-    setKpiValue(
-      'kpi-open-tasks',
-      openTasks
+  const activePlans=
+    await queryCount(
+      'compliance_plans',
+      q=>q.eq(
+        'status',
+        'Active'
+      )
     );
 
 
-    setKpiValue(
-      'kpi-active-plans',
-      activePlans
+  const openTasks=
+    await queryCount(
+      'compliance_tasks',
+      q=>q.in(
+        'status',
+        ['Pending','In Progress','Overdue']
+      )
     );
 
 
-    setKpiValue(
-      'kpi-approved-documents',
-      approvedDocuments
-    );
+  setKpiValue(
+    'kpi-total-documents',
+    totalDocuments
+  );
+
+  setKpiValue(
+    'kpi-pending-documents',
+    pendingDocuments
+  );
+
+  setKpiValue(
+    'kpi-documents-near-review',
+    nearReview
+  );
+
+  setKpiValue(
+    'kpi-open-tasks',
+    openTasks
+  );
+
+  setKpiValue(
+    'kpi-active-plans',
+    activePlans
+  );
+
+  setKpiValue(
+    'kpi-approved-documents',
+    approvedDocuments
+  );
 
 
-    setText(
-      'kpi-total-documents-sub',
-      totalDocuments===null
-        ?'Unable to read'
-        :'Live data connected'
-    );
+  setText(
+    'kpi-total-documents-sub',
+    totalDocuments===null
+      ? 'Not configured'
+      : 'Live data connected'
+  );
+
+  setText(
+    'kpi-pending-documents-sub',
+    pendingDocuments===null
+      ? 'Not configured'
+      : pendingDocuments
+        ? 'Requires action'
+        : 'No pending approval'
+  );
+
+  setText(
+    'kpi-documents-near-review-sub',
+    nearReview===null
+      ? 'Not configured'
+      : nearReview
+        ? 'Due within 30 days'
+        : 'No reviews due soon'
+  );
+
+  setText(
+    'kpi-open-tasks-sub',
+    openTasks===null
+      ? 'Not configured'
+      : openTasks
+        ? 'Needs action'
+        : 'No open tasks'
+  );
+
+  setText(
+    'kpi-active-plans-sub',
+    activePlans===null
+      ? 'Not configured'
+      : 'Active compliance plans'
+  );
+
+  setText(
+    'kpi-approved-documents-sub',
+    approvedDocuments===null
+      ? 'Not configured'
+      : 'Controlled documents'
+  );
 
 
-    setText(
-      'kpi-pending-documents-sub',
-      pendingDocuments===null
-        ?'Unable to read'
-        :pendingDocuments
-          ?'Requires action'
-          :'No pending approval'
-    );
+  /* DOCUMENT CONTROL % */
+
+  let documentControl=0;
+
+  if(totalDocuments!==null && totalDocuments>0){
+
+    documentControl=
+      Math.round(
+        (approvedDocuments||0)/
+        totalDocuments*100
+      );
+
+  }
 
 
-    setText(
-      'kpi-documents-near-review-sub',
-      nearReview===null
-        ?'Unable to read'
-        :nearReview
-          ?'Due within 30 days'
-          :'No reviews due soon'
-    );
+  setKpiValue(
+    'kpi-document-control',
+    documentControl+'%'
+  );
 
 
-    setText(
-      'kpi-open-tasks-sub',
-      openTasks===null
-        ?'Unable to read'
-        :openTasks
-          ?'Needs action'
-          :'No open tasks'
-    );
+  /* PLAN COVERAGE */
+
+  let planCoverage=0;
+
+  if(activePlans!==null){
+
+    planCoverage=
+      activePlans>0
+        ? 100
+        : 0;
+
+  }
 
 
-    setText(
-      'kpi-active-plans-sub',
-      activePlans===null
-        ?'Unable to read'
-        :'Active compliance plans'
-    );
+  setKpiValue(
+    'kpi-plan-coverage',
+    planCoverage+'%'
+  );
 
 
-    setText(
-      'kpi-approved-documents-sub',
-      approvedDocuments===null
-        ?'Unable to read'
-        :'Controlled documents'
-    );
+  /* TASK COMPLETION */
+
+  let taskCompletion=0;
 
 
-    let documentControl=0;
+  if(openTasks!==null){
+
+    const completed=
+      await queryCount(
+        'compliance_tasks',
+        q=>q.eq(
+          'status',
+          'Completed'
+        )
+      );
+
+
+    const totalTasks=
+      await queryCount(
+        'compliance_tasks'
+      );
 
 
     if(
-      totalDocuments!==null &&
-      totalDocuments>0 &&
-      approvedDocuments!==null
+      totalTasks!==null &&
+      totalTasks>0
     ){
 
-      documentControl=
+      taskCompletion=
         Math.round(
-          approvedDocuments/
-          totalDocuments*
-          100
+          (completed||0)/
+          totalTasks*100
         );
 
     }
 
-
-    setKpiValue(
-      'kpi-document-control',
-      documentControl+'%'
-    );
+  }
 
 
-    let planCoverage=0;
+  setKpiValue(
+    'kpi-task-completion',
+    taskCompletion+'%'
+  );
 
 
-    if(
-      activePlans!==null
-    ){
-
-      planCoverage=
-        activePlans>0
-          ?100
-          :0;
-
-    }
+  setText(
+    'kpi-audit-trail',
+    'Ready'
+  );
 
 
-    setKpiValue(
-      'kpi-plan-coverage',
-      planCoverage+'%'
-    );
+  /* AUDIT READINESS */
 
+  let readiness=0;
 
-    let taskCompletion=0;
+  if(totalDocuments!==null){
 
+    const docScore=
+      totalDocuments>0
+        ? documentControl
+        : 0;
 
-    if(
-      openTasks!==null
-    ){
-
-      const [
-        completed,
-        totalTasks
-      ]=await Promise.all([
-
-        queryCount(
-          'compliance_tasks',
-          q=>q.eq(
-            'status',
-            'Completed'
-          )
-        ),
-
-        queryCount(
-          'compliance_tasks'
-        )
-
-      ]);
-
-
-      if(
-        totalTasks!==null &&
-        totalTasks>0 &&
-        completed!==null
-      ){
-
-        taskCompletion=
-          Math.round(
-            completed/
-            totalTasks*
-            100
-          );
-
-      }
-
-    }
-
-
-    setKpiValue(
-      'kpi-task-completion',
-      taskCompletion+'%'
-    );
-
-
-    setText(
-      'kpi-audit-trail',
-      'Ready'
-    );
-
-
-    let readiness=0;
-
-
-    if(
-      totalDocuments!==null
-    ){
-
-      const docScore=
-        totalDocuments>0
-          ?documentControl
-          :0;
-
-
-      const reviewScore=
-        totalDocuments>0 &&
-        nearReview!==null
-
-          ?
-
-          Math.max(
+    const reviewScore=
+      totalDocuments>0
+        ? Math.max(
             0,
             100-
             Math.min(
               100,
-              nearReview/
-              totalDocuments*
-              100
+              (nearReview||0)/
+              totalDocuments*100
             )
           )
+        : 0;
 
-          :
-
-          0;
-
-
-      readiness=
-        Math.round(
-          (
-            docScore+
-            reviewScore
-          )/2
-        );
-
-    }
-
-
-    setKpiValue(
-      'kpi-audit-readiness',
-      readiness+'%'
-    );
-
-
-    const draft=
-      await queryCount(
-        'documents',
-        q=>q.eq(
-          'approval_status',
-          'Draft'
-        )
+    readiness=
+      Math.round(
+        (docScore+reviewScore)/2
       );
-
-
-    const review=
-      await queryCount(
-        'documents',
-        q=>q.eq(
-          'approval_status',
-          'Pending Approval'
-        )
-      );
-
-
-    updateChart(
-      'chart-draft',
-      totalDocuments||0,
-      draft
-    );
-
-
-    updateChart(
-      'chart-review',
-      totalDocuments||0,
-      review
-    );
-
-
-    updateChart(
-      'chart-approved',
-      totalDocuments||0,
-      approvedDocuments
-    );
-
-
-    updateChart(
-      'chart-near',
-      totalDocuments||0,
-      nearReview
-    );
-
-
-    updateChart(
-      'chart-tasks',
-      openTasks||0,
-      openTasks
-    );
-
-
-    renderAttention(
-      nearReview,
-      pendingDocuments,
-      openTasks
-    );
-
-  }catch(error){
-
-    console.error(
-      '[Dashboard]',
-      error
-    );
-
-  }finally{
-
-    appState.dashboardLoading=false;
 
   }
+
+
+  setKpiValue(
+    'kpi-audit-readiness',
+    readiness+'%'
+  );
+
+
+  updateChart(
+    'chart-draft',
+    totalDocuments||0,
+    await queryCount(
+      'documents',
+      q=>q.eq('approval_status','Draft')
+    )
+  );
+
+
+  updateChart(
+    'chart-review',
+    totalDocuments||0,
+    await queryCount(
+      'documents',
+      q=>q.eq('approval_status','Pending Approval')
+    )
+  );
+
+
+  updateChart(
+    'chart-approved',
+    totalDocuments||0,
+    approvedDocuments
+  );
+
+
+  updateChart(
+    'chart-near',
+    totalDocuments||0,
+    nearReview
+  );
+
+
+  updateChart(
+    'chart-tasks',
+    openTasks||0,
+    openTasks
+  );
+
+
+  renderAttention(
+    nearReview,
+    pendingDocuments,
+    openTasks
+  );
 
 }
 
 
 function setKpiValue(id,value){
 
-  const el=
-    document.getElementById(id);
+  const el=document.getElementById(id);
 
-  if(el){
-
+  if(el)
     el.textContent=
       value===null
-        ?'—'
-        :value;
-
-  }
+        ? '—'
+        : value;
 
 }
 
 
 function setText(id,value){
 
-  const el=
-    document.getElementById(id);
+  const el=document.getElementById(id);
 
   if(el)
     el.textContent=value;
@@ -2573,23 +3768,13 @@ function setText(id,value){
 }
 
 
-function updateChart(
-  id,
-  total,
-  value
-){
+function updateChart(id,total,value){
 
-  const el=
-    document.getElementById(id);
-
+  const el=document.getElementById(id);
 
   if(!el)return;
 
-
-  if(
-    !total ||
-    value===null
-  ){
+  if(!total||value===null){
 
     el.style.height='15%';
 
@@ -2597,21 +3782,16 @@ function updateChart(
 
   }
 
-
   const percentage=
     Math.max(
       10,
       Math.min(
         100,
-        value/
-        total*
-        100
+        value/total*100
       )
     );
 
-
-  el.style.height=
-    percentage+'%';
+  el.style.height=percentage+'%';
 
 }
 
@@ -2623,10 +3803,7 @@ function renderAttention(
 ){
 
   const box=
-    document.getElementById(
-      'attention-list'
-    );
-
+    document.getElementById('attention-list');
 
   if(!box)return;
 
@@ -2637,28 +3814,14 @@ function renderAttention(
   if(pendingDocuments){
 
     items.push(`
-
       <div class="issue">
-
         <i class="dot bad"></i>
-
         <div>
-
           <b>Document Approval</b>
-
-          <span>
-            ${pendingDocuments}
-            document(s) require approval
-          </span>
-
+          <span>${pendingDocuments} document(s) require approval</span>
         </div>
-
-        <span class="pill warn">
-          Action
-        </span>
-
+        <span class="pill warn">Action</span>
       </div>
-
     `);
 
   }
@@ -2667,28 +3830,14 @@ function renderAttention(
   if(nearReview){
 
     items.push(`
-
       <div class="issue">
-
         <i class="dot"></i>
-
         <div>
-
           <b>Document Review</b>
-
-          <span>
-            ${nearReview}
-            document(s) due within 30 days
-          </span>
-
+          <span>${nearReview} document(s) due within 30 days</span>
         </div>
-
-        <span class="pill warn">
-          Due Soon
-        </span>
-
+        <span class="pill warn">Due Soon</span>
       </div>
-
     `);
 
   }
@@ -2697,28 +3846,14 @@ function renderAttention(
   if(openTasks){
 
     items.push(`
-
       <div class="issue">
-
         <i class="dot bad"></i>
-
         <div>
-
           <b>Compliance Tasks</b>
-
-          <span>
-            ${openTasks}
-            open task(s)
-          </span>
-
+          <span>${openTasks} open task(s)</span>
         </div>
-
-        <span class="pill bad">
-          Open
-        </span>
-
+        <span class="pill bad">Open</span>
       </div>
-
     `);
 
   }
@@ -2727,36 +3862,20 @@ function renderAttention(
   if(!items.length){
 
     items.push(`
-
       <div class="issue">
-
         <i class="dot good"></i>
-
         <div>
-
-          <b>
-            No Critical Attention Items
-          </b>
-
-          <span>
-            Current system data shows no open alerts
-          </span>
-
+          <b>No Critical Attention Items</b>
+          <span>Current system data shows no open alerts</span>
         </div>
-
-        <span class="pill">
-          OK
-        </span>
-
+        <span class="pill">OK</span>
       </div>
-
     `);
 
   }
 
 
-  box.innerHTML=
-    items.join('');
+  box.innerHTML=items.join('');
 
 }
 
@@ -2787,43 +3906,28 @@ async function loadUsers(){
     if(error)throw error;
 
 
-    appState.users=
-      data||[];
-
+    appState.users=data||[];
 
     renderUsersTable();
 
   }catch(error){
 
-    console.error(
-      '[Users]',
-      error.message
-    );
-
+    console.error('Users:',error.message);
 
     const tbody=
-      document.getElementById(
-        'users-tbody'
-      );
-
+      document.getElementById('users-tbody');
 
     if(tbody){
 
       tbody.innerHTML=
         `<tr>
-
-          <td
-            colspan="7"
-            style="
-              text-align:center;
-              padding:20px;
-              color:var(--bad);">
-
+          <td colspan="7" style="
+            text-align:center;
+            padding:20px;
+            color:var(--bad);">
             Unable to load users:
             ${escapeHtml(error.message)}
-
           </td>
-
         </tr>`;
 
     }
@@ -2836,56 +3940,36 @@ async function loadUsers(){
 function renderUsersTable(){
 
   const tbody=
-    document.getElementById(
-      'users-tbody'
-    );
-
+    document.getElementById('users-tbody');
 
   if(!tbody)return;
 
 
   const text=
     (
-      document.getElementById(
-        'users-filter'
-      )?.value||''
+      document.getElementById('users-filter')?.value||''
     ).toLowerCase();
 
-
   const role=
-    document.getElementById(
-      'role-filter'
-    )?.value||'';
+    document.getElementById('role-filter')?.value||'';
 
 
   const filtered=
     appState.users.filter(u=>{
 
       const haystack=[
-
         u.full_name,
-
         u.email,
-
         u.employee_code,
-
         u.role,
-
         u.job_title
-
       ]
       .join(' ')
       .toLowerCase();
 
-
       return(
-
-        (!text||
-         haystack.includes(text))&&
-
-        (!role||
-         u.role===role)
-
+        (!text||haystack.includes(text)) &&
+        (!role||u.role===role)
       );
 
     });
@@ -2895,18 +3979,12 @@ function renderUsersTable(){
 
     tbody.innerHTML=
       `<tr>
-
-        <td
-          colspan="7"
-          style="
-            text-align:center;
-            padding:20px;
-            color:var(--muted);">
-
+        <td colspan="7" style="
+          text-align:center;
+          padding:20px;
+          color:var(--muted);">
           No users found
-
         </td>
-
       </tr>`;
 
     return;
@@ -2920,62 +3998,34 @@ function renderUsersTable(){
       <tr>
 
         <td>
-
-          <b>
-            ${escapeHtml(
-              user.full_name||'N/A'
-            )}
-          </b>
-
+          <b>${escapeHtml(user.full_name||'N/A')}</b>
           <div class="helper">
-            ${escapeHtml(
-              user.job_title||''
-            )}
+            ${escapeHtml(user.job_title||'')}
           </div>
+        </td>
 
+        <td>
+          ${escapeHtml(user.email||'N/A')}
+        </td>
+
+        <td>
+          ${escapeHtml(user.employee_code||'N/A')}
         </td>
 
         <td>
           ${escapeHtml(
-            user.email||'N/A'
+            appState.departments[user.department_id]||'N/A'
           )}
         </td>
 
         <td>
-          ${escapeHtml(
-            user.employee_code||'N/A'
-          )}
+          ${escapeHtml(user.role||'N/A')}
         </td>
 
         <td>
-          ${escapeHtml(
-            appState.departments[
-              user.department_id
-            ]||'N/A'
-          )}
-        </td>
-
-        <td>
-          ${escapeHtml(
-            user.role||'N/A'
-          )}
-        </td>
-
-        <td>
-
-          <span
-            class="user-status ${
-              escapeHtml(
-                user.status||'inactive'
-              )
-            }">
-
-            ${escapeHtml(
-              user.status||'unknown'
-            )}
-
+          <span class="user-status ${escapeHtml(user.status||'inactive')}">
+            ${escapeHtml(user.status||'unknown')}
           </span>
-
         </td>
 
         <td>
@@ -2983,26 +4033,15 @@ function renderUsersTable(){
           <div class="action-buttons">
 
             <button
-              type="button"
-              data-action="edit-user"
-              data-id="${escapeHtml(user.id)}">
-
+              onclick="window.editUser('${user.id}')">
               Edit
-
             </button>
 
             <button
-              type="button"
-              data-action="toggle-user"
-              data-id="${escapeHtml(user.id)}"
-              data-status="${escapeHtml(user.status||'inactive')}">
-
-              ${
-                user.status==='active'
-                  ?'Deactivate'
-                  :'Activate'
-              }
-
+              onclick="window.toggleUserStatus('${user.id}','${user.status}')">
+              ${user.status==='active'
+                ?'Deactivate'
+                :'Activate'}
             </button>
 
           </div>
@@ -3020,41 +4059,26 @@ function openUserModal(){
 
   appState.editingUserId=null;
 
+  document.getElementById('user-modal-title')
+    .textContent='Edit User';
 
-  document.getElementById(
-    'user-modal-title'
-  ).textContent='Edit User';
+  document.getElementById('user-form')
+    .reset();
 
+  setStatus('user-form-status','','info');
 
-  document.getElementById(
-    'user-form'
-  ).reset();
-
-
-  setStatus(
-    'user-form-status',
-    '',
-    'info'
-  );
-
-
-  document.getElementById(
-    'user-modal'
-  ).classList.add('active');
+  document
+    .getElementById('user-modal')
+    .classList.add('active');
 
 }
 
 
 function closeUserModal(){
 
-  const modal=
-    document.getElementById(
-      'user-modal'
-    );
-
-
-  if(modal)
-    modal.classList.remove('active');
+  document
+    .getElementById('user-modal')
+    .classList.remove('active');
 
 }
 
@@ -3062,66 +4086,39 @@ function closeUserModal(){
 function editUser(userId){
 
   const user=
-    appState.users.find(
-      u=>u.id===userId
-    );
-
+    appState.users.find(u=>u.id===userId);
 
   if(!user)return;
 
 
   appState.editingUserId=userId;
 
-
-  document.getElementById(
-    'user-modal-title'
-  ).textContent='Edit User';
+  document.getElementById('user-modal-title')
+    .textContent='Edit User';
 
 
-  document.getElementById(
-    'user-full-name'
-  ).value=user.full_name||'';
+  document.getElementById('user-full-name').value=
+    user.full_name||'';
 
+  document.getElementById('user-email').value=
+    user.email||'';
 
-  document.getElementById(
-    'user-email'
-  ).value=user.email||'';
-
-
-  document.getElementById(
-    'user-employee-code'
-  ).value=
+  document.getElementById('user-employee-code').value=
     user.employee_code||'';
 
+  document.getElementById('user-department').value=
+    appState.departments[user.department_id]||'';
 
-  document.getElementById(
-    'user-department'
-  ).value=
-    appState.departments[
-      user.department_id
-    ]||'';
+  document.getElementById('user-role').value=
+    user.role||'';
 
-
-  document.getElementById(
-    'user-role'
-  ).value=user.role||'';
-
-
-  document.getElementById(
-    'user-job-title'
-  ).value=
+  document.getElementById('user-job-title').value=
     user.job_title||'';
 
-
-  document.getElementById(
-    'user-phone'
-  ).value=
+  document.getElementById('user-phone').value=
     user.phone||'';
 
-
-  document.getElementById(
-    'user-status'
-  ).value=
+  document.getElementById('user-status').value=
     user.status||'active';
 
 
@@ -3132,9 +4129,9 @@ function editUser(userId){
   );
 
 
-  document.getElementById(
-    'user-modal'
-  ).classList.add('active');
+  document
+    .getElementById('user-modal')
+    .classList.add('active');
 
 }
 
@@ -3156,12 +4153,8 @@ async function toggleUserStatus(
       await appState.supabase
         .from('profiles')
         .update({
-
           status:newStatus,
-
-          updated_at:
-            new Date().toISOString()
-
+          updated_at:new Date().toISOString()
         })
         .eq('id',userId)
         .select()
@@ -3196,9 +4189,7 @@ async function toggleUserStatus(
 }
 
 
-async function handleUserFormSubmit(
-  event
-){
+async function handleUserFormSubmit(event){
 
   event.preventDefault();
 
@@ -3217,61 +4208,33 @@ async function handleUserFormSubmit(
 
 
   const fullName=
-    document.getElementById(
-      'user-full-name'
-    ).value.trim();
-
+    document.getElementById('user-full-name').value.trim();
 
   const email=
-    document.getElementById(
-      'user-email'
-    ).value.trim();
-
+    document.getElementById('user-email').value.trim();
 
   const employeeCode=
-    document.getElementById(
-      'user-employee-code'
-    ).value.trim();
-
+    document.getElementById('user-employee-code').value.trim();
 
   const departmentName=
-    document.getElementById(
-      'user-department'
-    ).value;
-
+    document.getElementById('user-department').value;
 
   const role=
-    document.getElementById(
-      'user-role'
-    ).value;
-
+    document.getElementById('user-role').value;
 
   const jobTitle=
-    document.getElementById(
-      'user-job-title'
-    ).value.trim();
-
+    document.getElementById('user-job-title').value.trim();
 
   const phone=
-    document.getElementById(
-      'user-phone'
-    ).value.trim()||null;
-
+    document.getElementById('user-phone').value.trim()||null;
 
   const status=
-    document.getElementById(
-      'user-status'
-    ).value;
+    document.getElementById('user-status').value;
 
 
   const departmentId=
-    Object.entries(
-      appState.departments
-    )
-    .find(
-      ([,name])=>
-        name===departmentName
-    )?.[0];
+    Object.entries(appState.departments)
+      .find(([,name])=>name===departmentName)?.[0];
 
 
   if(
@@ -3305,9 +4268,7 @@ async function handleUserFormSubmit(
 
     const old=
       appState.users.find(
-        u=>
-          u.id===
-          appState.editingUserId
+        u=>u.id===appState.editingUserId
       );
 
 
@@ -3332,14 +4293,10 @@ async function handleUserFormSubmit(
 
           status,
 
-          updated_at:
-            new Date().toISOString()
+          updated_at:new Date().toISOString()
 
         })
-        .eq(
-          'id',
-          appState.editingUserId
-        )
+        .eq('id',appState.editingUserId)
         .select()
         .single();
 
@@ -3360,8 +4317,8 @@ async function handleUserFormSubmit(
 
     await loadUsers();
 
-
     closeUserModal();
+
 
   }catch(error){
 
@@ -3386,15 +4343,12 @@ async function handleLogin(event){
 
 
   const email=
-    document.getElementById(
-      'login-email'
-    ).value.trim();
-
+    document.getElementById('login-email')
+      .value.trim();
 
   const password=
-    document.getElementById(
-      'login-password'
-    ).value;
+    document.getElementById('login-password')
+      .value;
 
 
   if(!email||!password){
@@ -3422,33 +4376,21 @@ async function handleLogin(event){
     const {data,error}=
       await appState.supabase.auth
         .signInWithPassword({
-
           email,
-
           password
-
         });
 
 
     if(error)throw error;
 
 
-    appState.session=
-      data.session;
+    appState.session=data.session;
 
-
-    await loadProfile(
-      data.user
-    );
-
-
-    await loadDepartments();
-
+    await loadProfile(data.user);
 
     showDashboard();
 
-
-    switchModule('dashboard');
+    await refreshDashboard();
 
 
     setStatus(
@@ -3461,8 +4403,7 @@ async function handleLogin(event){
 
     setStatus(
       'login-status',
-      error.message||
-      'Unable to sign in.',
+      error.message||'Unable to sign in.',
       'error'
     );
 
@@ -3474,9 +4415,8 @@ async function handleLogin(event){
 async function handleForgotPassword(){
 
   const email=
-    document.getElementById(
-      'login-email'
-    ).value.trim();
+    document.getElementById('login-email')
+      .value.trim();
 
 
   if(!email){
@@ -3492,29 +4432,18 @@ async function handleForgotPassword(){
   }
 
 
-  try{
-
-    const {error}=
-      await appState.supabase.auth
-        .resetPasswordForEmail(
-          email,
-          {
-            redirectTo:
-              `${window.location.origin}${window.location.pathname}`
-          }
-        );
+  const {error}=
+    await appState.supabase.auth
+      .resetPasswordForEmail(
+        email,
+        {
+          redirectTo:
+            `${window.location.origin}${window.location.pathname}`
+        }
+      );
 
 
-    if(error)throw error;
-
-
-    setStatus(
-      'login-status',
-      'Password reset instructions sent.',
-      'success'
-    );
-
-  }catch(error){
+  if(error){
 
     setStatus(
       'login-status',
@@ -3522,7 +4451,16 @@ async function handleForgotPassword(){
       'error'
     );
 
+    return;
+
   }
+
+
+  setStatus(
+    'login-status',
+    'Password reset instructions sent.',
+    'success'
+  );
 
 }
 
@@ -3531,31 +4469,13 @@ async function handleSignOut(){
 
   if(!appState.supabase)return;
 
-
-  try{
-
-    await appState.supabase.auth.signOut();
-
-  }catch(error){
-
-    console.warn(
-      '[Sign Out]',
-      error.message
-    );
-
-  }
-
+  await appState.supabase.auth.signOut();
 
   appState.session=null;
 
   appState.profile=null;
 
-  appState.role=
-    'Auditor / Read Only';
-
-  appState.currentModule=
-    'dashboard';
-
+  appState.role='Auditor / Read Only';
 
   showLogin();
 
@@ -3573,15 +4493,11 @@ function filterCurrentModule(value){
 
 
   if(
-    appState.currentModule===
-    'documents'
+    appState.currentModule==='documents'
   ){
 
     const input=
-      document.getElementById(
-        'document-search'
-      );
-
+      document.getElementById('document-search');
 
     if(input){
 
@@ -3591,22 +4507,17 @@ function filterCurrentModule(value){
 
     }
 
-
     return;
 
   }
 
 
   if(
-    appState.currentModule===
-    'user-management'
+    appState.currentModule==='user-management'
   ){
 
     const input=
-      document.getElementById(
-        'users-filter'
-      );
-
+      document.getElementById('users-filter');
 
     if(input){
 
@@ -3625,553 +4536,41 @@ function filterCurrentModule(value){
    SESSION
 ========================= */
 
-async function initializeSession(){
+async function handleSession(){
 
-  if(
-    !appState.supabase ||
-    appState.loadingSession
-  )
-    return;
+  if(!appState.supabase)return;
 
 
-  appState.loadingSession=true;
+  const {
+    data:{session},
+    error
+  }=
+    await appState.supabase.auth.getSession();
 
 
-  try{
-
-    const {
-      data:{session},
-      error
-    }=
-      await appState.supabase.auth
-        .getSession();
-
-
-    if(error){
-
-      console.warn(
-        '[Session]',
-        error.message
-      );
-
-    }
-
-
-    if(!session){
-
-      showLogin();
-
-      return;
-
-    }
-
-
-    appState.session=session;
-
-
-    await loadProfile(
-      session.user
-    );
-
-
-    await loadDepartments();
-
-
-    showDashboard();
-
-
-    switchModule('dashboard');
-
-  }catch(error){
-
-    console.error(
-      '[Session]',
-      error
-    );
+  if(error||!session){
 
     showLogin();
 
-  }finally{
-
-    appState.loadingSession=false;
+    return;
 
   }
 
-}
 
+  appState.session=session;
 
-/* =========================
-   EVENT DELEGATION
-   THIS FIXES SIDEBAR
-========================= */
+  await loadProfile(session.user);
 
-function setupNavigation(){
+  await loadDepartments();
 
-  document.addEventListener(
-    'click',
-    function(event){
+  showDashboard();
 
-      const button=
-        event.target.closest(
-          '.nav[data-module]'
-        );
-
-
-      if(!button)return;
-
-
-      event.preventDefault();
-
-
-      if(button.disabled)
-        return;
-
-
-      const module=
-        button.dataset.module;
-
-
-      if(!module)return;
-
-
-      switchModule(module);
-
-    }
-  );
+  await refreshDashboard();
 
 }
 
 
-/* =========================
-   ACTION DELEGATION
-========================= */
-
-function setupActionDelegation(){
-
-  document.addEventListener(
-    'click',
-    function(event){
-
-      const target=
-        event.target.closest(
-          '[data-action]'
-        );
-
-
-      if(!target)return;
-
-
-      const action=
-        target.dataset.action;
-
-
-      const id=
-        target.dataset.id;
-
-
-      if(action==='edit-document'){
-
-        editDocument(id);
-
-      }
-
-
-      else if(
-        action==='delete-document'
-      ){
-
-        deleteDocument(id);
-
-      }
-
-
-      else if(
-        action==='approve-document'
-      ){
-
-        approveDocument(id);
-
-      }
-
-
-      else if(
-        action==='open-document-file'
-      ){
-
-        openDocumentFile(id);
-
-      }
-
-
-      else if(action==='edit-user'){
-
-        editUser(id);
-
-      }
-
-
-      else if(action==='toggle-user'){
-
-        toggleUserStatus(
-          id,
-          target.dataset.status
-        );
-
-      }
-
-    }
-  );
-
-}
-
-
-/* =========================
-   EVENTS
-========================= */
-
-function setupEvents(){
-
-  /* Login */
-
-  document
-    .getElementById('login-form')
-    ?.addEventListener(
-      'submit',
-      handleLogin
-    );
-
-
-  document
-    .getElementById(
-      'forgot-password-btn'
-    )
-    ?.addEventListener(
-      'click',
-      handleForgotPassword
-    );
-
-
-  /* Sign Out */
-
-  document
-    .getElementById(
-      'signout-button'
-    )
-    ?.addEventListener(
-      'click',
-      handleSignOut
-    );
-
-
-  /* Profile */
-
-  document
-    .getElementById(
-      'profile-button'
-    )
-    ?.addEventListener(
-      'click',
-      ()=>{
-
-        alert(
-
-          `User: ${
-            appState.profile?.full_name||'—'
-          }\n`+
-
-          `Role: ${
-            appState.role||'—'
-          }\n`+
-
-          `Job Title: ${
-            appState.profile?.job_title||'—'
-          }`
-
-        );
-
-      }
-    );
-
-
-  /* Add User */
-
-  document
-    .getElementById(
-      'add-user-btn'
-    )
-    ?.addEventListener(
-      'click',
-      openUserModal
-    );
-
-
-  /* User Form */
-
-  document
-    .getElementById(
-      'user-form'
-    )
-    ?.addEventListener(
-      'submit',
-      handleUserFormSubmit
-    );
-
-
-  /* User Search */
-
-  document
-    .getElementById(
-      'users-filter'
-    )
-    ?.addEventListener(
-      'input',
-      renderUsersTable
-    );
-
-
-  document
-    .getElementById(
-      'role-filter'
-    )
-    ?.addEventListener(
-      'change',
-      renderUsersTable
-    );
-
-
-  /* Document Form */
-
-  document
-    .getElementById(
-      'document-form'
-    )
-    ?.addEventListener(
-      'submit',
-      handleDocumentSubmit
-    );
-
-
-  /* Document Filters */
-
-  document
-    .getElementById(
-      'document-search'
-    )
-    ?.addEventListener(
-      'input',
-      renderDocuments
-    );
-
-
-  document
-    .getElementById(
-      'document-type-filter'
-    )
-    ?.addEventListener(
-      'change',
-      renderDocuments
-    );
-
-
-  document
-    .getElementById(
-      'document-status-filter'
-    )
-    ?.addEventListener(
-      'change',
-      renderDocuments
-    );
-
-
-  document
-    .getElementById(
-      'document-approval-filter'
-    )
-    ?.addEventListener(
-      'change',
-      renderDocuments
-    );
-
-
-  document
-    .getElementById(
-      'document-department-filter'
-    )
-    ?.addEventListener(
-      'change',
-      renderDocuments
-    );
-
-
-  /* Global Search */
-
-  document
-    .getElementById(
-      'global-search'
-    )
-    ?.addEventListener(
-      'input',
-      event=>
-        filterCurrentModule(
-          event.target.value
-        )
-    );
-
-}
-
-
-/* =========================
-   GLOBAL FUNCTIONS
-========================= */
-
-function exposeGlobalFunctions(){
-
-  window.switchModule=
-    switchModule;
-
-  window.openDocumentModal=
-    openDocumentModal;
-
-  window.closeDocumentModal=
-    closeDocumentModal;
-
-  window.editDocument=
-    editDocument;
-
-  window.deleteDocument=
-    deleteDocument;
-
-  window.approveDocument=
-    approveDocument;
-
-  window.openDocumentFile=
-    openDocumentFile;
-
-  window.loadDocuments=
-    loadDocuments;
-
-  window.refreshDashboard=
-    refreshDashboard;
-
-  window.openUserModal=
-    openUserModal;
-
-  window.closeUserModal=
-    closeUserModal;
-
-  window.editUser=
-    editUser;
-
-  window.toggleUserStatus=
-    toggleUserStatus;
-
-  window.showComingSoon=
-    showComingSoon;
-
-}
-
-
-/* =========================
-   AUTH STATE LISTENER
-========================= */
-
-function setupAuthListener(){
-
-  appState.supabase.auth
-    .onAuthStateChange(
-      async(_event,session)=>{
-
-        console.log(
-          '[Auth]',
-          _event
-        );
-
-
-        /*
-          Ignore duplicate INITIAL_SESSION
-          work when initializeSession()
-          is already processing it.
-        */
-
-        if(
-          _event==='INITIAL_SESSION'
-        ){
-
-          return;
-
-        }
-
-
-        if(session){
-
-          appState.session=
-            session;
-
-
-          await loadProfile(
-            session.user
-          );
-
-
-          await loadDepartments();
-
-
-          showDashboard();
-
-
-          if(
-            appState.currentModule
-          ){
-
-            switchModule(
-              appState.currentModule
-            );
-
-          }else{
-
-            switchModule(
-              'dashboard'
-            );
-
-          }
-
-        }else{
-
-          appState.session=null;
-
-          appState.profile=null;
-
-          appState.role=
-            'Auditor / Read Only';
-
-
-          showLogin();
-
-        }
-
-      }
-    );
-
-}
-
-
-/* =========================
-   INIT
-========================= */
-
-async function init(){
-
-  if(appState.initialized)
-    return;
-
-
-  appState.initialized=true;
-
-
-  console.log(
-    '[INIT] Starting Pure Ice FSMS...'
-  );
-
+function init(){
 
   if(
     !window.PURE_ICE_CONFIG||
@@ -4190,72 +4589,233 @@ async function init(){
   }
 
 
-  try{
+  appState.supabase=
+    window.supabase.createClient(
+      window.PURE_ICE_CONFIG.supabaseUrl,
+      window.PURE_ICE_CONFIG.supabaseAnonKey
+    );
 
-    appState.supabase=
-      window.supabase.createClient(
-        window.PURE_ICE_CONFIG.supabaseUrl,
-        window.PURE_ICE_CONFIG.supabaseAnonKey
+
+  /* EVENTS */
+
+  document
+    .getElementById('login-form')
+    .addEventListener(
+      'submit',
+      handleLogin
+    );
+
+
+  document
+    .getElementById('forgot-password-btn')
+    .addEventListener(
+      'click',
+      handleForgotPassword
+    );
+
+
+  document
+    .getElementById('signout-button')
+    .addEventListener(
+      'click',
+      handleSignOut
+    );
+
+
+  document
+    .getElementById('profile-button')
+    .addEventListener(
+      'click',
+      ()=>{
+        alert(
+          `User: ${appState.profile?.full_name||'—'}\n`+
+          `Role: ${appState.role||'—'}\n`+
+          `Job Title: ${appState.profile?.job_title||'—'}`
+        );
+      }
+    );
+
+
+  document
+    .getElementById('add-user-btn')
+    .addEventListener(
+      'click',
+      openUserModal
+    );
+
+
+  document
+    .getElementById('user-form')
+    .addEventListener(
+      'submit',
+      handleUserFormSubmit
+    );
+
+
+  document
+    .getElementById('users-filter')
+    .addEventListener(
+      'input',
+      renderUsersTable
+    );
+
+
+  document
+    .getElementById('role-filter')
+    .addEventListener(
+      'change',
+      renderUsersTable
+    );
+
+
+  document
+    .getElementById('document-form')
+    .addEventListener(
+      'submit',
+      handleDocumentSubmit
+    );
+
+
+  document
+    .getElementById('document-search')
+    .addEventListener(
+      'input',
+      renderDocuments
+    );
+
+
+  document
+    .getElementById('document-type-filter')
+    .addEventListener(
+      'change',
+      renderDocuments
+    );
+
+
+  document
+    .getElementById('document-status-filter')
+    .addEventListener(
+      'change',
+      renderDocuments
+    );
+
+
+  document
+    .getElementById('document-approval-filter')
+    .addEventListener(
+      'change',
+      renderDocuments
+    );
+
+
+  document
+    .getElementById('document-department-filter')
+    .addEventListener(
+      'change',
+      renderDocuments
+    );
+
+
+  document
+    .getElementById('global-search')
+    .addEventListener(
+      'input',
+      event=>
+        filterCurrentModule(event.target.value)
+    );
+
+
+  document
+    .querySelectorAll('.nav')
+    .forEach(button=>{
+
+      button.addEventListener(
+        'click',
+        ()=>{
+          if(!button.disabled)
+            switchModule(button.dataset.module);
+        }
       );
 
-
-    setupEvents();
-
-    setupNavigation();
-
-    setupActionDelegation();
-
-    exposeGlobalFunctions();
-
-    setupAuthListener();
+    });
 
 
-    await initializeSession();
+  /* GLOBAL FUNCTIONS */
+
+  window.switchModule=switchModule;
+
+  window.openDocumentModal=openDocumentModal;
+
+  window.closeDocumentModal=closeDocumentModal;
+
+  window.editDocument=editDocument;
+
+  window.deleteDocument=deleteDocument;
+
+  window.approveDocument=approveDocument;
+
+  window.openDocumentFile=openDocumentFile;
+
+  window.loadDocuments=loadDocuments;
+
+  window.refreshDashboard=refreshDashboard;
+
+  window.openUserModal=openUserModal;
+
+  window.closeUserModal=closeUserModal;
+
+  window.editUser=editUser;
+
+  window.toggleUserStatus=toggleUserStatus;
+
+  window.showComingSoon=showComingSoon;
 
 
-    console.log(
-      '[INIT] Pure Ice FSMS ready.'
+  /* AUTH STATE */
+
+  appState.supabase.auth
+    .onAuthStateChange(
+      async(_event,session)=>{
+
+        if(session){
+
+          appState.session=session;
+
+          await loadProfile(session.user);
+
+          await loadDepartments();
+
+          showDashboard();
+
+          await refreshDashboard();
+
+        }else{
+
+          appState.session=null;
+
+          appState.profile=null;
+
+          appState.role='Auditor / Read Only';
+
+          showLogin();
+
+        }
+
+      }
     );
 
-  }catch(error){
 
-    console.error(
-      '[INIT] Fatal error:',
-      error
-    );
-
-
-    setStatus(
-      'login-status',
-      'System initialization failed: '+
-      error.message,
-      'error'
-    );
-
-  }
+  handleSession();
 
 }
 
 
-/* =========================
-   START
-========================= */
-
-if(
-  document.readyState===
-  'loading'
-){
-
-  document.addEventListener(
-    'DOMContentLoaded',
-    init,
-    {once:true}
-  );
-
-}else{
-
-  init();
-
-}
+document.addEventListener(
+  'DOMContentLoaded',
+  init
+);
 
 </script>
+
+</body>
+</html>
