@@ -575,12 +575,18 @@
     }
 
     function applyRoleAccess() {
+      console.log('[applyRoleAccess] Current role:', appState.role);
       const allowed = ROLE_ACCESS[appState.role] || ROLE_ACCESS['Auditor / Read Only'];
+      console.log('[applyRoleAccess] Allowed modules:', allowed);
+      
       document.querySelectorAll('.nav').forEach((button) => {
         const key = button.dataset.module || 'dashboard';
         const isAllowed = allowed.includes(key);
         button.disabled = !isAllowed;
-        button.style.opacity = isAllowed ? '1' : '.45';
+        
+        if (key === 'user-management') {
+          console.log('[applyRoleAccess] user-management button:', { isAllowed, disabled: !isAllowed, role: appState.role });
+        }
       });
 
       const profileLabel = document.getElementById('profile-button');
@@ -592,38 +598,44 @@
     async function loadProfile(sessionUser) {
       if (!sessionUser || !appState.supabase) return null;
 
-      const profilePayload = {
-        id: sessionUser.id,
-        full_name: sessionUser.user_metadata?.full_name || sessionUser.email?.split('@')[0] || 'Pure Ice User',
-        email: sessionUser.email,
-        employee_code: sessionUser.user_metadata?.employee_code || `PI-${sessionUser.id.slice(0, 6).toUpperCase()}`,
-        department_id: null,
-        role: sessionUser.user_metadata?.role || 'Auditor / Read Only',
-        job_title: sessionUser.user_metadata?.job_title || 'FSMS User',
-        phone: sessionUser.user_metadata?.phone || null,
-        status: 'active',
-        avatar_url: sessionUser.user_metadata?.avatar_url || null,
-        updated_at: new Date().toISOString()
-      };
+      try {
+        // Query the profiles table to get the actual role from database
+        const { data: dbProfile, error: dbError } = await appState.supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', sessionUser.id)
+          .maybeSingle();
 
-      const { data, error } = await appState.supabase
-        .from('profiles')
-        .upsert(profilePayload, { onConflict: 'id' })
-        .select('*')
-        .maybeSingle();
+        if (dbError) {
+          console.warn('[loadProfile] Database query error:', dbError.message);
+        }
 
-      if (error) {
-        console.warn('Profile could not be synced yet:', error.message);
-        appState.profile = { full_name: profilePayload.full_name, role: profilePayload.role };
-        appState.role = profilePayload.role;
+        if (dbProfile) {
+          console.log('[loadProfile] Found profile in database:', dbProfile);
+          appState.profile = dbProfile;
+          appState.role = dbProfile.role || 'Auditor / Read Only';
+        } else {
+          console.log('[loadProfile] No profile in database, using defaults');
+          appState.profile = {
+            id: sessionUser.id,
+            full_name: sessionUser.user_metadata?.full_name || sessionUser.email?.split('@')[0] || 'Pure Ice User',
+            email: sessionUser.email,
+            role: sessionUser.user_metadata?.role || 'Auditor / Read Only',
+            status: 'active'
+          };
+          appState.role = appState.profile.role;
+        }
+
+        console.log('[loadProfile] Final appState.role:', appState.role);
+        applyRoleAccess();
+        return appState.profile;
+      } catch (err) {
+        console.error('[loadProfile] Unexpected error:', err);
+        appState.profile = { full_name: sessionUser.email?.split('@')[0] || 'User', role: 'Auditor / Read Only' };
+        appState.role = 'Auditor / Read Only';
         applyRoleAccess();
         return appState.profile;
       }
-
-      appState.profile = data || profilePayload;
-      appState.role = data?.role || profilePayload.role;
-      applyRoleAccess();
-      return appState.profile;
     }
 
     async function queryTableCount(tableName, filters) {
