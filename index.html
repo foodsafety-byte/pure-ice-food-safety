@@ -2,7618 +2,1248 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>PURE ICE — Food Safety Management System</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PURE ICE | Food Safety Management System</title>
 <link rel="icon" href="data:,">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
 
 <style>
 :root{
-  --bg:#f4f7fb;
-  --card:#fff;
-  --text:#172033;
-  --muted:#718096;
-  --line:#e5eaf1;
-  --primary:#1769aa;
-  --primary2:#0d8bdc;
-  --good:#16855b;
-  --warn:#c47b00;
-  --bad:#c0392b;
-  --shadow:0 8px 30px rgba(15,35,60,.07);
-  --radius:16px;
+  --bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#6b7280;
+  --line:#e5e7eb;--primary:#0f766e;--primary2:#115e59;
+  --danger:#dc2626;--warning:#d97706;--success:#15803d;
+  --sidebar:#0b1728;--sidebar2:#10243d;--radius:14px
 }
-
 *{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-
-button,input,select,textarea{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-.hidden{
-  display:none!important;
-}
-
-/* LOGIN */
-
-#login-screen{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:25px;
-  background:
-    radial-gradient(circle at top left,#dff4ff,transparent 35%),
-    radial-gradient(circle at bottom right,#e9f5ff,transparent 35%),
-    var(--bg);
-}
-
-.login-card{
-  width:100%;
-  max-width:430px;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:24px;
-  padding:38px;
-  box-shadow:var(--shadow);
-}
-
-.logo{
-  display:flex;
-  align-items:center;
-  gap:13px;
-  margin-bottom:28px;
-}
-
-.logo-mark{
-  width:52px;
-  height:52px;
-  border-radius:15px;
-  background:linear-gradient(135deg,#0d8bdc,#1769aa);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
-}
-
-.logo-title{
-  font-size:22px;
-  font-weight:800;
-}
-
-.logo-sub{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:3px;
-}
-
-.form-group{
-  margin-bottom:16px;
-}
-
-.form-group label{
-  display:block;
-  font-size:13px;
-  font-weight:700;
-  margin-bottom:7px;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea,
-.search-box input{
-  width:100%;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:11px 12px;
-  outline:none;
-  background:#fff;
-}
-
-.form-group textarea{
-  min-height:90px;
-  resize:vertical;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus,
-.search-box input:focus{
-  border-color:var(--primary2);
-  box-shadow:0 0 0 3px rgba(13,139,220,.1);
-}
-
-.primary-btn,
-.secondary-btn,
-.danger-btn,
-.small-btn{
-  border:0;
-  border-radius:9px;
-  padding:10px 15px;
-  font-weight:700;
-}
-
-.primary-btn{
-  background:var(--primary);
-  color:#fff;
-}
-
-.secondary-btn{
-  background:#edf4fa;
-  color:#20506f;
-}
-
-.danger-btn{
-  background:#fff0ef;
-  color:var(--bad);
-}
-
-.small-btn{
-  padding:7px 10px;
-  background:#edf4fa;
-  color:#20506f;
-  font-size:12px;
-}
-
-.primary-btn:hover{background:#125b91}
-.secondary-btn:hover{background:#e2edf5}
-
-.login-actions{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:20px;
-}
-
-#forgot-password-btn{
-  border:0;
-  background:none;
-  color:var(--primary);
-  font-size:12px;
-}
-
-.status{
-  margin-top:12px;
-  padding:10px 12px;
-  border-radius:9px;
-  font-size:13px;
-}
-
-.status:empty{
-  display:none;
-}
-
-.status.error{
-  background:#fff0ef;
-  color:var(--bad);
-}
-
-.status.success{
-  background:#eaf8f1;
-  color:var(--good);
-}
-
-.status.info{
-  background:#edf6fc;
-  color:#286486;
-}
-
-/* APP */
-
-#app-shell{
-  min-height:100vh;
-  display:flex;
-}
-
-.sidebar{
-  width:255px;
-  background:#102538;
-  color:#fff;
-  position:fixed;
-  left:0;
-  top:0;
-  bottom:0;
-  overflow-y:auto;
-  z-index:20;
-}
-
-.sidebar-brand{
-  padding:22px 20px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.sidebar-brand .brand{
-  font-size:20px;
-  font-weight:800;
-}
-
-.sidebar-brand .brand-sub{
-  color:#9fb1c2;
-  font-size:11px;
-  margin-top:5px;
-}
-
-.nav-section{
-  padding:18px 12px 7px;
-  color:#71899d;
-  text-transform:uppercase;
-  font-size:10px;
-  font-weight:800;
-  letter-spacing:.8px;
-}
-
-.nav{
-  width:100%;
-  border:0;
-  background:none;
-  color:#c7d4df;
-  text-align:left;
-  padding:11px 15px;
-  border-radius:9px;
-  margin:2px 0;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:13px;
-}
-
-.nav:hover{
-  background:rgba(255,255,255,.07);
-  color:#fff;
-}
-
-.nav.active{
-  background:#1769aa;
-  color:#fff;
-}
-
-.nav:disabled{
-  opacity:.35;
-  cursor:not-allowed;
-}
-
-.main{
-  margin-left:255px;
-  width:calc(100% - 255px);
-  min-height:100vh;
-}
-
-.topbar{
-  height:72px;
-  background:#fff;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 25px;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-
-.topbar-title{
-  font-size:18px;
-  font-weight:800;
-}
-
-.topbar-sub{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:3px;
-}
-
-.topbar-right{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.search-box{
-  width:260px;
-}
-
-.profile-btn{
-  border:1px solid var(--line);
-  background:#fff;
-  border-radius:10px;
-  padding:9px 12px;
-}
-
-.content{
-  padding:25px;
-  max-width:1600px;
-  margin:auto;
-}
-
-/* CARDS */
-
-.page-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-
-.page-header h1{
-  margin:0;
-  font-size:24px;
-}
-
-.page-header p{
-  margin:6px 0 0;
-  color:var(--muted);
-  font-size:13px;
-}
-
-.kpi-grid{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:14px;
-  margin-bottom:20px;
-}
-
-.kpi{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:18px;
-  box-shadow:var(--shadow);
-}
-
-.kpi-label{
-  color:var(--muted);
-  font-size:11px;
-  font-weight:700;
-  text-transform:uppercase;
-}
-
-.kpi-value{
-  font-size:27px;
-  font-weight:800;
-  margin:9px 0 5px;
-}
-
-.kpi-sub{
-  color:var(--muted);
-  font-size:11px;
-}
-
-.grid-2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-}
-
-.grid-3{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
-}
-
-.card{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:20px;
-  margin-bottom:18px;
-}
-
-.card-title{
-  font-size:15px;
-  font-weight:800;
-  margin-bottom:15px;
-}
-
-.chart{
-  height:180px;
-  display:flex;
-  align-items:end;
-  gap:22px;
-  padding:10px 10px 25px;
-  border-bottom:1px solid var(--line);
-}
-
-.chart-item{
-  flex:1;
-  height:100%;
-  display:flex;
-  align-items:end;
-  justify-content:center;
-}
-
-.chart-bar{
-  width:55%;
-  min-height:5px;
-  background:linear-gradient(to top,#1769aa,#54b5ec);
-  border-radius:7px 7px 0 0;
-}
-
-.chart-label{
-  position:absolute;
-  margin-top:195px;
-  font-size:10px;
-  color:var(--muted);
-}
-
-.issue{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:13px 0;
-  border-bottom:1px solid var(--line);
-}
-
-.issue:last-child{
-  border-bottom:0;
-}
-
-.issue-text{
-  flex:1;
-}
-
-.issue-text b{
-  display:block;
-  font-size:13px;
-}
-
-.issue-text span{
-  display:block;
-  color:var(--muted);
-  font-size:11px;
-  margin-top:3px;
-}
-
-.dot{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:var(--warn);
-}
-
-.dot.good{background:var(--good)}
-.dot.bad{background:var(--bad)}
-
-.pill{
-  background:#edf4fa;
-  color:#286486;
-  border-radius:20px;
-  padding:5px 9px;
-  font-size:10px;
-  font-weight:700;
-}
-
-.pill.warn{
-  background:#fff6df;
-  color:#a46700;
-}
-
-.pill.bad{
-  background:#fff0ef;
-  color:var(--bad);
-}
-
-.progress-wrap{
-  margin-bottom:14px;
-}
-
-.progress-header{
-  display:flex;
-  justify-content:space-between;
-  font-size:12px;
-  margin-bottom:6px;
-}
-
-.progress{
-  height:8px;
-  background:#edf1f5;
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.progress-bar{
-  height:100%;
-  background:#1769aa;
-  width:0%;
-}
-
-/* TABLE */
-
-.table-wrap{
-  overflow:auto;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:850px;
-}
-
-th{
-  text-align:left;
-  padding:11px 10px;
-  background:#f7f9fb;
-  color:#66778a;
-  font-size:11px;
-  text-transform:uppercase;
-  border-bottom:1px solid var(--line);
-}
-
-td{
-  padding:12px 10px;
-  border-bottom:1px solid var(--line);
-  font-size:12px;
-  vertical-align:middle;
-}
-
-tr:hover td{
-  background:#fbfcfd;
-}
-
-.helper{
-  color:var(--muted);
-  font-size:10px;
-  margin-top:3px;
-}
-
-.action-buttons{
-  display:flex;
-  gap:5px;
-  flex-wrap:wrap;
-}
-
-/* FILTERS */
-
-.filters{
-  display:grid;
-  grid-template-columns:2fr 1fr 1fr 1fr 1fr;
-  gap:10px;
-  margin-bottom:15px;
-}
-
-.filters input,
-.filters select{
-  border:1px solid var(--line);
-  border-radius:9px;
-  padding:10px;
-}
-
-/* RECORD ENGINE */
-
-.engine-tabs{
-  display:flex;
-  gap:7px;
-  margin-bottom:18px;
-  border-bottom:1px solid var(--line);
-  padding-bottom:8px;
-}
-
-.engine-tab{
-  border:0;
-  background:#edf4fa;
-  color:#286486;
-  padding:9px 13px;
-  border-radius:9px;
-  font-size:12px;
-  font-weight:700;
-}
-
-.engine-tab.active{
-  background:#1769aa;
-  color:#fff;
-}
-
-.stat-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin-bottom:18px;
-}
-
-.stat-box{
-  background:#f8fafc;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:15px;
-}
-
-.stat-box strong{
-  display:block;
-  font-size:23px;
-}
-
-.stat-box span{
-  color:var(--muted);
-  font-size:11px;
-}
-
-/* PLACEHOLDER */
-
-.module-placeholder{
-  text-align:center;
-  padding:70px 20px;
-}
-
-.module-placeholder .big-icon{
-  font-size:48px;
-  margin-bottom:12px;
-}
-
-.module-placeholder h2{
-  margin:0 0 8px;
-}
-
-.module-placeholder p{
-  color:var(--muted);
-  max-width:650px;
-  margin:auto;
-  line-height:1.6;
-}
-
-/* MODAL */
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(10,25,40,.55);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:100;
-}
-
-.modal.active{
-  display:flex;
-}
-
-.modal-card{
-  width:100%;
-  max-width:720px;
-  max-height:92vh;
-  overflow:auto;
-  background:#fff;
-  border-radius:18px;
-  box-shadow:0 20px 70px rgba(0,0,0,.2);
-}
-
-.modal-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:18px 20px;
-  border-bottom:1px solid var(--line);
-}
-
-.modal-header h3{
-  margin:0;
-}
-
-.close-btn{
-  border:0;
-  background:#f2f5f7;
-  width:32px;
-  height:32px;
-  border-radius:8px;
-}
-
-.modal-body{
-  padding:20px;
-}
-
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-
-.full{
-  grid-column:1/-1;
-}
-
-.modal-footer{
-  padding:15px 20px;
-  border-top:1px solid var(--line);
-  display:flex;
-  justify-content:flex-end;
-  gap:8px;
-}
-
-.check-row{
-  display:flex;
-  gap:8px;
-  align-items:center;
-  font-size:12px;
-  margin:9px 0;
-}
-
-/* USER */
-
-.user-status{
-  padding:4px 8px;
-  border-radius:15px;
-  font-size:10px;
-  font-weight:700;
-}
-
-.user-status.active{
-  background:#eaf8f1;
-  color:var(--good);
-}
-
-.user-status.inactive{
-  background:#fff0ef;
-  color:var(--bad);
-}
-
-/* RESPONSIVE */
-
-@media(max-width:1200px){
-  .kpi-grid{
-    grid-template-columns:repeat(3,1fr);
-  }
-}
-
-@media(max-width:900px){
-  .sidebar{
-    width:210px;
-  }
-
-  .main{
-    margin-left:210px;
-    width:calc(100% - 210px);
-  }
-
-  .grid-2,
-  .grid-3{
-    grid-template-columns:1fr;
-  }
-
-  .filters{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .search-box{
-    width:180px;
-  }
-}
-
-@media(max-width:700px){
-  .sidebar{
-    display:none;
-  }
-
-  .main{
-    margin-left:0;
-    width:100%;
-  }
-
-  .kpi-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .topbar{
-    padding:0 12px;
-  }
-
-  .topbar-right .search-box{
-    display:none;
-  }
-
-  .content{
-    padding:15px;
-  }
-
-  .form-grid{
-    grid-template-columns:1fr;
-  }
-
-  .full{
-    grid-column:auto;
-  }
-
-  .filters{
-    grid-template-columns:1fr;
-  }
-}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#071426,#0f766e)}
+.login-card{width:min(420px,92%);background:#fff;border-radius:22px;padding:36px;box-shadow:0 25px 70px #0005}
+.logo{text-align:center;font-size:44px}
+.login-card h1{text-align:center;margin:8px 0 2px}
+.login-card p{text-align:center;color:var(--muted)}
+.form-group{margin:14px 0}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:#fff}
+textarea{min-height:90px;resize:vertical}
+.btn{border:0;border-radius:9px;padding:10px 15px;font-weight:700}
+.btn-primary{background:var(--primary);color:white}
+.btn-primary:hover{background:var(--primary2)}
+.btn-light{background:#f1f5f9;color:#334155}
+.btn-danger{background:#fee2e2;color:#991b1b}
+.btn-success{background:#dcfce7;color:#166534}
+.btn-sm{padding:7px 10px;font-size:12px}
+
+#app-shell{display:none;min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;background:var(--sidebar);color:#fff;padding:20px 14px;overflow:auto}
+.brand{display:flex;gap:10px;align-items:center;padding:8px 10px 20px;border-bottom:1px solid #ffffff18}
+.brand-icon{font-size:30px}.brand-title{font-size:18px;font-weight:800}.brand-sub{font-size:10px;color:#9ca3af}
+.nav-title{font-size:10px;text-transform:uppercase;color:#64748b;font-weight:800;margin:22px 10px 6px}
+.nav-btn{width:100%;border:0;background:transparent;color:#cbd5e1;text-align:left;padding:10px 12px;border-radius:8px;margin:2px 0;font-size:13px}
+.nav-btn:hover,.nav-btn.active{background:var(--sidebar2);color:#fff}
+.main{margin-left:250px;padding:22px;min-height:100vh}
+.topbar{height:55px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.page-title{font-size:24px;font-weight:800}.page-subtitle{color:var(--muted);font-size:12px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.profile{background:#fff;border:1px solid var(--line);padding:8px 12px;border-radius:10px;font-size:12px}
+
+.section{display:none}.section.active{display:block}
+.grid{display:grid;gap:15px}.grid-6{grid-template-columns:repeat(6,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.kpi-label{font-size:12px;color:var(--muted);font-weight:700}.kpi-value{font-size:30px;font-weight:800;margin-top:5px}.kpi-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.card-title{font-weight:800;margin-bottom:14px}
+.dashboard-header{margin-bottom:18px}.dashboard-header h1{margin:0;font-size:28px}.dashboard-header p{margin:5px 0;color:var(--muted)}
+.progress{height:8px;background:#e5e7eb;border-radius:20px;overflow:hidden}.progress>span{display:block;height:100%;background:var(--primary)}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px}.toolbar>*{max-width:230px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:850px;background:#fff}
+th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}
+th{background:#f8fafc;color:#475569;font-size:11px;text-transform:uppercase}
+.badge{display:inline-block;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:800}
+.badge-green{background:#dcfce7;color:#166534}.badge-yellow{background:#fef3c7;color:#92400e}
+.badge-red{background:#fee2e2;color:#991b1b}.badge-blue{background:#dbeafe;color:#1e40af}
+.empty{text-align:center;padding:35px;color:var(--muted)}
+.alert{padding:12px;border-radius:10px;background:#f8fafc;margin:7px 0;font-size:12px}
+.alert.danger{background:#fee2e2}.alert.warning{background:#fef3c7}.alert.success{background:#dcfce7}
+
+.modal{position:fixed;inset:0;background:#0007;display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
+.modal.open{display:flex}
+.modal-box{width:min(760px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.modal-head h2{margin:0;font-size:19px}.close{border:0;background:#f1f5f9;border-radius:8px;width:34px;height:34px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.full{grid-column:1/-1}
+.status{font-size:12px;margin-top:10px}
+.search{max-width:300px!important}
+.action-cell{white-space:nowrap}
+.toast{position:fixed;right:20px;bottom:20px;background:#172033;color:#fff;padding:13px 18px;border-radius:10px;z-index:200;display:none;font-size:13px}
+.toast.show{display:block}
+@media(max-width:1100px){.grid-6{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:750px){.sidebar{width:70px}.brand-title,.brand-sub,.nav-title,.nav-btn span{display:none}.main{margin-left:70px}.grid-6,.grid-4,.grid-3,.grid-2,.form-grid{grid-template-columns:1fr}.nav-btn{text-align:center}.topbar{align-items:flex-start}}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-
-<section id="login-screen">
-
+<div id="login-screen">
   <div class="login-card">
-
-    <div class="logo">
-      <div class="logo-mark">❄</div>
-      <div>
-        <div class="logo-title">PURE ICE</div>
-        <div class="logo-sub">
-          Food Safety Management System
-        </div>
-      </div>
-    </div>
-
+    <div class="logo">❄</div>
+    <h1>PURE ICE</h1>
+    <p>Food Safety Management System</p>
     <form id="login-form">
-
       <div class="form-group">
         <label>Email</label>
-        <input
-          id="login-email"
-          type="email"
-          autocomplete="username"
-          required>
+        <input id="login-email" type="email" required value="food.safety@pureeice.com">
       </div>
-
       <div class="form-group">
         <label>Password</label>
-        <input
-          id="login-password"
-          type="password"
-          autocomplete="current-password"
-          required>
+        <input id="login-password" type="password" required>
       </div>
-
-      <button
-        type="submit"
-        class="primary-btn"
-        style="width:100%">
-        Sign In
-      </button>
-
-      <div class="login-actions">
-        <span style="font-size:11px;color:var(--muted)">
-          Pure Ice Factory · Quality & Food Safety
-        </span>
-
-        <button
-          type="button"
-          id="forgot-password-btn">
-          Forgot password?
-        </button>
-      </div>
-
+      <button class="btn btn-primary" style="width:100%">Sign In</button>
       <div id="login-status" class="status"></div>
-
     </form>
+    <button id="forgot-password-btn" class="btn btn-light" style="width:100%;margin-top:10px">Forgot Password</button>
+  </div>
+</div>
 
+<div id="app-shell">
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-icon">❄</div>
+    <div><div class="brand-title">PURE ICE</div><div class="brand-sub">Quality & Food Safety</div></div>
   </div>
 
+  <div class="nav-title">Workspace</div>
+  <button class="nav-btn active" data-module="dashboard">⌂ <span>Dashboard</span></button>
+  <button class="nav-btn" data-module="documents">▣ <span>Document Control</span></button>
+  <button class="nav-btn" data-module="records">▤ <span>Records & Plans</span></button>
+
+  <div class="nav-title">Food Safety</div>
+  <button class="nav-btn" data-module="haccp">⚠ <span>HACCP / CCP / OPRP</span></button>
+  <button class="nav-btn" data-module="gmp">✦ <span>PRP / GMP / GHP</span></button>
+  <button class="nav-btn" data-module="water-ro">💧 <span>Water & RO</span></button>
+
+  <div class="nav-title">Management</div>
+  <button class="nav-btn" data-module="calibration">⚙ <span>Calibration</span></button>
+  <button class="nav-btn" data-module="training">♙ <span>Training</span></button>
+  <button class="nav-btn" data-module="suppliers">▥ <span>Suppliers</span></button>
+  <button class="nav-btn" data-module="ncr">! <span>NCR / CAPA</span></button>
+
+  <div class="nav-title">Insights</div>
+  <button class="nav-btn" data-module="reports">◫ <span>Reports</span></button>
+  <button class="nav-btn" data-module="settings">⚙ <span>Settings</span></button>
+
+  <div class="nav-title">Administration</div>
+  <button class="nav-btn" data-module="users">👥 <span>User Management</span></button>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div>
+    <div id="page-title" class="page-title">Food Safety Command Center</div>
+    <div id="page-subtitle" class="page-subtitle">Pure Ice Factory · Quality & Food Safety</div>
+  </div>
+  <div class="top-actions">
+    <input id="global-search" class="search" placeholder="⌕ Search documents...">
+    <div id="profile-button" class="profile">food.safety</div>
+    <button id="signout-button" class="btn btn-light btn-sm">Sign Out</button>
+  </div>
+</header>
+
+<!-- DASHBOARD -->
+<section id="dashboard-section" class="section active">
+  <div class="dashboard-header">
+    <h1>Food Safety Command Center</h1>
+    <p>Ice Manufacturing & Flavored Ice · System Status</p>
+  </div>
+
+  <div class="grid grid-6">
+    <div class="card"><div class="kpi-label">Total Documents</div><div id="kpi-total-documents" class="kpi-value">0</div><div id="kpi-total-documents-sub" class="kpi-sub">Live data connected</div></div>
+    <div class="card"><div class="kpi-label">Pending Approval</div><div id="kpi-pending-documents" class="kpi-value">0</div><div id="kpi-pending-documents-sub" class="kpi-sub">No pending approval</div></div>
+    <div class="card"><div class="kpi-label">Near Review</div><div id="kpi-documents-near-review" class="kpi-value">0</div><div id="kpi-documents-near-review-sub" class="kpi-sub">No reviews due soon</div></div>
+    <div class="card"><div class="kpi-label">Open Tasks</div><div id="kpi-open-tasks" class="kpi-value">0</div><div class="kpi-sub">Pending / verification</div></div>
+    <div class="card"><div class="kpi-label">Active Plans</div><div id="kpi-active-plans" class="kpi-value">0</div><div class="kpi-sub">Active compliance plans</div></div>
+    <div class="card"><div class="kpi-label">Approved Documents</div><div id="kpi-approved-documents" class="kpi-value">0</div><div id="kpi-approved-documents-sub" class="kpi-sub">Controlled documents</div></div>
+  </div>
+
+  <div class="grid grid-2" style="margin-top:15px">
+    <div class="card">
+      <div class="card-title">Document Control Status</div>
+      <div id="document-status-summary"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Attention Required</div>
+      <div id="attention-list"><div class="empty">Loading...</div></div>
+    </div>
+  </div>
+
+  <div class="grid grid-4" style="margin-top:15px">
+    <div class="card"><div class="card-title">Document Control</div><div id="kpi-document-control" class="kpi-value">0%</div><div class="progress"><span id="progress-document-control" style="width:0"></span></div></div>
+    <div class="card"><div class="card-title">Plan Coverage</div><div id="kpi-plan-coverage" class="kpi-value">0%</div><div class="progress"><span id="progress-plan-coverage" style="width:0"></span></div></div>
+    <div class="card"><div class="card-title">Task Completion</div><div id="kpi-task-completion" class="kpi-value">0%</div><div class="progress"><span id="progress-task-completion" style="width:0"></span></div></div>
+    <div class="card"><div class="card-title">Audit Trail</div><div id="kpi-audit-trail" class="kpi-value">Ready</div><div class="kpi-sub">System logging enabled</div></div>
+  </div>
+
+  <div class="card" style="margin-top:15px">
+    <div class="card-title">Quick Actions</div>
+    <div class="toolbar">
+      <button class="btn btn-primary" data-action="new-document">＋ New Document</button>
+      <button class="btn btn-light" data-action="documents">▣ Document Control</button>
+      <button class="btn btn-light" data-action="records">▤ Records & Plans</button>
+      <button class="btn btn-light" data-action="refresh">↻ Refresh Dashboard</button>
+    </div>
+    <div class="card-title" style="margin-top:15px">Audit Readiness</div>
+    <div id="kpi-audit-readiness" class="kpi-value">0%</div>
+  </div>
 </section>
 
-
-<!-- APP -->
-
-<section id="app-shell" class="hidden">
-
-  <!-- SIDEBAR -->
-
-  <aside class="sidebar">
-
-    <div class="sidebar-brand">
-      <div class="brand">❄ PURE ICE</div>
-      <div class="brand-sub">
-        Quality & Food Safety
-      </div>
+<!-- DOCUMENTS -->
+<section id="documents-section" class="section">
+  <div class="card">
+    <div class="card-title">Document Control</div>
+    <div class="toolbar">
+      <input id="document-search" placeholder="Search documents...">
+      <select id="document-type-filter"><option value="">All Types</option><option>SOP</option><option>Policy</option><option>Procedure</option><option>Work Instruction</option><option>Form</option><option>Manual</option><option>Plan</option><option>Other</option></select>
+      <select id="document-status-filter"><option value="">All Status</option><option>Active</option><option>Draft</option><option>Obsolete</option></select>
+      <select id="document-approval-filter"><option value="">All Approval</option><option>Draft</option><option>Pending Approval</option><option>Approved</option><option>Rejected</option></select>
+      <select id="document-department-filter"><option value="">All Departments</option></select>
+      <button class="btn btn-primary" id="new-document-btn">＋ New Document</button>
     </div>
-
-    <div class="nav-section">Workspace</div>
-
-    <button class="nav active" data-module="dashboard">
-      ◈ Dashboard
-    </button>
-
-    <button class="nav" data-module="documents">
-      ▣ Document Control
-    </button>
-
-    <button class="nav" data-module="records">
-      ◫ Records & Plans
-    </button>
-
-    <div class="nav-section">Food Safety</div>
-
-    <button class="nav" data-module="haccp">
-      ◉ HACCP / CCP / OPRP
-    </button>
-
-    <button class="nav" data-module="gmp">
-      ◇ PRP / GMP / GHP
-    </button>
-
-    <button class="nav" data-module="water-ro">
-      ≋ Water & RO
-    </button>
-
-    <div class="nav-section">Management</div>
-
-    <button class="nav" data-module="calibration">
-      ⌁ Calibration
-    </button>
-
-    <button class="nav" data-module="training">
-      ◇ Training
-    </button>
-
-    <button class="nav" data-module="suppliers">
-      ◇ Suppliers
-    </button>
-
-    <button class="nav" data-module="ncr">
-      ⚠ NCR / CAPA
-    </button>
-
-    <div class="nav-section">Insights</div>
-
-    <button class="nav" data-module="reports">
-      ▤ Reports
-    </button>
-
-    <button class="nav" data-module="settings">
-      ⚙ Settings
-    </button>
-
-    <div class="nav-section">Administration</div>
-
-    <button class="nav" data-module="user-management">
-      ♙ User Management
-    </button>
-
-  </aside>
-
-
-  <!-- MAIN -->
-
-  <main class="main">
-
-    <header class="topbar">
-
-      <div>
-        <div class="topbar-title" id="page-title">
-          Food Safety Command Center
-        </div>
-
-        <div class="topbar-sub" id="page-subtitle">
-          Ice Manufacturing & Flavored Ice · System Status
-        </div>
-      </div>
-
-      <div class="topbar-right">
-
-        <div class="search-box">
-          <input
-            id="global-search"
-            placeholder="Search current module...">
-        </div>
-
-        <button
-          class="profile-btn"
-          id="profile-button">
-          food.safety
-        </button>
-
-        <button
-          class="secondary-btn"
-          id="signout-button">
-          Sign Out
-        </button>
-
-      </div>
-
-    </header>
-
-
-    <div class="content">
-
-
-      <!-- DASHBOARD -->
-
-      <section id="dashboard-section">
-
-        <div class="page-header">
-          <div>
-            <h1>Food Safety Command Center</h1>
-            <p>
-              Real-time overview of document control,
-              compliance plans and scheduled activities.
-            </p>
-          </div>
-
-          <button
-            class="secondary-btn"
-            onclick="window.refreshDashboard()">
-            ↻ Refresh
-          </button>
-        </div>
-
-
-        <div class="kpi-grid">
-
-          <div class="kpi">
-            <div class="kpi-label">Total Documents</div>
-            <div class="kpi-value" id="kpi-total-documents">0</div>
-            <div class="kpi-sub" id="kpi-total-documents-sub">
-              Loading...
-            </div>
-          </div>
-
-          <div class="kpi">
-            <div class="kpi-label">Pending Approval</div>
-            <div class="kpi-value" id="kpi-pending-documents">0</div>
-            <div class="kpi-sub" id="kpi-pending-documents-sub">
-              Loading...
-            </div>
-          </div>
-
-          <div class="kpi">
-            <div class="kpi-label">Near Review</div>
-            <div class="kpi-value" id="kpi-documents-near-review">0</div>
-            <div class="kpi-sub" id="kpi-documents-near-review-sub">
-              Loading...
-            </div>
-          </div>
-
-          <div class="kpi">
-            <div class="kpi-label">Open Tasks</div>
-            <div class="kpi-value" id="kpi-open-tasks">0</div>
-            <div class="kpi-sub" id="kpi-open-tasks-sub">
-              Loading...
-            </div>
-          </div>
-
-          <div class="kpi">
-            <div class="kpi-label">Active Plans</div>
-            <div class="kpi-value" id="kpi-active-plans">0</div>
-            <div class="kpi-sub" id="kpi-active-plans-sub">
-              Loading...
-            </div>
-          </div>
-
-          <div class="kpi">
-            <div class="kpi-label">Approved Documents</div>
-            <div class="kpi-value" id="kpi-approved-documents">0</div>
-            <div class="kpi-sub" id="kpi-approved-documents-sub">
-              Loading...
-            </div>
-          </div>
-
-        </div>
-
-
-        <div class="grid-2">
-
-          <div class="card">
-
-            <div class="card-title">
-              Document Control Status
-            </div>
-
-            <div class="chart">
-
-              <div class="chart-item">
-                <div
-                  class="chart-bar"
-                  id="chart-draft">
-                </div>
-                <span class="chart-label">Draft</span>
-              </div>
-
-              <div class="chart-item">
-                <div
-                  class="chart-bar"
-                  id="chart-review">
-                </div>
-                <span class="chart-label">Review</span>
-              </div>
-
-              <div class="chart-item">
-                <div
-                  class="chart-bar"
-                  id="chart-approved">
-                </div>
-                <span class="chart-label">Approved</span>
-              </div>
-
-              <div class="chart-item">
-                <div
-                  class="chart-bar"
-                  id="chart-near">
-                </div>
-                <span class="chart-label">Near Review</span>
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <div class="card">
-
-            <div class="card-title">
-              Attention Required
-            </div>
-
-            <div id="attention-list"></div>
-
-          </div>
-
-        </div>
-
-
-        <div class="grid-3">
-
-          <div class="card">
-
-            <div class="card-title">
-              Food Safety Elements
-            </div>
-
-            <div class="progress-wrap">
-              <div class="progress-header">
-                <span>Document Control</span>
-                <b id="kpi-document-control">0%</b>
-              </div>
-              <div class="progress">
-                <div
-                  class="progress-bar"
-                  id="progress-document-control">
-                </div>
-              </div>
-            </div>
-
-            <div class="progress-wrap">
-              <div class="progress-header">
-                <span>Plan Coverage</span>
-                <b id="kpi-plan-coverage">0%</b>
-              </div>
-              <div class="progress">
-                <div
-                  class="progress-bar"
-                  id="progress-plan-coverage">
-                </div>
-              </div>
-            </div>
-
-            <div class="progress-wrap">
-              <div class="progress-header">
-                <span>Task Completion</span>
-                <b id="kpi-task-completion">0%</b>
-              </div>
-              <div class="progress">
-                <div
-                  class="progress-bar"
-                  id="progress-task-completion">
-                </div>
-              </div>
-            </div>
-
-            <div class="progress-wrap">
-              <div class="progress-header">
-                <span>Audit Trail</span>
-                <b id="kpi-audit-trail">Ready</b>
-              </div>
-              <div class="progress">
-                <div
-                  class="progress-bar"
-                  style="width:100%">
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-
-          <div class="card">
-
-            <div class="card-title">
-              Quick Actions
-            </div>
-
-            <button
-              class="primary-btn"
-              style="width:100%;margin-bottom:8px"
-              onclick="window.openDocumentModal()">
-              + Add Controlled Document
-            </button>
-
-            <button
-              class="secondary-btn"
-              style="width:100%;margin-bottom:8px"
-              onclick="window.switchModule('records')">
-              Open Records & Plans
-            </button>
-
-            <button
-              class="secondary-btn"
-              style="width:100%"
-              onclick="window.switchModule('user-management')">
-              User Management
-            </button>
-
-          </div>
-
-
-          <div class="card">
-
-            <div class="card-title">
-              Audit Readiness
-            </div>
-
-            <div
-              style="font-size:40px;font-weight:800;margin:15px 0"
-              id="kpi-audit-readiness">
-              0%
-            </div>
-
-            <div class="progress">
-              <div
-                class="progress-bar"
-                id="progress-audit-readiness">
-              </div>
-            </div>
-
-            <p class="helper" style="margin-top:12px">
-              Calculated from controlled documents,
-              reviews and system records.
-            </p>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- DOCUMENTS -->
-
-      <section id="documents-section" class="hidden">
-
-        <div class="page-header">
-
-          <div>
-            <h1>Document Control</h1>
-            <p>
-              Controlled SOPs, policies, work instructions,
-              forms and supporting documents.
-            </p>
-          </div>
-
-          <button
-            class="primary-btn"
-            onclick="window.openDocumentModal()">
-            + New Document
-          </button>
-
-        </div>
-
-
-        <div class="card">
-
-          <div class="filters">
-
-            <input
-              id="document-search"
-              placeholder="Search documents...">
-
-            <select id="document-type-filter">
-              <option value="">All Types</option>
-              <option>SOP</option>
-              <option>Policy</option>
-              <option>Work Instruction</option>
-              <option>Form</option>
-              <option>Manual</option>
-              <option>Plan</option>
-              <option>Specification</option>
-              <option>Certificate</option>
-              <option>Other</option>
-            </select>
-
-            <select id="document-status-filter">
-              <option value="">All Status</option>
-              <option>Active</option>
-              <option>Draft</option>
-              <option>Obsolete</option>
-            </select>
-
-            <select id="document-approval-filter">
-              <option value="">All Approval</option>
-              <option>Draft</option>
-              <option>Pending Approval</option>
-              <option>Approved</option>
-              <option>Rejected</option>
-            </select>
-
-            <select id="document-department-filter">
-              <option value="">All Departments</option>
-            </select>
-
-          </div>
-
-
-          <div class="table-wrap">
-
-            <table>
-
-              <thead>
-                <tr>
-                  <th>Code</th>
-                  <th>Document</th>
-                  <th>Type</th>
-                  <th>Department</th>
-                  <th>Revision</th>
-                  <th>Review</th>
-                  <th>Approval</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-
-              <tbody id="documents-tbody">
-              </tbody>
-
-            </table>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- RECORDS -->
-
-      <section id="records-section" class="hidden">
-
-        <div class="page-header">
-
-          <div>
-            <h1>Records & Compliance Engine</h1>
-            <p>
-              SOP → Plan → Scheduled Task → Record →
-              Evidence → Verification → Audit Trail
-            </p>
-          </div>
-
-        </div>
-
-
-        <div class="engine-tabs">
-
-          <button
-            class="engine-tab active"
-            data-record-tab="records">
-            Records
-          </button>
-
-          <button
-            class="engine-tab"
-            data-record-tab="plans">
-            Plans
-          </button>
-
-          <button
-            class="engine-tab"
-            data-record-tab="tasks">
-            Scheduled Tasks
-          </button>
-
-          <button
-            class="engine-tab"
-            data-record-tab="notifications">
-            Notifications
-          </button>
-
-        </div>
-
-
-        <!-- RECORDS VIEW -->
-
-        <div id="records-view">
-
-          <div class="stat-grid">
-
-            <div class="stat-box">
-              <strong id="records-total">0</strong>
-              <span>Total Records</span>
-            </div>
-
-            <div class="stat-box">
-              <strong id="records-active">0</strong>
-              <span>Active</span>
-            </div>
-
-            <div class="stat-box">
-              <strong id="records-linked">0</strong>
-              <span>Linked to SOP</span>
-            </div>
-
-            <div class="stat-box">
-              <strong id="records-files">0</strong>
-              <span>With File</span>
-            </div>
-
-          </div>
-
-
-          <div class="card">
-
-            <div class="page-header" style="margin-bottom:12px">
-              <div>
-                <div class="card-title" style="margin:0">
-                  Controlled Records
-                </div>
-              </div>
-
-              <button
-                class="primary-btn"
-                id="add-record">
-                + New Record
-              </button>
-            </div>
-
-
-            <div class="table-wrap">
-
-              <table>
-
-                <thead>
-                  <tr>
-                    <th>Code</th>
-                    <th>Record</th>
-                    <th>Type</th>
-                    <th>Department</th>
-                    <th>Frequency</th>
-                    <th>SOP</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody id="records-body">
-                </tbody>
-
-              </table>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- PLANS VIEW -->
-
-        <div id="plans-view" class="hidden">
-
-          <div class="stat-grid">
-
-            <div class="stat-box">
-              <strong id="plans-active">0</strong>
-              <span>Active Plans</span>
-            </div>
-
-            <div class="stat-box">
-              <strong id="plans-sop">0</strong>
-              <span>Linked to SOP</span>
-            </div>
-
-            <div class="stat-box">
-              <strong id="plans-verification">0</strong>
-              <span>Verification Required</span>
-            </div>
-
-            <div class="stat-box">
-              <strong id="plans-attachments">0</strong>
-              <span>Evidence Required</span>
-            </div>
-
-          </div>
-
-
-          <div class="card">
-
-            <div class="page-header" style="margin-bottom:12px">
-              <div class="card-title" style="margin:0">
-                Compliance Plans
-              </div>
-
-              <button
-                class="primary-btn"
-                id="add-plan">
-                + New Plan
-              </button>
-            </div>
-
-
-            <div class="table-wrap">
-
-              <table>
-
-                <thead>
-                  <tr>
-                    <th>Code</th>
-                    <th>Plan</th>
-                    <th>SOP</th>
-                    <th>Responsible</th>
-                    <th>Frequency</th>
-                    <th>Next Due</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody id="plans-body">
-                </tbody>
-
-              </table>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- TASKS VIEW -->
-
-        <div id="tasks-view" class="hidden">
-
-          <div class="stat-grid">
-
-            <div class="stat-box">
-              <strong id="tasks-open">0</strong>
-              <span>Open</span>
-            </div>
-
-            <div class="stat-box">
-              <strong id="tasks-today">0</strong>
-              <span>Due Today</span>
-            </div>
-
-            <div class="stat-box">
-              <strong id="tasks-overdue">0</strong>
-              <span>Overdue</span>
-            </div>
-
-            <div class="stat-box">
-              <strong id="tasks-completed">0</strong>
-              <span>Completed</span>
-            </div>
-
-          </div>
-
-
-          <div class="card">
-
-            <div class="card-title">
-              Scheduled Compliance Tasks
-            </div>
-
-            <div class="table-wrap">
-
-              <table>
-
-                <thead>
-                  <tr>
-                    <th>Task</th>
-                    <th>Plan</th>
-                    <th>Scheduled</th>
-                    <th>Due</th>
-                    <th>Responsible</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody id="tasks-body">
-                </tbody>
-
-              </table>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- NOTIFICATIONS -->
-
-        <div id="notifications-view" class="hidden">
-
-          <div class="card">
-
-            <div class="card-title">
-              Compliance Notifications
-            </div>
-
-            <div id="notifications-body"></div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- USERS -->
-
-      <section id="user-management-section" class="hidden">
-
-        <div class="page-header">
-
-          <div>
-            <h1>User Management</h1>
-            <p>
-              Manage profiles, roles and access status.
-            </p>
-          </div>
-
-          <button
-            class="primary-btn"
-            id="add-user-btn">
-            + Manage User
-          </button>
-
-        </div>
-
-
-        <div class="card">
-
-          <div class="filters" style="grid-template-columns:2fr 1fr">
-
-            <input
-              id="users-filter"
-              placeholder="Search users...">
-
-            <select id="role-filter">
-              <option value="">All Roles</option>
-              <option>Super Admin</option>
-              <option>Quality Officer</option>
-              <option>Manager</option>
-              <option>Auditor / Read Only</option>
-            </select>
-
-          </div>
-
-
-          <div class="table-wrap">
-
-            <table>
-
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th>Email</th>
-                  <th>Employee Code</th>
-                  <th>Department</th>
-                  <th>Role</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-
-              <tbody id="users-tbody">
-              </tbody>
-
-            </table>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- OTHER MODULES -->
-
-      <section
-        id="module-placeholder-section"
-        class="hidden">
-
-        <div class="card module-placeholder">
-
-          <div
-            class="big-icon"
-            id="placeholder-icon">
-            ◈
-          </div>
-
-          <h2 id="placeholder-title">
-            Module
-          </h2>
-
-          <p id="placeholder-text">
-            This module is part of the Pure Ice Food Safety
-            Management System architecture.
-          </p>
-
-        </div>
-
-      </section>
-
-    </div>
-
-  </main>
-
+    <div class="table-wrap"><table><thead><tr>
+      <th>Code</th><th>Title</th><th>Type</th><th>Department</th><th>Rev.</th><th>Review</th><th>Status</th><th>Approval</th><th>Actions</th>
+    </tr></thead><tbody id="documents-tbody"></tbody></table></div>
+  </div>
 </section>
 
+<!-- RECORDS -->
+<section id="records-section" class="section">
+  <div class="card">
+    <div class="card-title">Records & Compliance Plans</div>
+    <div class="toolbar">
+      <button class="btn btn-primary" id="new-record-btn">＋ New Record</button>
+      <button class="btn btn-primary" id="new-plan-btn">＋ New Plan</button>
+      <button class="btn btn-light" data-record-tab="records">Records</button>
+      <button class="btn btn-light" data-record-tab="plans">Plans</button>
+      <button class="btn btn-light" data-record-tab="tasks">Scheduled Tasks</button>
+    </div>
+    <div id="records-content"></div>
+  </div>
+</section>
+
+<!-- PLACEHOLDERS -->
+<section id="placeholder-section" class="section">
+  <div class="card" style="text-align:center;padding:70px">
+    <div id="placeholder-icon" style="font-size:50px">⚙</div>
+    <h2 id="placeholder-title">Module</h2>
+    <p id="placeholder-text">This FSMS module is ready for integration with the Records & Plans engine.</p>
+    <button class="btn btn-primary" data-action="records">Open Records & Plans</button>
+  </div>
+</section>
+
+<!-- USERS -->
+<section id="users-section" class="section">
+  <div class="card">
+    <div class="card-title">User Management</div>
+    <div class="toolbar">
+      <input id="users-filter" placeholder="Search users...">
+      <select id="role-filter"><option value="">All Roles</option><option>Super Admin</option><option>Admin</option><option>Manager</option><option>Quality Officer</option><option>Employee</option></select>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Employee Code</th><th>Role</th><th>Job Title</th><th>Status</th><th>Actions</th></tr></thead><tbody id="users-tbody"></tbody></table></div>
+  </div>
+</section>
+
+</main>
+</div>
 
 <!-- DOCUMENT MODAL -->
-
-<div class="modal" id="document-modal">
-
-  <div class="modal-card">
-
-    <div class="modal-header">
-
-      <h3 id="document-modal-title">
-        New Controlled Document
-      </h3>
-
-      <button
-        class="close-btn"
-        onclick="window.closeDocumentModal()">
-        ×
-      </button>
-
-    </div>
-
-
-    <form id="document-form">
-
-      <div class="modal-body">
-
-        <div class="form-grid">
-
-          <div class="form-group">
-            <label>Document Code *</label>
-            <input id="document-code" required>
-          </div>
-
-          <div class="form-group">
-            <label>Document Type *</label>
-            <select id="document-type" required>
-              <option value="">Select Type</option>
-              <option>SOP</option>
-              <option>Policy</option>
-              <option>Work Instruction</option>
-              <option>Form</option>
-              <option>Manual</option>
-              <option>Plan</option>
-              <option>Specification</option>
-              <option>Certificate</option>
-              <option>Other</option>
-            </select>
-          </div>
-
-          <div class="form-group full">
-            <label>Document Title *</label>
-            <input id="document-title" required>
-          </div>
-
-          <div class="form-group">
-            <label>Department</label>
-            <select id="document-department"></select>
-          </div>
-
-          <div class="form-group">
-            <label>Revision</label>
-            <input id="document-revision">
-          </div>
-
-          <div class="form-group">
-            <label>Issue Date</label>
-            <input id="document-issue-date" type="date">
-          </div>
-
-          <div class="form-group">
-            <label>Review Date</label>
-            <input id="document-review-date" type="date">
-          </div>
-
-          <div class="form-group">
-            <label>Status</label>
-            <select id="document-status">
-              <option>Draft</option>
-              <option>Active</option>
-              <option>Obsolete</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Approval Status</label>
-            <select id="document-approval-status">
-              <option>Draft</option>
-              <option>Pending Approval</option>
-              <option>Approved</option>
-              <option>Rejected</option>
-            </select>
-          </div>
-
-          <div class="form-group full">
-            <label>File</label>
-            <input
-              id="document-file"
-              type="file"
-              accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png">
-            <div
-              class="helper"
-              id="current-file-info">
-            </div>
-          </div>
-
-          <div class="form-group full">
-            <label>Description</label>
-            <textarea id="document-description"></textarea>
-          </div>
-
-        </div>
-
-        <div
-          id="document-form-status"
-          class="status">
-        </div>
-
-      </div>
-
-
-      <div class="modal-footer">
-
-        <button
-          type="button"
-          class="secondary-btn"
-          onclick="window.closeDocumentModal()">
-          Cancel
-        </button>
-
-        <button
-          type="submit"
-          class="primary-btn">
-          Save Document
-        </button>
-
-      </div>
-
-    </form>
-
-  </div>
-
+<div id="document-modal" class="modal">
+<div class="modal-box">
+<div class="modal-head"><h2 id="document-modal-title">New Document</h2><button class="close" data-close="document-modal">×</button></div>
+<form id="document-form">
+<div class="form-grid">
+<div><label>Document Code *</label><input id="document-code" required></div>
+<div><label>Document Type *</label><select id="document-type" required><option value="">Select</option><option>SOP</option><option>Policy</option><option>Procedure</option><option>Work Instruction</option><option>Form</option><option>Manual</option><option>Plan</option><option>Other</option></select></div>
+<div class="full"><label>Title *</label><input id="document-title" required></div>
+<div><label>Department</label><select id="document-department"></select></div>
+<div><label>Revision</label><input id="document-revision" value="01"></div>
+<div><label>Issue Date</label><input id="document-issue-date" type="date"></div>
+<div><label>Review Date</label><input id="document-review-date" type="date"></div>
+<div><label>Status</label><select id="document-status"><option>Draft</option><option>Active</option><option>Obsolete</option></select></div>
+<div><label>Approval Status</label><select id="document-approval-status"><option>Draft</option><option>Pending Approval</option><option>Approved</option><option>Rejected</option></select></div>
+<div class="full"><label>File — Word / Excel / PDF / Image</label><input id="document-file" type="file" accept=".doc,.docx,.xls,.xlsx,.pdf,.jpg,.jpeg,.png"></div>
+<div id="current-file-info" class="full"></div>
+<div class="full"><label>Description</label><textarea id="document-description"></textarea></div>
 </div>
-
+<div id="document-form-status" class="status"></div>
+<div class="modal-footer"><button type="button" class="btn btn-light" data-close="document-modal">Cancel</button><button class="btn btn-primary">Save Document</button></div>
+</form>
+</div></div>
 
 <!-- RECORD MODAL -->
-
-<div class="modal" id="record-modal">
-
-  <div class="modal-card">
-
-    <div class="modal-header">
-
-      <h3 id="record-modal-title">
-        New Controlled Record
-      </h3>
-
-      <button
-        class="close-btn"
-        onclick="window.closeRecordModal()">
-        ×
-      </button>
-
-    </div>
-
-
-    <form id="record-form">
-
-      <div class="modal-body">
-
-        <div class="form-grid">
-
-          <div class="form-group">
-            <label>Record Code *</label>
-            <input id="record-code" required>
-          </div>
-
-          <div class="form-group">
-            <label>Record Type *</label>
-            <select id="record-type" required>
-              <option>Record</option>
-              <option>Checklist</option>
-              <option>Log</option>
-              <option>Monitoring Form</option>
-              <option>Inspection</option>
-              <option>Analysis</option>
-              <option>Report</option>
-            </select>
-          </div>
-
-          <div class="form-group full">
-            <label>Record Title *</label>
-            <input id="record-title" required>
-          </div>
-
-          <div class="form-group">
-            <label>Department</label>
-            <select id="record-department"></select>
-          </div>
-
-          <div class="form-group">
-            <label>Frequency</label>
-            <select id="record-frequency">
-              <option>Daily</option>
-              <option>Weekly</option>
-              <option>Monthly</option>
-              <option>Quarterly</option>
-              <option>Semi-Annual</option>
-              <option>Annual</option>
-              <option>Custom</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Issue Date</label>
-            <input id="record-issue-date" type="date">
-          </div>
-
-          <div class="form-group">
-            <label>Review Date</label>
-            <input id="record-review-date" type="date">
-          </div>
-
-          <div class="form-group full">
-            <label>Linked SOP / Document</label>
-            <select id="record-document"></select>
-          </div>
-
-          <div class="form-group full">
-            <label>Description</label>
-            <textarea id="record-description"></textarea>
-          </div>
-
-          <div class="form-group full">
-            <label>Record File</label>
-            <input
-              id="record-file"
-              type="file"
-              accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png">
-          </div>
-
-        </div>
-
-        <div
-          id="record-status-message"
-          class="status">
-        </div>
-
-      </div>
-
-
-      <div class="modal-footer">
-
-        <button
-          type="button"
-          class="secondary-btn"
-          onclick="window.closeRecordModal()">
-          Cancel
-        </button>
-
-        <button
-          type="submit"
-          class="primary-btn">
-          Save Record
-        </button>
-
-      </div>
-
-    </form>
-
-  </div>
-
+<div id="record-modal" class="modal">
+<div class="modal-box">
+<div class="modal-head"><h2 id="record-modal-title">New Record</h2><button class="close" data-close="record-modal">×</button></div>
+<form id="record-form">
+<div class="form-grid">
+<div><label>Record Code *</label><input id="record-code" required></div>
+<div><label>Record Type *</label><select id="record-type"><option>Daily Record</option><option>Weekly Record</option><option>Monthly Record</option><option>Inspection</option><option>Checklist</option><option>Log</option><option>Certificate</option><option>Other</option></select></div>
+<div class="full"><label>Title *</label><input id="record-title" required></div>
+<div><label>Department</label><select id="record-department"></select></div>
+<div><label>Frequency</label><select id="record-frequency"><option>Daily</option><option>Weekly</option><option>Monthly</option><option>Quarterly</option><option>Semi-Annual</option><option>Annual</option><option>Custom</option></select></div>
+<div><label>Related SOP / Document</label><select id="record-document"></select></div>
+<div><label>Status</label><select id="record-status"><option>Active</option><option>Draft</option><option>Obsolete</option></select></div>
+<div class="full"><label>File</label><input id="record-file" type="file" accept=".doc,.docx,.xls,.xlsx,.pdf,.jpg,.jpeg,.png"></div>
+<div class="full"><label>Description</label><textarea id="record-description"></textarea></div>
 </div>
-
+<div id="record-form-status" class="status"></div>
+<div class="modal-footer"><button type="button" class="btn btn-light" data-close="record-modal">Cancel</button><button class="btn btn-primary">Save Record</button></div>
+</form>
+</div></div>
 
 <!-- PLAN MODAL -->
-
-<div class="modal" id="plan-modal">
-
-  <div class="modal-card">
-
-    <div class="modal-header">
-
-      <h3 id="plan-modal-title">
-        New Compliance Plan
-      </h3>
-
-      <button
-        class="close-btn"
-        onclick="window.closePlanModal()">
-        ×
-      </button>
-
-    </div>
-
-
-    <form id="plan-form">
-
-      <div class="modal-body">
-
-        <div class="form-grid">
-
-          <div class="form-group">
-            <label>Plan Code *</label>
-            <input id="plan-code" required>
-          </div>
-
-          <div class="form-group">
-            <label>Department</label>
-            <select id="plan-department"></select>
-          </div>
-
-          <div class="form-group full">
-            <label>Plan Title *</label>
-            <input id="plan-title" required>
-          </div>
-
-          <div class="form-group">
-            <label>SOP / Procedure</label>
-            <select id="plan-sop"></select>
-          </div>
-
-          <div class="form-group">
-            <label>Record</label>
-            <select id="plan-record"></select>
-          </div>
-
-          <div class="form-group">
-            <label>Responsible Person</label>
-            <select id="plan-responsible"></select>
-          </div>
-
-          <div class="form-group">
-            <label>Verifier</label>
-            <select id="plan-verifier"></select>
-          </div>
-
-          <div class="form-group">
-            <label>Frequency *</label>
-            <select id="plan-frequency">
-              <option>Daily</option>
-              <option>Weekly</option>
-              <option>Monthly</option>
-              <option>Quarterly</option>
-              <option>Semi-Annual</option>
-              <option>Annual</option>
-              <option>Custom</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Custom Days</label>
-            <input
-              id="plan-frequency-value"
-              type="number"
-              min="1"
-              placeholder="Only for Custom">
-          </div>
-
-          <div class="form-group">
-            <label>Start Date *</label>
-            <input
-              id="plan-start-date"
-              type="date"
-              required>
-          </div>
-
-          <div class="form-group">
-            <label>Due Time</label>
-            <input
-              id="plan-due-time"
-              type="time">
-          </div>
-
-          <div class="form-group">
-            <label>Reminder Days</label>
-            <input
-              id="plan-reminder-days"
-              type="number"
-              min="0"
-              value="1">
-          </div>
-
-          <div class="form-group">
-            <label>Status</label>
-            <select id="plan-status">
-              <option>Active</option>
-              <option>Paused</option>
-              <option>Closed</option>
-            </select>
-          </div>
-
-          <div class="form-group full">
-
-            <label class="check-row">
-              <input
-                id="plan-attachment-required"
-                type="checkbox">
-              Evidence / Attachment Required
-            </label>
-
-            <label class="check-row">
-              <input
-                id="plan-verification-required"
-                type="checkbox"
-                checked>
-              Verification Required
-            </label>
-
-          </div>
-
-          <div class="form-group full">
-            <label>Instructions</label>
-            <textarea id="plan-instructions"></textarea>
-          </div>
-
-        </div>
-
-        <div
-          id="plan-status-message"
-          class="status">
-        </div>
-
-      </div>
-
-
-      <div class="modal-footer">
-
-        <button
-          type="button"
-          class="secondary-btn"
-          onclick="window.closePlanModal()">
-          Cancel
-        </button>
-
-        <button
-          type="submit"
-          class="primary-btn">
-          Save Plan
-        </button>
-
-      </div>
-
-    </form>
-
-  </div>
-
+<div id="plan-modal" class="modal">
+<div class="modal-box">
+<div class="modal-head"><h2 id="plan-modal-title">New Compliance Plan</h2><button class="close" data-close="plan-modal">×</button></div>
+<form id="plan-form">
+<div class="form-grid">
+<div><label>Plan Code *</label><input id="plan-code" required></div>
+<div><label>Frequency *</label><select id="plan-frequency"><option>Daily</option><option>Weekly</option><option>Monthly</option><option>Quarterly</option><option>Semi-Annual</option><option>Annual</option><option>Custom</option></select></div>
+<div class="full"><label>Plan Title *</label><input id="plan-title" required></div>
+<div><label>Department</label><select id="plan-department"></select></div>
+<div><label>SOP / Procedure</label><select id="plan-document"></select></div>
+<div><label>Record</label><select id="plan-record"></select></div>
+<div><label>Start Date</label><input id="plan-start-date" type="date"></div>
+<div><label>Custom Frequency (days)</label><input id="plan-frequency-value" type="number" min="1" placeholder="For Custom only"></div>
+<div><label>Reminder Days</label><input id="plan-reminder-days" type="number" min="0" value="1"></div>
+<div><label>Responsible</label><select id="plan-responsible"></select></div>
+<div><label>Verifier</label><select id="plan-verifier"></select></div>
+<div><label>Attachment Required</label><select id="plan-attachment-required"><option value="false">No</option><option value="true">Yes</option></select></div>
+<div><label>Verification Required</label><select id="plan-verification-required"><option value="true">Yes</option><option value="false">No</option></select></div>
+<div class="full"><label>Instructions</label><textarea id="plan-instructions"></textarea></div>
 </div>
-
+<div id="plan-form-status" class="status"></div>
+<div class="modal-footer"><button type="button" class="btn btn-light" data-close="plan-modal">Cancel</button><button class="btn btn-primary">Save Plan</button></div>
+</form>
+</div></div>
 
 <!-- TASK MODAL -->
-
-<div class="modal" id="task-modal">
-
-  <div class="modal-card">
-
-    <div class="modal-header">
-
-      <div>
-        <h3>Complete Compliance Task</h3>
-        <div
-          class="helper"
-          id="task-subtitle">
-        </div>
-      </div>
-
-      <button
-        class="close-btn"
-        onclick="window.closeTaskModal()">
-        ×
-      </button>
-
-    </div>
-
-
-    <form id="task-form">
-
-      <div class="modal-body">
-
-        <input
-          id="task-id"
-          type="hidden">
-
-        <div class="form-group">
-          <label>Result *</label>
-          <textarea
-            id="task-result"
-            placeholder="Enter monitoring result / completion details..."
-            required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>Notes</label>
-          <textarea
-            id="task-notes"
-            placeholder="Additional notes or observations..."></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>Evidence / Attachment</label>
-          <input
-            id="task-file"
-            type="file"
-            accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png">
-        </div>
-
-        <div
-          id="task-status-message"
-          class="status">
-        </div>
-
-      </div>
-
-
-      <div class="modal-footer">
-
-        <button
-          type="button"
-          class="secondary-btn"
-          onclick="window.closeTaskModal()">
-          Cancel
-        </button>
-
-        <button
-          type="submit"
-          class="primary-btn">
-          Complete Task
-        </button>
-
-      </div>
-
-    </form>
-
-  </div>
-
+<div id="task-modal" class="modal">
+<div class="modal-box">
+<div class="modal-head"><h2>Task</h2><button class="close" data-close="task-modal">×</button></div>
+<form id="task-form">
+<input type="hidden" id="task-id">
+<div class="form-grid">
+<div><label>Status</label><select id="task-status"><option>Pending</option><option>Pending Verification</option><option>Completed</option><option>Verified</option><option>Cancelled</option></select></div>
+<div><label>Result</label><select id="task-result"><option>Pass</option><option>Fail</option><option>Acceptable</option><option>Not Applicable</option></select></div>
+<div class="full"><label>Notes / Findings</label><textarea id="task-notes"></textarea></div>
+<div class="full"><label>Evidence Attachment</label><input id="task-file" type="file" accept=".doc,.docx,.xls,.xlsx,.pdf,.jpg,.jpeg,.png"></div>
 </div>
-
+<div id="task-form-status" class="status"></div>
+<div class="modal-footer"><button type="button" class="btn btn-light" data-close="task-modal">Cancel</button><button class="btn btn-primary">Save Task</button></div>
+</form>
+</div></div>
 
 <!-- USER MODAL -->
-
-<div class="modal" id="user-modal">
-
-  <div class="modal-card">
-
-    <div class="modal-header">
-
-      <h3 id="user-modal-title">
-        Edit User
-      </h3>
-
-      <button
-        class="close-btn"
-        onclick="window.closeUserModal()">
-        ×
-      </button>
-
-    </div>
-
-
-    <form id="user-form">
-
-      <div class="modal-body">
-
-        <div class="form-grid">
-
-          <div class="form-group">
-            <label>Full Name *</label>
-            <input id="user-full-name" required>
-          </div>
-
-          <div class="form-group">
-            <label>Email *</label>
-            <input id="user-email" type="email" required>
-          </div>
-
-          <div class="form-group">
-            <label>Employee Code *</label>
-            <input id="user-employee-code" required>
-          </div>
-
-          <div class="form-group">
-            <label>Department *</label>
-            <select id="user-department" required></select>
-          </div>
-
-          <div class="form-group">
-            <label>Role *</label>
-            <select id="user-role" required>
-              <option>Super Admin</option>
-              <option>Quality Officer</option>
-              <option>Manager</option>
-              <option>Auditor / Read Only</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Job Title *</label>
-            <input id="user-job-title" required>
-          </div>
-
-          <div class="form-group">
-            <label>Phone</label>
-            <input id="user-phone">
-          </div>
-
-          <div class="form-group">
-            <label>Status</label>
-            <select id="user-status">
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-
-        </div>
-
-        <div
-          id="user-form-status"
-          class="status">
-        </div>
-
-      </div>
-
-
-      <div class="modal-footer">
-
-        <button
-          type="button"
-          class="secondary-btn"
-          onclick="window.closeUserModal()">
-          Cancel
-        </button>
-
-        <button
-          type="submit"
-          class="primary-btn">
-          Save Changes
-        </button>
-
-      </div>
-
-    </form>
-
-  </div>
-
+<div id="user-modal" class="modal">
+<div class="modal-box">
+<div class="modal-head"><h2>Edit User</h2><button class="close" data-close="user-modal">×</button></div>
+<form id="user-form">
+<div class="form-grid">
+<div><label>Full Name</label><input id="user-full-name"></div>
+<div><label>Email</label><input id="user-email" disabled></div>
+<div><label>Employee Code</label><input id="user-employee-code"></div>
+<div><label>Department</label><select id="user-department"></select></div>
+<div><label>Role</label><select id="user-role"><option>Super Admin</option><option>Admin</option><option>Manager</option><option>Quality Officer</option><option>Employee</option></select></div>
+<div><label>Job Title</label><input id="user-job-title"></div>
+<div><label>Phone</label><input id="user-phone"></div>
+<div><label>Status</label><select id="user-status"><option>active</option><option>inactive</option></select></div>
 </div>
+<div id="user-form-status" class="status"></div>
+<div class="modal-footer"><button type="button" class="btn btn-light" data-close="user-modal">Cancel</button><button class="btn btn-primary">Save User</button></div>
+</form>
+</div></div>
 
+<div id="toast" class="toast"></div>
 
 <script>
-
-/* =========================================================
+/* ============================================================
    PURE ICE FSMS — FINAL APPLICATION ENGINE
-========================================================= */
+   ============================================================ */
 
-const ROLE_ACCESS = {
-
-  "Super Admin":[
-    "dashboard",
-    "documents",
-    "records",
-    "haccp",
-    "gmp",
-    "water-ro",
-    "calibration",
-    "training",
-    "suppliers",
-    "ncr",
-    "reports",
-    "settings",
-    "user-management"
-  ],
-
-  "Quality Officer":[
-    "dashboard",
-    "documents",
-    "records",
-    "haccp",
-    "gmp",
-    "water-ro",
-    "calibration",
-    "training",
-    "suppliers",
-    "ncr",
-    "reports"
-  ],
-
-  "Manager":[
-    "dashboard",
-    "documents",
-    "records",
-    "reports"
-  ],
-
-  "Auditor / Read Only":[
-    "dashboard",
-    "documents",
-    "records",
-    "reports"
-  ]
-
-};
-
-
-const MODULE_INFO = {
-
-  dashboard:{
-    title:"Food Safety Command Center",
-    subtitle:"Ice Manufacturing & Flavored Ice · System Status"
-  },
-
-  documents:{
-    title:"Document Control",
-    subtitle:"Controlled documents, SOPs, forms and supporting files"
-  },
-
-  records:{
-    title:"Records & Compliance Engine",
-    subtitle:"SOP → Plan → Task → Record → Evidence → Verification"
-  },
-
-  haccp:{
-    title:"HACCP / CCP / OPRP",
-    subtitle:"Hazard analysis and food safety control system"
-  },
-
-  gmp:{
-    title:"PRP / GMP / GHP",
-    subtitle:"Prerequisite programs and hygiene controls"
-  },
-
-  "water-ro":{
-    title:"Water & RO",
-    subtitle:"Water treatment, RO monitoring and disinfection controls"
-  },
-
-  calibration:{
-    title:"Calibration",
-    subtitle:"Measuring equipment and calibration control"
-  },
-
-  training:{
-    title:"Training",
-    subtitle:"Food safety competence and training records"
-  },
-
-  suppliers:{
-    title:"Suppliers",
-    subtitle:"Supplier approval and performance monitoring"
-  },
-
-  ncr:{
-    title:"NCR / CAPA",
-    subtitle:"Nonconformity, corrective action and verification"
-  },
-
-  reports:{
-    title:"Reports",
-    subtitle:"Management reports and audit-ready information"
-  },
-
-  settings:{
-    title:"Settings",
-    subtitle:"System configuration"
-  },
-
-  "user-management":{
-    title:"User Management",
-    subtitle:"Users, roles and access control"
-  }
-
-};
-
-
-const appState={
-
-  supabase:null,
-
-  session:null,
-
-  profile:null,
-
-  role:"Auditor / Read Only",
-
-  departments:{},
-
-  users:[],
-
-  documents:[],
-
-  records:[],
-
-  plans:[],
-
-  tasks:[],
-
-  notifications:[],
-
-  currentModule:"dashboard",
-
-  currentRecordTab:"records",
-
-  editingDocumentId:null,
-
-  editingRecordId:null,
-
-  editingPlanId:null,
-
-  editingUserId:null
-
-};
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function $(id){
-
-  return document.getElementById(id);
-
+const CONFIG=window.PURE_ICE_CONFIG||{};
+if(!CONFIG.supabaseUrl||!CONFIG.supabaseAnonKey){
+  document.body.innerHTML='<div style="padding:40px;font-family:Arial"><h2>Configuration Error</h2><p>Please check config.js.</p></div>';
+  throw new Error('PURE_ICE_CONFIG missing');
 }
 
+const sb=window.supabase.createClient(CONFIG.supabaseUrl,CONFIG.supabaseAnonKey);
 
-function safeNumber(value){
+const state={
+ user:null,profile:null,role:null,
+ departments:[],users:[],documents:[],records:[],plans:[],tasks:[],
+ currentModule:'dashboard',recordTab:'records',
+ editingDocumentId:null,editingRecordId:null,editingPlanId:null
+};
 
-  return Number.isFinite(Number(value))
-    ? Number(value)
-    : 0;
+const $=id=>document.getElementById(id);
 
+function esc(v){
+ return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 }
-
-
-function escapeHtml(value){
-
-  return String(value??"")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-
 function todayIso(){
+ const d=new Date();
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function addDays(date,n){
+ const d=new Date(date+'T00:00:00');d.setDate(d.getDate()+Number(n));return d.toISOString().slice(0,10);
+}
+function addMonths(date,n){
+ const d=new Date(date+'T00:00:00');d.setMonth(d.getMonth()+Number(n));return d.toISOString().slice(0,10);
+}
+function nextDate(date,freq,val){
+ switch(freq){
+  case'Daily':return addDays(date,1);
+  case'Weekly':return addDays(date,7);
+  case'Monthly':return addMonths(date,1);
+  case'Quarterly':return addMonths(date,3);
+  case'Semi-Annual':return addMonths(date,6);
+  case'Annual':return addMonths(date,12);
+  default:return addDays(date,val||1);
+ }
+}
+function fmt(d){
+ if(!d)return'-';
+ return new Date(d+'T00:00:00').toLocaleDateString('en-GB');
+}
+function toast(msg){
+ $('toast').textContent=msg;$('toast').classList.add('show');
+ setTimeout(()=>$('toast').classList.remove('show'),3000);
+}
+function status(el,msg,error=false){
+ if(typeof el==='string')el=$(el);
+ if(el){el.textContent=msg;el.style.color=error?'#dc2626':'#15803d';}
+}
+function openModal(id){$(id).classList.add('open')}
+function closeModal(id){$(id).classList.remove('open')}
 
-  const d=new Date();
-
-  const y=d.getFullYear();
-
-  const m=String(d.getMonth()+1).padStart(2,"0");
-
-  const day=String(d.getDate()).padStart(2,"0");
-
-  return `${y}-${m}-${day}`;
-
+function badge(v){
+ const s=String(v||'').toLowerCase();
+ let c='badge-blue';
+ if(s.includes('approved')||s.includes('completed')||s.includes('verified')||s==='active')c='badge-green';
+ if(s.includes('pending')||s.includes('review')||s.includes('draft'))c='badge-yellow';
+ if(s.includes('overdue')||s.includes('fail')||s.includes('rejected')||s.includes('obsolete'))c='badge-red';
+ return `<span class="badge ${c}">${esc(v||'-')}</span>`;
 }
 
+/* ---------- PROFILE / AUTH ---------- */
 
-function addDays(date,days){
-
-  const d=new Date(date+"T00:00:00");
-
-  d.setDate(d.getDate()+Number(days||0));
-
-  return d.toISOString().slice(0,10);
-
+async function loadProfile(){
+ if(!state.user)return;
+ const {data,error}=await sb.from('profiles').select('*').eq('id',state.user.id).maybeSingle();
+ if(error)console.warn(error.message);
+ state.profile=data||{
+  id:state.user.id,email:state.user.email,full_name:state.user.email,
+  role:'Super Admin',status:'active'
+ };
+ state.role=state.profile.role||'Super Admin';
+ $('profile-button').textContent=state.profile.full_name||state.profile.email;
 }
 
-
-function addMonths(date,months){
-
-  const d=new Date(date+"T00:00:00");
-
-  d.setMonth(d.getMonth()+Number(months||0));
-
-  return d.toISOString().slice(0,10);
-
+async function login(e){
+ e.preventDefault();
+ status('login-status','Signing in...');
+ const email=$('login-email').value.trim();
+ const password=$('login-password').value;
+ const {data,error}=await sb.auth.signInWithPassword({email,password});
+ if(error){status('login-status',error.message,true);return}
+ state.user=data.user;
+ await boot();
 }
 
-
-function formatDate(value){
-
-  if(!value)return "—";
-
-  const d=new Date(value+"T00:00:00");
-
-  if(Number.isNaN(d.getTime()))return value;
-
-  return d.toLocaleDateString(
-    undefined,
-    {
-      year:"numeric",
-      month:"short",
-      day:"numeric"
-    }
-  );
-
+async function logout(){
+ await sb.auth.signOut();
+ state.user=null;
+ $('app-shell').style.display='none';
+ $('login-screen').style.display='flex';
 }
 
-
-function setText(id,value){
-
-  const el=$(id);
-
-  if(el)el.textContent=value;
-
+async function forgotPassword(){
+ const email=$('login-email').value.trim();
+ if(!email)return alert('Enter your email first.');
+ const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+ alert(error?error.message:'Password reset email sent.');
 }
 
-
-function setStatus(id,message,type="info"){
-
-  const el=$(id);
-
-  if(!el)return;
-
-  el.textContent=message||"";
-
-  el.className="status "+(message?type:"");
-
-}
-
-
-function openModal(id){
-
-  $(id)?.classList.add("active");
-
-}
-
-
-function closeModal(id){
-
-  $(id)?.classList.remove("active");
-
-}
-
-
-function showLogin(){
-
-  $("login-screen").classList.remove("hidden");
-
-  $("app-shell").classList.add("hidden");
-
-}
-
-
-function showDashboard(){
-
-  $("login-screen").classList.add("hidden");
-
-  $("app-shell").classList.remove("hidden");
-
-  switchModule("dashboard");
-
-}
-
-
-function showToast(message,type="info"){
-
-  const old=document.getElementById("fsms-toast");
-
-  if(old)old.remove();
-
-  const toast=document.createElement("div");
-
-  toast.id="fsms-toast";
-
-  toast.textContent=message;
-
-  toast.style.position="fixed";
-
-  toast.style.right="20px";
-
-  toast.style.bottom="20px";
-
-  toast.style.zIndex="500";
-
-  toast.style.background=
-    type==="error"
-      ?"var(--bad)"
-      :type==="success"
-        ?"var(--good)"
-        :"#1769aa";
-
-  toast.style.color="#fff";
-
-  toast.style.padding="13px 18px";
-
-  toast.style.borderRadius="10px";
-
-  toast.style.boxShadow="var(--shadow)";
-
-  toast.style.fontSize="13px";
-
-  document.body.appendChild(toast);
-
-  setTimeout(()=>toast.remove(),3500);
-
-}
-
-
-function getDepartmentName(id){
-
-  return appState.departments[id]||"—";
-
-}
-
-
-function getUserName(id){
-
-  const user=appState.users.find(u=>u.id===id);
-
-  return user?.full_name||user?.email||"—";
-
-}
-
-
-/* =========================================================
-   AUDIT LOG
-========================================================= */
-
-async function writeAudit(
-  action,
-  module,
-  tableName,
-  recordId,
-  description,
-  oldData=null,
-  newData=null
-){
-
-  if(!appState.supabase)return;
-
-  try{
-
-    await appState.supabase
-      .from("fsms_audit_log")
-      .insert({
-
-        user_id:appState.profile?.id||null,
-
-        action,
-
-        module,
-
-        table_name:tableName,
-
-        record_id:recordId||null,
-
-        description,
-
-        old_data:oldData,
-
-        new_data:newData
-
-      });
-
-  }catch(error){
-
-    console.warn(
-      "Audit log:",
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   STORAGE
-========================================================= */
-
-function safeFileName(name){
-
-  return String(name||"file")
-    .replace(/[^a-zA-Z0-9._-]/g,"_");
-
-}
-
-
-async function uploadFile(file,folder,code){
-
-  if(!file) return null;
-
-  const userId=
-    appState.profile?.id||
-    appState.session?.user?.id||
-    "unknown";
-
-  const path=
-    `${folder}/${userId}/${Date.now()}-${safeFileName(code)}-${safeFileName(file.name)}`;
-
-  const {error}=await appState.supabase
-    .storage
-    .from("fsms-documents")
-    .upload(
-      path,
-      file,
-      {
-        upsert:false,
-        contentType:file.type||undefined
-      }
-    );
-
-  if(error)throw error;
-
-  return path;
-
-}
-
-
-async function removeStorageFile(path){
-
-  if(!path)return;
-
-  try{
-
-    const {error}=await appState.supabase
-      .storage
-      .from("fsms-documents")
-      .remove([path]);
-
-    if(error)
-      console.warn(
-        "Storage remove:",
-        error.message
-      );
-
-  }catch(error){
-
-    console.warn(
-      "Storage remove:",
-      error.message
-    );
-
-  }
-
-}
-
-
-async function openStorageFile(path){
-
-  if(!path){
-
-    alert("No file is attached.");
-
-    return;
-
-  }
-
-  try{
-
-    const {data,error}=await appState.supabase
-      .storage
-      .from("fsms-documents")
-      .createSignedUrl(
-        path,
-        3600
-      );
-
-    if(error)throw error;
-
-    if(data?.signedUrl){
-
-      window.open(
-        data.signedUrl,
-        "_blank",
-        "noopener,noreferrer"
-      );
-
-    }
-
-  }catch(error){
-
-    alert(
-      "Unable to open file: "+
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   DEPARTMENTS
-========================================================= */
+/* ---------- DATA ---------- */
 
 async function loadDepartments(){
-
-  if(!appState.supabase)return;
-
-  try{
-
-    const {data,error}=await appState.supabase
-      .from("departments")
-      .select("id,name")
-      .order("name");
-
-    if(error)throw error;
-
-    appState.departments={};
-
-    (data||[]).forEach(d=>{
-
-      appState.departments[d.id]=d.name;
-
-    });
-
-    fillDepartmentSelects();
-
-  }catch(error){
-
-    console.warn(
-      "Departments:",
-      error.message
-    );
-
-  }
-
+ const {data,error}=await sb.from('departments').select('*').order('name');
+ if(!error)state.departments=data||[];
+ fillDepartmentSelects();
 }
-
 
 function fillDepartmentSelects(){
-
-  const selects=[
-    "document-department",
-    "record-department",
-    "plan-department",
-    "user-department"
-  ];
-
-  const options=
-    `<option value="">Select Department</option>`+
-    Object.entries(appState.departments)
-      .map(
-        ([id,name])=>
-          `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`
-      )
-      .join("");
-
-  selects.forEach(id=>{
-
-    const el=$(id);
-
-    if(!el)return;
-
-    const current=el.value;
-
-    el.innerHTML=options;
-
-    if(current)
-      el.value=current;
-
-  });
-
-  const filter=$("document-department-filter");
-
-  if(filter){
-
-    filter.innerHTML=
-      `<option value="">All Departments</option>`+
-      Object.values(appState.departments)
-        .map(
-          name=>
-            `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`
-        )
-        .join("");
-
-  }
-
+ const ids=['document-department','record-department','plan-department','user-department'];
+ ids.forEach(id=>{
+  const el=$(id);if(!el)return;
+  const current=el.value;
+  el.innerHTML='<option value="">Select Department</option>'+state.departments.map(d=>`<option value="${esc(d.name)}">${esc(d.name)}</option>`).join('');
+  el.value=current;
+ });
+ const filter=$('document-department-filter');
+ if(filter)filter.innerHTML='<option value="">All Departments</option>'+state.departments.map(d=>`<option value="${esc(d.name)}">${esc(d.name)}</option>`).join('');
 }
-
-
-/* =========================================================
-   USERS
-========================================================= */
 
 async function loadUsers(){
-
-  if(!appState.supabase)return;
-
-  try{
-
-    const {data,error}=await appState.supabase
-      .from("profiles")
-      .select(
-        "id,full_name,email,employee_code,department_id,role,job_title,phone,status"
-      )
-      .order("full_name");
-
-    if(error)throw error;
-
-    appState.users=data||[];
-
-    renderUsersTable();
-
-    fillUserSelects();
-
-  }catch(error){
-
-    console.error(
-      "Users:",
-      error.message
-    );
-
-  }
-
+ const {data,error}=await sb.from('profiles').select('*').order('full_name');
+ if(!error)state.users=data||[];
+ fillUserSelects();
+ renderUsers();
 }
-
 
 function fillUserSelects(){
-
-  const selects=[
-    "plan-responsible",
-    "plan-verifier"
-  ];
-
-  const options=
-    `<option value="">Select User</option>`+
-    appState.users
-      .filter(u=>u.status!=="inactive")
-      .map(
-        u=>
-          `<option value="${escapeHtml(u.id)}">${escapeHtml(u.full_name||u.email)}</option>`
-      )
-      .join("");
-
-  selects.forEach(id=>{
-
-    const el=$(id);
-
-    if(el){
-
-      const old=el.value;
-
-      el.innerHTML=options;
-
-      if(old)el.value=old;
-
-    }
-
-  });
-
+ ['plan-responsible','plan-verifier'].forEach(id=>{
+  const el=$(id);if(!el)return;
+  el.innerHTML='<option value="">Select User</option>'+state.users.filter(u=>u.status!=='inactive').map(u=>`<option value="${u.id}">${esc(u.full_name||u.email)}</option>`).join('');
+ });
 }
-
-
-function renderUsersTable(){
-
-  const tbody=$("users-tbody");
-
-  if(!tbody)return;
-
-  const search=
-    ($("users-filter")?.value||"")
-      .toLowerCase()
-      .trim();
-
-  const role=
-    $("role-filter")?.value||"";
-
-  const filtered=appState.users.filter(user=>{
-
-    const hay=[
-      user.full_name,
-      user.email,
-      user.employee_code,
-      user.role,
-      user.job_title
-    ]
-      .join(" ")
-      .toLowerCase();
-
-    return(
-      (!search||hay.includes(search))&&
-      (!role||user.role===role)
-    );
-
-  });
-
-  if(!filtered.length){
-
-    tbody.innerHTML=`
-      <tr>
-        <td colspan="7" style="text-align:center;padding:25px;color:var(--muted)">
-          No users found
-        </td>
-      </tr>`;
-
-    return;
-
-  }
-
-  tbody.innerHTML=filtered.map(user=>`
-
-    <tr>
-
-      <td>
-        <b>${escapeHtml(user.full_name||"N/A")}</b>
-        <div class="helper">
-          ${escapeHtml(user.job_title||"")}
-        </div>
-      </td>
-
-      <td>${escapeHtml(user.email||"N/A")}</td>
-
-      <td>${escapeHtml(user.employee_code||"N/A")}</td>
-
-      <td>${escapeHtml(getDepartmentName(user.department_id))}</td>
-
-      <td>${escapeHtml(user.role||"N/A")}</td>
-
-      <td>
-        <span class="user-status ${escapeHtml(user.status||"inactive")}">
-          ${escapeHtml(user.status||"unknown")}
-        </span>
-      </td>
-
-      <td>
-
-        <div class="action-buttons">
-
-          <button
-            class="small-btn"
-            onclick="window.editUser('${user.id}')">
-            Edit
-          </button>
-
-          <button
-            class="small-btn"
-            onclick="window.toggleUserStatus('${user.id}','${user.status}')">
-            ${user.status==="active"?"Deactivate":"Activate"}
-          </button>
-
-        </div>
-
-      </td>
-
-    </tr>
-
-  `).join("");
-
-}
-
-
-function openUserModal(){
-
-  appState.editingUserId=null;
-
-  $("user-modal-title").textContent="Edit User";
-
-  $("user-form").reset();
-
-  setStatus(
-    "user-form-status",
-    "Select an existing profile to edit. New Auth users must first be created in Supabase Authentication.",
-    "info"
-  );
-
-  openModal("user-modal");
-
-}
-
-
-function closeUserModal(){
-
-  closeModal("user-modal");
-
-}
-
-
-function editUser(id){
-
-  const user=
-    appState.users.find(u=>u.id===id);
-
-  if(!user)return;
-
-  appState.editingUserId=id;
-
-  $("user-modal-title").textContent="Edit User";
-
-  $("user-full-name").value=user.full_name||"";
-
-  $("user-email").value=user.email||"";
-
-  $("user-employee-code").value=user.employee_code||"";
-
-  $("user-department").value=user.department_id||"";
-
-  $("user-role").value=user.role||"Auditor / Read Only";
-
-  $("user-job-title").value=user.job_title||"";
-
-  $("user-phone").value=user.phone||"";
-
-  $("user-status").value=user.status||"active";
-
-  setStatus(
-    "user-form-status",
-    "",
-    "info"
-  );
-
-  openModal("user-modal");
-
-}
-
-
-async function toggleUserStatus(id,currentStatus){
-
-  if(appState.role!=="Super Admin"){
-
-    alert("Only Super Admin can change user status.");
-
-    return;
-
-  }
-
-  const newStatus=
-    currentStatus==="active"
-      ?"inactive"
-      :"active";
-
-  try{
-
-    const {data,error}=await appState.supabase
-      .from("profiles")
-      .update({
-        status:newStatus,
-        updated_at:new Date().toISOString()
-      })
-      .eq("id",id)
-      .select()
-      .single();
-
-    if(error)throw error;
-
-    await writeAudit(
-      "STATUS_CHANGE",
-      "User Management",
-      "profiles",
-      id,
-      `User status changed to ${newStatus}`,
-      null,
-      data
-    );
-
-    await loadUsers();
-
-    showToast(
-      `User ${newStatus}.`,
-      "success"
-    );
-
-  }catch(error){
-
-    alert(
-      "Unable to update user: "+
-      error.message
-    );
-
-  }
-
-}
-
-
-async function handleUserFormSubmit(event){
-
-  event.preventDefault();
-
-  if(!appState.editingUserId){
-
-    setStatus(
-      "user-form-status",
-      "New users must first be created in Supabase Authentication. This browser application does not create Auth users using the Admin API.",
-      "info"
-    );
-
-    return;
-
-  }
-
-  const fullName=$("user-full-name").value.trim();
-
-  const email=$("user-email").value.trim();
-
-  const employeeCode=$("user-employee-code").value.trim();
-
-  const departmentId=$("user-department").value;
-
-  const role=$("user-role").value;
-
-  const jobTitle=$("user-job-title").value.trim();
-
-  const phone=$("user-phone").value.trim()||null;
-
-  const status=$("user-status").value;
-
-  if(
-    !fullName||
-    !email||
-    !employeeCode||
-    !departmentId||
-    !role||
-    !jobTitle
-  ){
-
-    setStatus(
-      "user-form-status",
-      "Please complete all required fields.",
-      "error"
-    );
-
-    return;
-
-  }
-
-  try{
-
-    setStatus(
-      "user-form-status",
-      "Saving...",
-      "info"
-    );
-
-    const old=
-      appState.users.find(
-        u=>u.id===appState.editingUserId
-      );
-
-    const {data,error}=await appState.supabase
-      .from("profiles")
-      .update({
-
-        full_name:fullName,
-
-        email,
-
-        employee_code:employeeCode,
-
-        department_id:departmentId,
-
-        role,
-
-        job_title:jobTitle,
-
-        phone,
-
-        status,
-
-        updated_at:new Date().toISOString()
-
-      })
-      .eq("id",appState.editingUserId)
-      .select()
-      .single();
-
-    if(error)throw error;
-
-    await writeAudit(
-      "UPDATE",
-      "User Management",
-      "profiles",
-      appState.editingUserId,
-      `Profile updated: ${fullName}`,
-      old||null,
-      data
-    );
-
-    await loadUsers();
-
-    closeUserModal();
-
-    showToast(
-      "User profile updated.",
-      "success"
-    );
-
-  }catch(error){
-
-    setStatus(
-      "user-form-status",
-      "Error: "+error.message,
-      "error"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   PROFILE
-========================================================= */
-
-async function loadProfile(user){
-
-  if(!user)return;
-
-  try{
-
-    const {data,error}=await appState.supabase
-      .from("profiles")
-      .select("*")
-      .eq("id",user.id)
-      .maybeSingle();
-
-    if(error)throw error;
-
-    if(data){
-
-      appState.profile=data;
-
-      appState.role=
-        data.role||
-        "Auditor / Read Only";
-
-    }else{
-
-      appState.profile={
-
-        id:user.id,
-
-        email:user.email,
-
-        full_name:user.email
-
-      };
-
-      appState.role="Auditor / Read Only";
-
-    }
-
-  }catch(error){
-
-    console.warn(
-      "Profile:",
-      error.message
-    );
-
-    appState.profile={
-
-      id:user.id,
-
-      email:user.email,
-
-      full_name:user.email
-
-    };
-
-    appState.role="Auditor / Read Only";
-
-  }
-
-  applyRoleAccess();
-
-}
-
-
-function applyRoleAccess(){
-
-  const allowed=
-    ROLE_ACCESS[appState.role]||
-    ROLE_ACCESS["Auditor / Read Only"];
-
-  document.querySelectorAll(".nav").forEach(button=>{
-
-    const module=button.dataset.module;
-
-    const isAllowed=
-      allowed.includes(module);
-
-    button.disabled=!isAllowed;
-
-    button.style.display=
-      isAllowed
-        ?"flex"
-        :"none";
-
-  });
-
-  $("profile-button").textContent=
-    appState.profile?.full_name||
-    appState.profile?.email||
-    "User";
-
-}
-
-
-/* =========================================================
-   DOCUMENTS
-========================================================= */
 
 async function loadDocuments(){
-
-  if(!appState.supabase)return;
-
-  try{
-
-    const {data,error}=await appState.supabase
-      .from("documents")
-      .select("*")
-      .order("created_at",{ascending:false});
-
-    if(error)throw error;
-
-    appState.documents=data||[];
-
-    renderDocuments();
-
-    fillDocumentLinks();
-
-  }catch(error){
-
-    console.error(
-      "Documents:",
-      error.message
-    );
-
-    const tbody=$("documents-tbody");
-
-    if(tbody){
-
-      tbody.innerHTML=`
-        <tr>
-          <td colspan="8" style="text-align:center;padding:25px;color:var(--bad)">
-            Unable to load documents:<br>
-            ${escapeHtml(error.message)}
-          </td>
-        </tr>`;
-
-    }
-
-  }
-
+ const {data,error}=await sb.from('documents').select('*').order('created_at',{ascending:false});
+ if(error){console.warn('Documents:',error.message);state.documents=[]}
+ else state.documents=data||[];
+ fillDocumentSelects();
+ renderDocuments();
 }
 
-
-function renderDocuments(){
-
-  const tbody=$("documents-tbody");
-
-  if(!tbody)return;
-
-  const search=
-    ($("document-search")?.value||"")
-      .toLowerCase()
-      .trim();
-
-  const type=
-    $("document-type-filter")?.value||"";
-
-  const status=
-    $("document-status-filter")?.value||"";
-
-  const approval=
-    $("document-approval-filter")?.value||"";
-
-  const department=
-    $("document-department-filter")?.value||"";
-
-  const filtered=appState.documents.filter(d=>{
-
-    const hay=[
-      d.document_code,
-      d.title,
-      d.document_type,
-      d.department,
-      d.revision,
-      d.description
-    ]
-      .join(" ")
-      .toLowerCase();
-
-    return(
-      (!search||hay.includes(search))&&
-      (!type||d.document_type===type)&&
-      (!status||d.status===status)&&
-      (!approval||d.approval_status===approval)&&
-      (!department||d.department===department)
-    );
-
-  });
-
-  if(!filtered.length){
-
-    tbody.innerHTML=`
-      <tr>
-        <td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">
-          No documents found
-        </td>
-      </tr>`;
-
-    return;
-
-  }
-
-  tbody.innerHTML=filtered.map(d=>{
-
-    const approvalClass=
-      d.approval_status==="Approved"
-        ?"good"
-        :d.approval_status==="Rejected"
-          ?"bad"
-          :"warn";
-
-    return`
-
-      <tr>
-
-        <td>
-          <b>${escapeHtml(d.document_code||"—")}</b>
-        </td>
-
-        <td>
-          <b>${escapeHtml(d.title||"—")}</b>
-          <div class="helper">
-            ${escapeHtml(d.file_name||"No file")}
-          </div>
-        </td>
-
-        <td>
-          ${escapeHtml(d.document_type||"—")}
-        </td>
-
-        <td>
-          ${escapeHtml(d.department||"—")}
-        </td>
-
-        <td>
-          ${escapeHtml(d.revision||"—")}
-        </td>
-
-        <td>
-          ${formatDate(d.review_date)}
-        </td>
-
-        <td>
-          <span class="pill ${approvalClass}">
-            ${escapeHtml(d.approval_status||"Draft")}
-          </span>
-        </td>
-
-        <td>
-
-          <div class="action-buttons">
-
-            ${
-              d.file_path
-                ?`
-                  <button
-                    class="small-btn"
-                    onclick="window.openDocumentFile('${d.id}')">
-                    View
-                  </button>
-                `
-                :""
-            }
-
-            <button
-              class="small-btn"
-              onclick="window.editDocument('${d.id}')">
-              Edit
-            </button>
-
-            ${
-              d.approval_status!=="Approved"
-                ?`
-                  <button
-                    class="small-btn"
-                    onclick="window.approveDocument('${d.id}')">
-                    Approve
-                  </button>
-                `
-                :""
-            }
-
-            <button
-              class="small-btn"
-              onclick="window.deleteDocument('${d.id}')">
-              Delete
-            </button>
-
-          </div>
-
-        </td>
-
-      </tr>
-
-    `;
-
-  }).join("");
-
+function fillDocumentSelects(){
+ ['record-document','plan-document'].forEach(id=>{
+  const el=$(id);if(!el)return;
+  const current=el.value;
+  el.innerHTML='<option value="">Select Document</option>'+state.documents.map(d=>`<option value="${d.id}">${esc(d.document_code)} — ${esc(d.title)}</option>`).join('');
+  el.value=current;
+ });
 }
-
-
-function fillDocumentLinks(){
-
-  const ids=[
-    "record-document",
-    "plan-sop"
-  ];
-
-  ids.forEach(id=>{
-
-    const el=$(id);
-
-    if(!el)return;
-
-    const old=el.value;
-
-    el.innerHTML=
-      `<option value="">Select Document</option>`+
-      appState.documents
-        .filter(
-          d=>d.status!=="Obsolete"
-        )
-        .map(
-          d=>
-            `<option value="${escapeHtml(d.id)}">
-              ${escapeHtml(d.document_code||"")} — ${escapeHtml(d.title||"")}
-            </option>`
-        )
-        .join("");
-
-    if(old)el.value=old;
-
-  });
-
-}
-
-
-function openDocumentModal(id=null){
-
-  appState.editingDocumentId=id;
-
-  $("document-form").reset();
-
-  setStatus(
-    "document-form-status",
-    "",
-    "info"
-  );
-
-  $("current-file-info").textContent="";
-
-  fillDepartmentSelects();
-
-  if(id){
-
-    const d=
-      appState.documents.find(
-        x=>x.id===id
-      );
-
-    if(!d)return;
-
-    $("document-modal-title").textContent=
-      "Edit Controlled Document";
-
-    $("document-code").value=
-      d.document_code||"";
-
-    $("document-type").value=
-      d.document_type||"";
-
-    $("document-title").value=
-      d.title||"";
-
-    $("document-department").value=
-      d.department||"";
-
-    $("document-revision").value=
-      d.revision||"";
-
-    $("document-issue-date").value=
-      d.issue_date||"";
-
-    $("document-review-date").value=
-      d.review_date||"";
-
-    $("document-status").value=
-      d.status||"Draft";
-
-    $("document-approval-status").value=
-      d.approval_status||"Draft";
-
-    $("document-description").value=
-      d.description||"";
-
-    $("current-file-info").textContent=
-      d.file_name
-        ?`Current file: ${d.file_name}`
-        :"No current file.";
-
-  }else{
-
-    $("document-modal-title").textContent=
-      "New Controlled Document";
-
-    $("document-issue-date").value=
-      todayIso();
-
-    $("document-status").value=
-      "Draft";
-
-    $("document-approval-status").value=
-      "Draft";
-
-  }
-
-  openModal("document-modal");
-
-}
-
-
-function closeDocumentModal(){
-
-  closeModal("document-modal");
-
-  appState.editingDocumentId=null;
-
-}
-
-
-async function handleDocumentSubmit(event){
-
-  event.preventDefault();
-
-  const code=$("document-code").value.trim();
-
-  const type=$("document-type").value;
-
-  const title=$("document-title").value.trim();
-
-  const department=$("document-department").value||null;
-
-  const revision=
-    $("document-revision").value.trim()||null;
-
-  const issueDate=
-    $("document-issue-date").value||null;
-
-  const reviewDate=
-    $("document-review-date").value||null;
-
-  const status=$("document-status").value;
-
-  const approvalStatus=
-    $("document-approval-status").value;
-
-  const description=
-    $("document-description").value.trim()||null;
-
-  const file=
-    $("document-file").files[0]||null;
-
-  if(!code||!type||!title){
-
-    setStatus(
-      "document-form-status",
-      "Document Code, Type and Title are required.",
-      "error"
-    );
-
-    return;
-
-  }
-
-  try{
-
-    setStatus(
-      "document-form-status",
-      file
-        ?"Uploading file..."
-        :"Saving document...",
-      "info"
-    );
-
-    let uploadedPath=null;
-
-    if(file){
-
-      uploadedPath=
-        await uploadFile(
-          file,
-          "documents",
-          code
-        );
-
-    }
-
-    const baseData={
-
-      document_code:code,
-
-      title,
-
-      document_type:type,
-
-      department,
-
-      revision,
-
-      issue_date:issueDate,
-
-      review_date:reviewDate,
-
-      status,
-
-      approval_status:approvalStatus,
-
-      description,
-
-      updated_at:new Date().toISOString()
-
-    };
-
-    let savedId=null;
-
-    if(appState.editingDocumentId){
-
-      const old=
-        appState.documents.find(
-          d=>d.id===appState.editingDocumentId
-        );
-
-      const updateData={
-        ...baseData
-      };
-
-      if(uploadedPath){
-
-        updateData.file_path=uploadedPath;
-
-        updateData.file_name=file.name;
-
-        updateData.file_size=file.size;
-
-        updateData.file_type=file.type||null;
-
-      }
-
-      const {data,error}=await appState.supabase
-        .from("documents")
-        .update(updateData)
-        .eq("id",appState.editingDocumentId)
-        .select()
-        .single();
-
-      if(error){
-
-        if(uploadedPath)
-          await removeStorageFile(uploadedPath);
-
-        throw error;
-
-      }
-
-      savedId=data.id;
-
-      if(
-        uploadedPath&&
-        old?.file_path
-      ){
-
-        await removeStorageFile(
-          old.file_path
-        );
-
-      }
-
-      await writeAudit(
-        "UPDATE",
-        "Document Control",
-        "documents",
-        savedId,
-        `Document updated: ${code}`,
-        old||null,
-        data||null
-      );
-
-    }else{
-
-      const insertData={
-
-        ...baseData,
-
-        owner_id:
-          appState.profile?.id||
-          appState.session?.user?.id||
-          null,
-
-        created_by:
-          appState.profile?.id||
-          appState.session?.user?.id||
-          null
-
-      };
-
-      if(uploadedPath){
-
-        insertData.file_path=uploadedPath;
-
-        insertData.file_name=file.name;
-
-        insertData.file_size=file.size;
-
-        insertData.file_type=file.type||null;
-
-      }
-
-      const {data,error}=await appState.supabase
-        .from("documents")
-        .insert(insertData)
-        .select()
-        .single();
-
-      if(error){
-
-        if(uploadedPath)
-          await removeStorageFile(uploadedPath);
-
-        throw error;
-
-      }
-
-      savedId=data.id;
-
-      await writeAudit(
-        "CREATE",
-        "Document Control",
-        "documents",
-        savedId,
-        `Document created: ${code}`,
-        null,
-        data
-      );
-
-    }
-
-    await loadDocuments();
-
-    closeDocumentModal();
-
-    showToast(
-      "Document saved successfully.",
-      "success"
-    );
-
-    await refreshDashboard();
-
-  }catch(error){
-
-    console.error(error);
-
-    setStatus(
-      "document-form-status",
-      "Error: "+error.message,
-      "error"
-    );
-
-  }
-
-}
-
-
-async function editDocument(id){
-
-  openDocumentModal(id);
-
-}
-
-
-async function openDocumentFile(id){
-
-  const d=
-    appState.documents.find(
-      x=>x.id===id
-    );
-
-  if(!d)return;
-
-  await openStorageFile(
-    d.file_path
-  );
-
-}
-
-
-async function approveDocument(id){
-
-  if(appState.role!=="Super Admin"){
-
-    alert(
-      "Only Super Admin can approve documents."
-    );
-
-    return;
-
-  }
-
-  const d=
-    appState.documents.find(
-      x=>x.id===id
-    );
-
-  if(!d)return;
-
-  if(
-    !confirm(
-      `Approve this document?\n\n${d.document_code||""} - ${d.title||""}`
-    )
-  )return;
-
-  try{
-
-    const updateData={
-
-      approval_status:"Approved",
-
-      approved_by:
-        appState.profile?.id||null,
-
-      approved_at:
-        new Date().toISOString(),
-
-      status:"Active",
-
-      updated_at:
-        new Date().toISOString()
-
-    };
-
-    const {data,error}=await appState.supabase
-      .from("documents")
-      .update(updateData)
-      .eq("id",id)
-      .select()
-      .single();
-
-    if(error)throw error;
-
-    await writeAudit(
-      "APPROVE",
-      "Document Control",
-      "documents",
-      id,
-      `Document approved: ${d.document_code||d.title}`,
-      d,
-      data
-    );
-
-    await loadDocuments();
-
-    await refreshDashboard();
-
-    showToast(
-      "Document approved.",
-      "success"
-    );
-
-  }catch(error){
-
-    alert(
-      "Approval failed: "+
-      error.message
-    );
-
-  }
-
-}
-
-
-async function deleteDocument(id){
-
-  const d=
-    appState.documents.find(
-      x=>x.id===id
-    );
-
-  if(!d)return;
-
-  if(
-    !confirm(
-      `Delete this document?\n\n${d.document_code||""} - ${d.title||""}\n\nThis action cannot be undone.`
-    )
-  )return;
-
-  try{
-
-    const {error}=await appState.supabase
-      .from("documents")
-      .delete()
-      .eq("id",id);
-
-    if(error)throw error;
-
-    if(d.file_path)
-      await removeStorageFile(
-        d.file_path
-      );
-
-    await writeAudit(
-      "DELETE",
-      "Document Control",
-      "documents",
-      id,
-      `Document deleted: ${d.document_code||d.title}`,
-      d,
-      null
-    );
-
-    await loadDocuments();
-
-    await refreshDashboard();
-
-    showToast(
-      "Document deleted.",
-      "success"
-    );
-
-  }catch(error){
-
-    alert(
-      "Delete failed: "+
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   RECORDS
-========================================================= */
 
 async function loadRecords(){
-
-  if(!appState.supabase)return;
-
-  try{
-
-    const {data,error}=await appState.supabase
-      .from("records")
-      .select("*")
-      .order("created_at",{ascending:false});
-
-    if(error)throw error;
-
-    appState.records=data||[];
-
-    renderRecords();
-
-  }catch(error){
-
-    console.error(
-      "Records:",
-      error.message
-    );
-
-  }
-
+ const {data,error}=await sb.from('records').select('*').order('created_at',{ascending:false});
+ if(error){console.warn('Records:',error.message);state.records=[]}
+ else state.records=data||[];
+ fillRecordSelect();
 }
 
-
-function renderRecords(){
-
-  const tbody=$("records-body");
-
-  if(!tbody)return;
-
-  setText(
-    "records-total",
-    appState.records.length
-  );
-
-  setText(
-    "records-active",
-    appState.records.filter(
-      r=>r.status==="Active"
-    ).length
-  );
-
-  setText(
-    "records-linked",
-    appState.records.filter(
-      r=>!!r.related_document_id
-    ).length
-  );
-
-  setText(
-    "records-files",
-    appState.records.filter(
-      r=>!!r.file_path
-    ).length
-  );
-
-  if(!appState.records.length){
-
-    tbody.innerHTML=`
-      <tr>
-        <td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">
-          No records created yet.
-        </td>
-      </tr>`;
-
-    return;
-
-  }
-
-  tbody.innerHTML=
-    appState.records.map(r=>{
-
-      const doc=
-        appState.documents.find(
-          d=>d.id===r.related_document_id
-        );
-
-      return`
-
-        <tr>
-
-          <td>
-            <b>${escapeHtml(r.record_code||"—")}</b>
-          </td>
-
-          <td>
-            <b>${escapeHtml(r.title)}</b>
-            <div class="helper">
-              ${escapeHtml(r.file_name||"No file")}
-            </div>
-          </td>
-
-          <td>
-            ${escapeHtml(r.record_type||"Record")}
-          </td>
-
-          <td>
-            ${escapeHtml(r.department||"—")}
-          </td>
-
-          <td>
-            ${escapeHtml(r.frequency||"—")}
-          </td>
-
-          <td>
-            ${doc
-              ?escapeHtml(doc.document_code||doc.title)
-              :"—"}
-          </td>
-
-          <td>
-            <span class="pill">
-              ${escapeHtml(r.status||"Active")}
-            </span>
-          </td>
-
-          <td>
-
-            <div class="action-buttons">
-
-              ${
-                r.file_path
-                  ?`
-                    <button
-                      class="small-btn"
-                      onclick="window.openRecordFile('${r.id}')">
-                      View
-                    </button>
-                  `
-                  :""
-              }
-
-              <button
-                class="small-btn"
-                onclick="window.editRecord('${r.id}')">
-                Edit
-              </button>
-
-              <button
-                class="small-btn"
-                onclick="window.deleteRecord('${r.id}')">
-                Delete
-              </button>
-
-            </div>
-
-          </td>
-
-        </tr>
-
-      `;
-
-    }).join("");
-
+function fillRecordSelect(){
+ const el=$('plan-record');if(!el)return;
+ const current=el.value;
+ el.innerHTML='<option value="">Select Record</option>'+state.records.map(r=>`<option value="${r.id}">${esc(r.record_code)} — ${esc(r.title)}</option>`).join('');
+ el.value=current;
 }
-
-
-function openRecordModal(id=null){
-
-  appState.editingRecordId=id;
-
-  $("record-form").reset();
-
-  fillDepartmentSelects();
-
-  fillDocumentLinks();
-
-  setStatus(
-    "record-status-message",
-    "",
-    "info"
-  );
-
-  if(id){
-
-    const r=
-      appState.records.find(
-        x=>x.id===id
-      );
-
-    if(!r)return;
-
-    $("record-modal-title").textContent=
-      "Edit Controlled Record";
-
-    $("record-code").value=
-      r.record_code||"";
-
-    $("record-type").value=
-      r.record_type||"Record";
-
-    $("record-title").value=
-      r.title||"";
-
-    $("record-department").value=
-      r.department||"";
-
-    $("record-frequency").value=
-      r.frequency||"Monthly";
-
-    $("record-issue-date").value=
-      r.issue_date||"";
-
-    $("record-review-date").value=
-      r.review_date||"";
-
-    $("record-document").value=
-      r.related_document_id||"";
-
-    $("record-description").value=
-      r.description||"";
-
-  }else{
-
-    $("record-modal-title").textContent=
-      "New Controlled Record";
-
-    $("record-issue-date").value=
-      todayIso();
-
-    $("record-status-message").textContent="";
-
-  }
-
-  openModal("record-modal");
-
-}
-
-
-function closeRecordModal(){
-
-  closeModal("record-modal");
-
-  appState.editingRecordId=null;
-
-}
-
-
-async function handleRecordSubmit(event){
-
-  event.preventDefault();
-
-  const code=$("record-code").value.trim();
-
-  const type=$("record-type").value;
-
-  const title=$("record-title").value.trim();
-
-  const department=
-    $("record-department").value||null;
-
-  const frequency=
-    $("record-frequency").value;
-
-  const issueDate=
-    $("record-issue-date").value||null;
-
-  const reviewDate=
-    $("record-review-date").value||null;
-
-  const documentId=
-    $("record-document").value||null;
-
-  const description=
-    $("record-description").value.trim()||null;
-
-  const file=
-    $("record-file").files[0]||null;
-
-  if(!code||!type||!title){
-
-    setStatus(
-      "record-status-message",
-      "Record Code, Type and Title are required.",
-      "error"
-    );
-
-    return;
-
-  }
-
-  try{
-
-    setStatus(
-      "record-status-message",
-      file
-        ?"Uploading record file..."
-        :"Saving record...",
-      "info"
-    );
-
-    let uploadedPath=null;
-
-    if(file){
-
-      uploadedPath=
-        await uploadFile(
-          file,
-          "records",
-          code
-        );
-
-    }
-
-    const baseData={
-
-      record_code:code,
-
-      title,
-
-      record_type:type,
-
-      department,
-
-      related_document_id:documentId,
-
-      frequency,
-
-      issue_date:issueDate,
-
-      review_date:reviewDate,
-
-      description,
-
-      status:"Active",
-
-      updated_at:new Date().toISOString()
-
-    };
-
-    if(uploadedPath){
-
-      baseData.file_path=uploadedPath;
-
-      baseData.file_name=file.name;
-
-      baseData.file_size=file.size;
-
-      baseData.file_type=file.type||null;
-
-    }
-
-    if(appState.editingRecordId){
-
-      const old=
-        appState.records.find(
-          r=>r.id===appState.editingRecordId
-        );
-
-      const {data,error}=await appState.supabase
-        .from("records")
-        .update(baseData)
-        .eq("id",appState.editingRecordId)
-        .select()
-        .single();
-
-      if(error){
-
-        if(uploadedPath)
-          await removeStorageFile(uploadedPath);
-
-        throw error;
-
-      }
-
-      if(
-        uploadedPath&&
-        old?.file_path
-      ){
-
-        await removeStorageFile(
-          old.file_path
-        );
-
-      }
-
-      await writeAudit(
-        "UPDATE",
-        "Records & Plans",
-        "records",
-        data.id,
-        `Record updated: ${code}`,
-        old,
-        data
-      );
-
-    }else{
-
-      baseData.created_by=
-        appState.profile?.id||
-        appState.session?.user?.id||
-        null;
-
-      const {data,error}=await appState.supabase
-        .from("records")
-        .insert(baseData)
-        .select()
-        .single();
-
-      if(error){
-
-        if(uploadedPath)
-          await removeStorageFile(uploadedPath);
-
-        throw error;
-
-      }
-
-      await writeAudit(
-        "CREATE",
-        "Records & Plans",
-        "records",
-        data.id,
-        `Record created: ${code}`,
-        null,
-        data
-      );
-
-    }
-
-    await loadRecords();
-
-    await loadPlans();
-
-    closeRecordModal();
-
-    showToast(
-      "Record saved successfully.",
-      "success"
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    setStatus(
-      "record-status-message",
-      "Error: "+error.message,
-      "error"
-    );
-
-  }
-
-}
-
-
-async function editRecord(id){
-
-  openRecordModal(id);
-
-}
-
-
-async function openRecordFile(id){
-
-  const r=
-    appState.records.find(
-      x=>x.id===id
-    );
-
-  if(r)
-    await openStorageFile(
-      r.file_path
-    );
-
-}
-
-
-async function deleteRecord(id){
-
-  const r=
-    appState.records.find(
-      x=>x.id===id
-    );
-
-  if(!r)return;
-
-  if(
-    !confirm(
-      `Delete record?\n\n${r.record_code||""} - ${r.title}`
-    )
-  )return;
-
-  try{
-
-    const {error}=await appState.supabase
-      .from("records")
-      .delete()
-      .eq("id",id);
-
-    if(error)throw error;
-
-    if(r.file_path)
-      await removeStorageFile(
-        r.file_path
-      );
-
-    await writeAudit(
-      "DELETE",
-      "Records & Plans",
-      "records",
-      id,
-      `Record deleted: ${r.record_code||r.title}`,
-      r,
-      null
-    );
-
-    await loadRecords();
-
-    showToast(
-      "Record deleted.",
-      "success"
-    );
-
-  }catch(error){
-
-    alert(
-      "Delete failed: "+
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   PLANS
-========================================================= */
 
 async function loadPlans(){
-
-  if(!appState.supabase)return;
-
-  try{
-
-    const {data,error}=await appState.supabase
-      .from("compliance_plans")
-      .select("*")
-      .order("created_at",{ascending:false});
-
-    if(error)throw error;
-
-    appState.plans=data||[];
-
-    renderPlans();
-
-  }catch(error){
-
-    console.error(
-      "Plans:",
-      error.message
-    );
-
-  }
-
+ const {data,error}=await sb.from('compliance_plans').select('*').order('next_due_date');
+ if(error){console.warn('Plans:',error.message);state.plans=[]}
+ else state.plans=data||[];
 }
-
-
-function renderPlans(){
-
-  const tbody=$("plans-body");
-
-  if(!tbody)return;
-
-  const active=
-    appState.plans.filter(
-      p=>p.status==="Active"
-    );
-
-  setText(
-    "plans-active",
-    active.length
-  );
-
-  setText(
-    "plans-sop",
-    active.filter(
-      p=>!!p.sop_document_id
-    ).length
-  );
-
-  setText(
-    "plans-verification",
-    active.filter(
-      p=>p.verification_required
-    ).length
-  );
-
-  setText(
-    "plans-attachments",
-    active.filter(
-      p=>p.attachment_required
-    ).length
-  );
-
-  if(!appState.plans.length){
-
-    tbody.innerHTML=`
-      <tr>
-        <td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">
-          No compliance plans created yet.
-        </td>
-      </tr>`;
-
-    return;
-
-  }
-
-  tbody.innerHTML=
-    appState.plans.map(p=>{
-
-      const sop=
-        appState.documents.find(
-          d=>d.id===p.sop_document_id
-        );
-
-      return`
-
-        <tr>
-
-          <td>
-            <b>${escapeHtml(p.plan_code||"—")}</b>
-          </td>
-
-          <td>
-            <b>${escapeHtml(p.title)}</b>
-            <div class="helper">
-              ${escapeHtml(p.instructions||"")}
-            </div>
-          </td>
-
-          <td>
-            ${sop
-              ?escapeHtml(sop.document_code||sop.title)
-              :"—"}
-          </td>
-
-          <td>
-            ${escapeHtml(
-              getUserName(p.responsible_id)
-            )}
-          </td>
-
-          <td>
-            ${escapeHtml(p.frequency||"—")}
-          </td>
-
-          <td>
-            ${formatDate(p.next_due_date)}
-          </td>
-
-          <td>
-            <span class="pill">
-              ${escapeHtml(p.status||"Active")}
-            </span>
-          </td>
-
-          <td>
-
-            <div class="action-buttons">
-
-              <button
-                class="small-btn"
-                onclick="window.editPlan('${p.id}')">
-                Edit
-              </button>
-
-              <button
-                class="small-btn"
-                onclick="window.generateTasksForPlan('${p.id}')">
-                Generate
-              </button>
-
-            </div>
-
-          </td>
-
-        </tr>
-
-      `;
-
-    }).join("");
-
-}
-
-
-function nextDueDate(
-  startDate,
-  frequency,
-  customDays
-){
-
-  switch(frequency){
-
-    case "Daily":
-      return addDays(startDate,1);
-
-    case "Weekly":
-      return addDays(startDate,7);
-
-    case "Monthly":
-      return addMonths(startDate,1);
-
-    case "Quarterly":
-      return addMonths(startDate,3);
-
-    case "Semi-Annual":
-      return addMonths(startDate,6);
-
-    case "Annual":
-      return addMonths(startDate,12);
-
-    case "Custom":
-      return addDays(
-        startDate,
-        Number(customDays||1)
-      );
-
-    default:
-      return addMonths(startDate,1);
-
-  }
-
-}
-
-
-function advanceDate(
-  date,
-  frequency,
-  customDays
-){
-
-  switch(frequency){
-
-    case "Daily":
-      return addDays(date,1);
-
-    case "Weekly":
-      return addDays(date,7);
-
-    case "Monthly":
-      return addMonths(date,1);
-
-    case "Quarterly":
-      return addMonths(date,3);
-
-    case "Semi-Annual":
-      return addMonths(date,6);
-
-    case "Annual":
-      return addMonths(date,12);
-
-    case "Custom":
-      return addDays(
-        date,
-        Number(customDays||1)
-      );
-
-    default:
-      return addMonths(date,1);
-
-  }
-
-}
-
-
-function openPlanModal(id=null){
-
-  appState.editingPlanId=id;
-
-  $("plan-form").reset();
-
-  fillDepartmentSelects();
-
-  fillDocumentLinks();
-
-  fillUserSelects();
-
-  fillRecordLinks();
-
-  $("plan-start-date").value=todayIso();
-
-  $("plan-reminder-days").value=1;
-
-  $("plan-verification-required").checked=true;
-
-  setStatus(
-    "plan-status-message",
-    "",
-    "info"
-  );
-
-  if(id){
-
-    const p=
-      appState.plans.find(
-        x=>x.id===id
-      );
-
-    if(!p)return;
-
-    $("plan-modal-title").textContent=
-      "Edit Compliance Plan";
-
-    $("plan-code").value=
-      p.plan_code||"";
-
-    $("plan-title").value=
-      p.title||"";
-
-    $("plan-department").value=
-      p.department||"";
-
-    $("plan-sop").value=
-      p.sop_document_id||"";
-
-    $("plan-record").value=
-      p.record_id||"";
-
-    $("plan-responsible").value=
-      p.responsible_id||"";
-
-    $("plan-verifier").value=
-      p.verifier_id||"";
-
-    $("plan-frequency").value=
-      p.frequency||"Monthly";
-
-    $("plan-frequency-value").value=
-      p.frequency_value||"";
-
-    $("plan-start-date").value=
-      p.start_date||todayIso();
-
-    $("plan-due-time").value=
-      p.due_time||"";
-
-    $("plan-reminder-days").value=
-      p.reminder_days??1;
-
-    $("plan-status").value=
-      p.status||"Active";
-
-    $("plan-attachment-required").checked=
-      !!p.attachment_required;
-
-    $("plan-verification-required").checked=
-      p.verification_required!==false;
-
-    $("plan-instructions").value=
-      p.instructions||"";
-
-  }else{
-
-    $("plan-modal-title").textContent=
-      "New Compliance Plan";
-
-  }
-
-  openModal("plan-modal");
-
-}
-
-
-function closePlanModal(){
-
-  closeModal("plan-modal");
-
-  appState.editingPlanId=null;
-
-}
-
-
-function fillRecordLinks(){
-
-  const el=$("plan-record");
-
-  if(!el)return;
-
-  const old=el.value;
-
-  el.innerHTML=
-    `<option value="">Select Record</option>`+
-    appState.records
-      .filter(
-        r=>r.status!=="Obsolete"
-      )
-      .map(
-        r=>
-          `<option value="${escapeHtml(r.id)}">
-            ${escapeHtml(r.record_code||"")} — ${escapeHtml(r.title)}
-          </option>`
-      )
-      .join("");
-
-  if(old)el.value=old;
-
-}
-
-
-async function handlePlanSubmit(event){
-
-  event.preventDefault();
-
-  const code=$("plan-code").value.trim();
-
-  const title=$("plan-title").value.trim();
-
-  const department=
-    $("plan-department").value||null;
-
-  const sop=
-    $("plan-sop").value||null;
-
-  const record=
-    $("plan-record").value||null;
-
-  const responsible=
-    $("plan-responsible").value||null;
-
-  const verifier=
-    $("plan-verifier").value||null;
-
-  const frequency=
-    $("plan-frequency").value;
-
-  const frequencyValue=
-    $("plan-frequency-value").value
-      ?Number($("plan-frequency-value").value)
-      :null;
-
-  const startDate=
-    $("plan-start-date").value;
-
-  const dueTime=
-    $("plan-due-time").value||null;
-
-  const reminderDays=
-    Number(
-      $("plan-reminder-days").value||0
-    );
-
-  const status=
-    $("plan-status").value;
-
-  const attachmentRequired=
-    $("plan-attachment-required").checked;
-
-  const verificationRequired=
-    $("plan-verification-required").checked;
-
-  const instructions=
-    $("plan-instructions").value.trim()||null;
-
-  if(!code||!title||!startDate){
-
-    setStatus(
-      "plan-status-message",
-      "Plan Code, Title and Start Date are required.",
-      "error"
-    );
-
-    return;
-
-  }
-
-  if(
-    frequency==="Custom"&&
-    (!frequencyValue||frequencyValue<1)
-  ){
-
-    setStatus(
-      "plan-status-message",
-      "Enter Custom Days for a Custom frequency.",
-      "error"
-    );
-
-    return;
-
-  }
-
-  try{
-
-    setStatus(
-      "plan-status-message",
-      "Saving plan...",
-      "info"
-    );
-
-    let nextDue=
-      nextDueDate(
-        startDate,
-        frequency,
-        frequencyValue
-      );
-
-    const baseData={
-
-      plan_code:code,
-
-      title,
-
-      department,
-
-      sop_document_id:sop,
-
-      record_id:record,
-
-      responsible_id:responsible,
-
-      verifier_id:verifier,
-
-      frequency,
-
-      frequency_value:frequencyValue,
-
-      start_date:startDate,
-
-      next_due_date:nextDue,
-
-      due_time:dueTime,
-
-      reminder_days:reminderDays,
-
-      attachment_required:attachmentRequired,
-
-      verification_required:verificationRequired,
-
-      status,
-
-      instructions,
-
-      updated_at:new Date().toISOString()
-
-    };
-
-    if(appState.editingPlanId){
-
-      const old=
-        appState.plans.find(
-          p=>p.id===appState.editingPlanId
-        );
-
-      const {data,error}=await appState.supabase
-        .from("compliance_plans")
-        .update(baseData)
-        .eq("id",appState.editingPlanId)
-        .select()
-        .single();
-
-      if(error)throw error;
-
-      await writeAudit(
-        "UPDATE",
-        "Records & Plans",
-        "compliance_plans",
-        data.id,
-        `Plan updated: ${code}`,
-        old,
-        data
-      );
-
-    }else{
-
-      baseData.created_by=
-        appState.profile?.id||
-        appState.session?.user?.id||
-        null;
-
-      const {data,error}=await appState.supabase
-        .from("compliance_plans")
-        .insert(baseData)
-        .select()
-        .single();
-
-      if(error)throw error;
-
-      await writeAudit(
-        "CREATE",
-        "Records & Plans",
-        "compliance_plans",
-        data.id,
-        `Plan created: ${code}`,
-        null,
-        data
-      );
-
-    }
-
-    await loadPlans();
-
-    await generateTasks();
-
-    await loadTasks();
-
-    closePlanModal();
-
-    showToast(
-      "Compliance plan saved.",
-      "success"
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    setStatus(
-      "plan-status-message",
-      "Error: "+error.message,
-      "error"
-    );
-
-  }
-
-}
-
-
-async function editPlan(id){
-
-  openPlanModal(id);
-
-}
-
-
-/* =========================================================
-   TASK ENGINE
-========================================================= */
 
 async function loadTasks(){
-
-  if(!appState.supabase)return;
-
-  try{
-
-    const {data,error}=await appState.supabase
-      .from("compliance_tasks")
-      .select("*")
-      .order("due_date",{ascending:true});
-
-    if(error)throw error;
-
-    appState.tasks=data||[];
-
-    renderTasks();
-
-  }catch(error){
-
-    console.error(
-      "Tasks:",
-      error.message
-    );
-
-  }
-
+ const {data,error}=await sb.from('compliance_tasks').select('*').order('due_date');
+ if(error){console.warn('Tasks:',error.message);state.tasks=[]}
+ else state.tasks=data||[];
 }
 
+/* ---------- STORAGE ---------- */
 
-async function generateTasks(){
-
-  const activePlans=
-    appState.plans.filter(
-      p=>p.status==="Active"
-    );
-
-  for(const plan of activePlans){
-
-    await generateTasksForPlan(
-      plan.id,
-      false
-    );
-
-  }
-
+function safeName(name){
+ return name.replace(/[^a-zA-Z0-9._-]/g,'_');
 }
 
-
-async function generateTasksForPlan(
-  planId,
-  showMessage=true
-){
-
-  const plan=
-    appState.plans.find(
-      p=>p.id===planId
-    );
-
-  if(!plan)return;
-
-  try{
-
-    let cursor=
-      plan.next_due_date||
-      plan.start_date||
-      todayIso();
-
-    const today=todayIso();
-
-    const horizon=addDays(
-      today,
-      30
-    );
-
-    const rows=[];
-
-    let safety=0;
-
-    while(
-      cursor<=horizon&&
-      safety<40
-    ){
-
-      const exists=
-        appState.tasks.some(
-          t=>
-            t.plan_id===plan.id&&
-            t.scheduled_date===cursor
-        );
-
-      if(!exists){
-
-        rows.push({
-
-          task_number:
-            `${plan.plan_code}-${cursor}-${Math.random().toString(36).slice(2,7).toUpperCase()}`,
-
-          plan_id:plan.id,
-
-          scheduled_date:cursor,
-
-          due_date:cursor,
-
-          responsible_id:
-            plan.responsible_id||null,
-
-          verifier_id:
-            plan.verifier_id||null,
-
-          status:"Pending"
-
-        });
-
-      }
-
-      cursor=
-        advanceDate(
-          cursor,
-          plan.frequency,
-          plan.frequency_value
-        );
-
-      safety++;
-
-    }
-
-    if(rows.length){
-
-      const {error}=await appState.supabase
-        .from("compliance_tasks")
-        .insert(rows);
-
-      if(error)throw error;
-
-    }
-
-    const nextDue=
-      cursor;
-
-    await appState.supabase
-      .from("compliance_plans")
-      .update({
-        next_due_date:nextDue,
-        updated_at:new Date().toISOString()
-      })
-      .eq("id",plan.id);
-
-    if(showMessage){
-
-      await loadPlans();
-
-      await loadTasks();
-
-      showToast(
-        "Tasks generated successfully.",
-        "success"
-      );
-
-    }
-
-  }catch(error){
-
-    console.error(
-      "Generate tasks:",
-      error.message
-    );
-
-    if(showMessage){
-
-      alert(
-        "Unable to generate tasks: "+
-        error.message
-      );
-
-    }
-
-  }
-
+async function uploadFile(file,folder){
+ if(!file)return null;
+ const path=`${folder}/${state.user.id}/${Date.now()}-${safeName(file.name)}`;
+ const {error}=await sb.storage.from('fsms-documents').upload(path,file,{upsert:false});
+ if(error)throw error;
+ return path;
 }
 
-
-function renderTasks(){
-
-  const tbody=$("tasks-body");
-
-  if(!tbody)return;
-
-  const today=todayIso();
-
-  const open=
-    appState.tasks.filter(
-      t=>[
-        "Pending",
-        "In Progress",
-        "Pending Verification",
-        "Overdue"
-      ].includes(t.status)
-    );
-
-  const todayTasks=
-    appState.tasks.filter(
-      t=>
-        t.due_date===today&&
-        ![
-          "Completed",
-          "Verified"
-        ].includes(t.status)
-    );
-
-  const overdue=
-    appState.tasks.filter(
-      t=>
-        t.due_date<today&&
-        ![
-          "Completed",
-          "Verified"
-        ].includes(t.status)
-    );
-
-  const completed=
-    appState.tasks.filter(
-      t=>[
-        "Completed",
-        "Verified"
-      ].includes(t.status)
-    );
-
-  setText("tasks-open",open.length);
-
-  setText("tasks-today",todayTasks.length);
-
-  setText("tasks-overdue",overdue.length);
-
-  setText("tasks-completed",completed.length);
-
-  if(!appState.tasks.length){
-
-    tbody.innerHTML=`
-      <tr>
-        <td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">
-          No scheduled tasks yet.
-        </td>
-      </tr>`;
-
-    return;
-
-  }
-
-  tbody.innerHTML=
-    appState.tasks.map(t=>{
-
-      const plan=
-        appState.plans.find(
-          p=>p.id===t.plan_id
-        );
-
-      let statusClass="";
-
-      if(
-        t.status==="Completed"||
-        t.status==="Verified"
-      ){
-
-        statusClass="good";
-
-      }else if(
-        t.due_date<today
-      ){
-
-        statusClass="bad";
-
-      }else{
-
-        statusClass="warn";
-
-      }
-
-      return`
-
-        <tr>
-
-          <td>
-            <b>${escapeHtml(t.task_number||"Task")}</b>
-          </td>
-
-          <td>
-            ${escapeHtml(
-              plan?.title||"—"
-            )}
-          </td>
-
-          <td>
-            ${formatDate(t.scheduled_date)}
-          </td>
-
-          <td>
-            ${formatDate(t.due_date)}
-          </td>
-
-          <td>
-            ${escapeHtml(
-              getUserName(t.responsible_id)
-            )}
-          </td>
-
-          <td>
-            <span class="pill ${statusClass}">
-              ${escapeHtml(t.status||"Pending")}
-            </span>
-          </td>
-
-          <td>
-
-            <div class="action-buttons">
-
-              ${
-                ![
-                  "Completed",
-                  "Verified"
-                ].includes(t.status)
-                  ?`
-                    <button
-                      class="small-btn"
-                      onclick="window.openTaskModal('${t.id}')">
-                      Complete
-                    </button>
-                  `
-                  :""
-              }
-
-              ${
-                t.status==="Pending Verification"
-                  ?`
-                    <button
-                      class="small-btn"
-                      onclick="window.verifyTask('${t.id}')">
-                      Verify
-                    </button>
-                  `
-                  :""
-              }
-
-            </div>
-
-          </td>
-
-        </tr>
-
-      `;
-
-    }).join("");
-
+async function signedUrl(path){
+ if(!path)return null;
+ const {data,error}=await sb.storage.from('fsms-documents').createSignedUrl(path,3600);
+ if(error)throw error;
+ return data.signedUrl;
 }
 
-
-function openTaskModal(id){
-
-  const task=
-    appState.tasks.find(
-      t=>t.id===id
-    );
-
-  if(!task)return;
-
-  $("task-id").value=id;
-
-  $("task-result").value=
-    task.result||"";
-
-  $("task-notes").value=
-    task.notes||"";
-
-  const plan=
-    appState.plans.find(
-      p=>p.id===task.plan_id
-    );
-
-  $("task-subtitle").textContent=
-    `${task.task_number||"Task"} · ${plan?.title||""} · Due ${formatDate(task.due_date)}`;
-
-  setStatus(
-    "task-status-message",
-    "",
-    "info"
-  );
-
-  openModal("task-modal");
-
+async function removeFile(path){
+ if(!path)return;
+ const {error}=await sb.storage.from('fsms-documents').remove([path]);
+ if(error)console.warn(error.message);
 }
 
+/* ---------- AUDIT ---------- */
 
-function closeTaskModal(){
-
-  closeModal("task-modal");
-
+async function audit(action,module,table,recordId,description,oldData=null,newData=null){
+ try{
+  await sb.from('fsms_audit_log').insert({
+   user_id:state.user?.id||null,action,module,table_name:table,
+   record_id:recordId||null,description,
+   old_data:oldData,new_data:newData
+  });
+ }catch(e){console.warn('Audit:',e.message)}
 }
 
-
-async function handleTaskSubmit(event){
-
-  event.preventDefault();
-
-  const id=$("task-id").value;
-
-  const result=$("task-result").value.trim();
-
-  const notes=$("task-notes").value.trim()||null;
-
-  const file=
-    $("task-file").files[0]||null;
-
-  if(!result){
-
-    setStatus(
-      "task-status-message",
-      "Result is required.",
-      "error"
-    );
-
-    return;
-
-  }
-
-  const task=
-    appState.tasks.find(
-      t=>t.id===id
-    );
-
-  if(!task)return;
-
-  const plan=
-    appState.plans.find(
-      p=>p.id===task.plan_id
-    );
-
-  try{
-
-    setStatus(
-      "task-status-message",
-      file
-        ?"Saving result and uploading evidence..."
-        :"Saving result...",
-      "info"
-    );
-
-    let newStatus=
-      plan?.verification_required
-        ?"Pending Verification"
-        :"Completed";
-
-    const updateData={
-
-      status:newStatus,
-
-      result,
-
-      notes,
-
-      completed_date:
-        new Date().toISOString(),
-
-      completed_by:
-        appState.profile?.id||
-        appState.session?.user?.id||
-        null,
-
-      updated_at:
-        new Date().toISOString()
-
-    };
-
-    const {data,error}=await appState.supabase
-      .from("compliance_tasks")
-      .update(updateData)
-      .eq("id",id)
-      .select()
-      .single();
-
-    if(error)throw error;
-
-    if(file){
-
-      const path=
-        await uploadFile(
-          file,
-          "tasks",
-          task.task_number||id
-        );
-
-      const {error:attachmentError}=
-        await appState.supabase
-          .from("fsms_attachments")
-          .insert({
-
-            file_name:file.name,
-
-            file_path:path,
-
-            file_size:file.size,
-
-            file_type:file.type||null,
-
-            task_id:id,
-
-            uploaded_by:
-              appState.profile?.id||
-              appState.session?.user?.id||
-              null
-
-          });
-
-      if(attachmentError){
-
-        await removeStorageFile(path);
-
-        throw attachmentError;
-
-      }
-
-    }
-
-    await writeAudit(
-      "COMPLETE",
-      "Records & Plans",
-      "compliance_tasks",
-      id,
-      `Task completed: ${task.task_number||id}`,
-      task,
-      data
-    );
-
-    await loadTasks();
-
-    await buildNotifications();
-
-    closeTaskModal();
-
-    showToast(
-      newStatus==="Pending Verification"
-        ?"Task completed and awaiting verification."
-        :"Task completed successfully.",
-      "success"
-    );
-
-    await refreshDashboard();
-
-  }catch(error){
-
-    console.error(error);
-
-    setStatus(
-      "task-status-message",
-      "Error: "+error.message,
-      "error"
-    );
-
-  }
-
-}
-
-
-async function verifyTask(id){
-
-  if(
-    appState.role!=="Super Admin"&&
-    appState.role!=="Quality Officer"
-  ){
-
-    alert(
-      "Only authorized Quality/Administration users can verify tasks."
-    );
-
-    return;
-
-  }
-
-  const task=
-    appState.tasks.find(
-      t=>t.id===id
-    );
-
-  if(!task)return;
-
-  if(
-    !confirm(
-      `Verify and close this task?\n\n${task.task_number||id}`
-    )
-  )return;
-
-  try{
-
-    const {data,error}=await appState.supabase
-      .from("compliance_tasks")
-      .update({
-
-        status:"Verified",
-
-        verified_by:
-          appState.profile?.id||
-          appState.session?.user?.id||
-          null,
-
-        verified_at:
-          new Date().toISOString(),
-
-        updated_at:
-          new Date().toISOString()
-
-      })
-      .eq("id",id)
-      .select()
-      .single();
-
-    if(error)throw error;
-
-    await writeAudit(
-      "VERIFY",
-      "Records & Plans",
-      "compliance_tasks",
-      id,
-      `Task verified: ${task.task_number||id}`,
-      task,
-      data
-    );
-
-    await loadTasks();
-
-    await buildNotifications();
-
-    await refreshDashboard();
-
-    showToast(
-      "Task verified and closed.",
-      "success"
-    );
-
-  }catch(error){
-
-    alert(
-      "Verification failed: "+
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   NOTIFICATIONS
-========================================================= */
-
-async function buildNotifications(){
-
-  const today=todayIso();
-
-  const soon=addDays(
-    today,
-    1
-  );
-
-  const activeTasks=
-    appState.tasks.filter(
-      t=>![
-        "Completed",
-        "Verified"
-      ].includes(t.status)
-    );
-
-  const generated=[];
-
-  for(const task of activeTasks){
-
-    let type=null;
-
-    let severity="Info";
-
-    let title="";
-
-    let message="";
-
-    if(task.due_date<today){
-
-      type="Overdue";
-
-      severity="Critical";
-
-      title="Overdue Compliance Task";
-
-      message=
-        `${task.task_number||"Task"} is overdue.`;
-
-    }else if(task.due_date===today){
-
-      type="Due Today";
-
-      severity="Warning";
-
-      title="Task Due Today";
-
-      message=
-        `${task.task_number||"Task"} is due today.`;
-
-    }else if(task.due_date<=soon){
-
-      type="Due Soon";
-
-      severity="Info";
-
-      title="Task Due Soon";
-
-      message=
-        `${task.task_number||"Task"} is due tomorrow.`;
-
-    }
-
-    if(!type)continue;
-
-    generated.push({
-
-      user_id:
-        task.responsible_id||
-        appState.profile?.id,
-
-      task_id:task.id,
-
-      plan_id:task.plan_id,
-
-      notification_type:type,
-
-      title,
-
-      message,
-
-      severity,
-
-      due_date:task.due_date
-
-    });
-
-  }
-
-  if(generated.length){
-
-    for(const item of generated){
-
-      if(!item.user_id)continue;
-
-      const {data}=await appState.supabase
-        .from("fsms_notifications")
-        .select("id")
-        .eq("user_id",item.user_id)
-        .eq("task_id",item.task_id)
-        .eq("notification_type",item.notification_type)
-        .eq("due_date",item.due_date)
-        .limit(1);
-
-      if(data?.length)continue;
-
-      await appState.supabase
-        .from("fsms_notifications")
-        .insert(item);
-
-    }
-
-  }
-
-  const {data}=await appState.supabase
-    .from("fsms_notifications")
-    .select("*")
-    .order("created_at",{ascending:false})
-    .limit(100);
-
-  appState.notifications=data||[];
-
-  renderNotifications();
-
-}
-
-
-function renderNotifications(){
-
-  const box=$("notifications-body");
-
-  if(!box)return;
-
-  if(!appState.notifications.length){
-
-    box.innerHTML=`
-      <div class="issue">
-        <i class="dot good"></i>
-        <div class="issue-text">
-          <b>No Notifications</b>
-          <span>No active compliance notifications.</span>
-        </div>
-        <span class="pill">OK</span>
-      </div>`;
-
-    return;
-
-  }
-
-  box.innerHTML=
-    appState.notifications.map(n=>{
-
-      const bad=
-        n.severity==="Critical";
-
-      return`
-
-        <div class="issue">
-
-          <i class="dot ${bad?"bad":"warn"}"></i>
-
-          <div class="issue-text">
-
-            <b>
-              ${escapeHtml(n.title)}
-            </b>
-
-            <span>
-              ${escapeHtml(n.message||"")}
-              · Due ${formatDate(n.due_date)}
-            </span>
-
-          </div>
-
-          <span class="pill ${bad?"bad":"warn"}">
-            ${escapeHtml(n.notification_type)}
-          </span>
-
-        </div>
-
-      `;
-
-    }).join("");
-
-}
-
-
-/* =========================================================
-   DASHBOARD
-========================================================= */
-
-async function queryCount(
-  table,
-  filter=null
-){
-
-  try{
-
-    let query=
-      appState.supabase
-        .from(table)
-        .select("*",{count:"exact",head:true});
-
-    if(filter)
-      query=filter(query);
-
-    const {count,error}=await query;
-
-    if(error){
-
-      console.warn(
-        table,
-        error.message
-      );
-
-      return null;
-
-    }
-
-    return count??0;
-
-  }catch(error){
-
-    return null;
-
-  }
-
-}
-
-
-async function refreshDashboard(){
-
-  if(!appState.supabase)return;
-
-  const today=todayIso();
-
-  const next30=addDays(
-    today,
-    30
-  );
-
-  const totalDocuments=
-    await queryCount("documents");
-
-  const pendingDocuments=
-    await queryCount(
-      "documents",
-      q=>q.in(
-        "approval_status",
-        [
-          "Draft",
-          "Pending Approval",
-          "Rejected"
-        ]
-      )
-    );
-
-  const nearReview=
-    await queryCount(
-      "documents",
-      q=>
-        q.gte(
-          "review_date",
-          today
-        )
-        .lte(
-          "review_date",
-          next30
-        )
-        .neq(
-          "status",
-          "Obsolete"
-        )
-    );
-
-  const approvedDocuments=
-    await queryCount(
-      "documents",
-      q=>q.eq(
-        "approval_status",
-        "Approved"
-      )
-    );
-
-  const activePlans=
-    await queryCount(
-      "compliance_plans",
-      q=>q.eq(
-        "status",
-        "Active"
-      )
-    );
-
-  const openTasks=
-    await queryCount(
-      "compliance_tasks",
-      q=>q.in(
-        "status",
-        [
-          "Pending",
-          "In Progress",
-          "Overdue",
-          "Pending Verification"
-        ]
-      )
-    );
-
-  setText(
-    "kpi-total-documents",
-    totalDocuments===null
-      ?"—"
-      :totalDocuments
-  );
-
-  setText(
-    "kpi-pending-documents",
-    pendingDocuments===null
-      ?"—"
-      :pendingDocuments
-  );
-
-  setText(
-    "kpi-documents-near-review",
-    nearReview===null
-      ?"—"
-      :nearReview
-  );
-
-  setText(
-    "kpi-open-tasks",
-    openTasks===null
-      ?"—"
-      :openTasks
-  );
-
-  setText(
-    "kpi-active-plans",
-    activePlans===null
-      ?"—"
-      :activePlans
-  );
-
-  setText(
-    "kpi-approved-documents",
-    approvedDocuments===null
-      ?"—"
-      :approvedDocuments
-  );
-
-  setText(
-    "kpi-total-documents-sub",
-    totalDocuments===null
-      ?"Not configured"
-      :"Live data connected"
-  );
-
-  setText(
-    "kpi-pending-documents-sub",
-    pendingDocuments===null
-      ?"Not configured"
-      :pendingDocuments
-        ?"Requires action"
-        :"No pending approval"
-  );
-
-  setText(
-    "kpi-documents-near-review-sub",
-    nearReview===null
-      ?"Not configured"
-      :nearReview
-        ?"Due within 30 days"
-        :"No reviews due soon"
-  );
-
-  setText(
-    "kpi-open-tasks-sub",
-    openTasks===null
-      ?"Not configured"
-      :openTasks
-        ?"Needs action"
-        :"No open tasks"
-  );
-
-  setText(
-    "kpi-active-plans-sub",
-    activePlans===null
-      ?"Not configured"
-      :"Active compliance plans"
-  );
-
-  setText(
-    "kpi-approved-documents-sub",
-    approvedDocuments===null
-      ?"Not configured"
-      :"Controlled documents"
-  );
-
-
-  let documentControl=0;
-
-  if(
-    totalDocuments!==null&&
-    totalDocuments>0
-  ){
-
-    documentControl=Math.round(
-      (approvedDocuments||0)/
-      totalDocuments*
-      100
-    );
-
-  }
-
-  setText(
-    "kpi-document-control",
-    documentControl+"%"
-  );
-
-  $("progress-document-control").style.width=
-    documentControl+"%";
-
-
-  let planCoverage=0;
-
-  if(
-    activePlans!==null&&
-    activePlans>0
-  ){
-
-    planCoverage=100;
-
-  }
-
-  setText(
-    "kpi-plan-coverage",
-    planCoverage+"%"
-  );
-
-  $("progress-plan-coverage").style.width=
-    planCoverage+"%";
-
-
-  const completed=
-    await queryCount(
-      "compliance_tasks",
-      q=>q.in(
-        "status",
-        [
-          "Completed",
-          "Verified"
-        ]
-      )
-    );
-
-  const totalTasks=
-    await queryCount(
-      "compliance_tasks"
-    );
-
-  let taskCompletion=0;
-
-  if(
-    totalTasks!==null&&
-    totalTasks>0
-  ){
-
-    taskCompletion=Math.round(
-      (completed||0)/
-      totalTasks*
-      100
-    );
-
-  }
-
-  setText(
-    "kpi-task-completion",
-    taskCompletion+"%"
-  );
-
-  $("progress-task-completion").style.width=
-    taskCompletion+"%";
-
-
-  setText(
-    "kpi-audit-trail",
-    "Ready"
-  );
-
-
-  let readiness=0;
-
-  if(totalDocuments!==null){
-
-    const docScore=
-      totalDocuments>0
-        ?documentControl
-        :0;
-
-    const reviewScore=
-      totalDocuments>0
-        ?Math.max(
-          0,
-          100-
-          Math.min(
-            100,
-            (nearReview||0)/
-            totalDocuments*
-            100
-          )
-        )
-        :0;
-
-    const taskScore=
-      totalTasks>0
-        ?taskCompletion
-        :0;
-
-    readiness=Math.round(
-      (
-        docScore+
-        reviewScore+
-        taskScore
-      )/3
-    );
-
-  }
-
-  setText(
-    "kpi-audit-readiness",
-    readiness+"%"
-  );
-
-  $("progress-audit-readiness").style.width=
-    readiness+"%";
-
-
-  updateChart(
-    "chart-draft",
-    totalDocuments,
-    await queryCount(
-      "documents",
-      q=>q.eq(
-        "approval_status",
-        "Draft"
-      )
-    )
-  );
-
-  updateChart(
-    "chart-review",
-    totalDocuments,
-    await queryCount(
-      "documents",
-      q=>q.eq(
-        "approval_status",
-        "Pending Approval"
-      )
-    )
-  );
-
-  updateChart(
-    "chart-approved",
-    totalDocuments,
-    approvedDocuments
-  );
-
-  updateChart(
-    "chart-near",
-    totalDocuments,
-    nearReview
-  );
-
-
-  renderAttention(
-    nearReview,
-    pendingDocuments,
-    openTasks
-  );
-
-}
-
-
-function updateChart(
-  id,
-  total,
-  value
-){
-
-  const el=$(id);
-
-  if(!el)return;
-
-  if(
-    !total||
-    value===null
-  ){
-
-    el.style.height="8%";
-
-    return;
-
-  }
-
-  const percentage=Math.max(
-    8,
-    Math.min(
-      100,
-      value/
-      total*
-      100
-    )
-  );
-
-  el.style.height=
-    percentage+"%";
-
-}
-
-
-function renderAttention(
-  nearReview,
-  pendingDocuments,
-  openTasks
-){
-
-  const box=$("attention-list");
-
-  if(!box)return;
-
-  const items=[];
-
-  if(pendingDocuments){
-
-    items.push(`
-
-      <div class="issue">
-
-        <i class="dot bad"></i>
-
-        <div class="issue-text">
-
-          <b>Document Approval</b>
-
-          <span>
-            ${pendingDocuments}
-            document(s) require approval
-          </span>
-
-        </div>
-
-        <span class="pill warn">
-          Action
-        </span>
-
-      </div>
-
-    `);
-
-  }
-
-  if(nearReview){
-
-    items.push(`
-
-      <div class="issue">
-
-        <i class="dot"></i>
-
-        <div class="issue-text">
-
-          <b>Document Review</b>
-
-          <span>
-            ${nearReview}
-            document(s) due within 30 days
-          </span>
-
-        </div>
-
-        <span class="pill warn">
-          Due Soon
-        </span>
-
-      </div>
-
-    `);
-
-  }
-
-  if(openTasks){
-
-    items.push(`
-
-      <div class="issue">
-
-        <i class="dot bad"></i>
-
-        <div class="issue-text">
-
-          <b>Compliance Tasks</b>
-
-          <span>
-            ${openTasks}
-            open task(s)
-          </span>
-
-        </div>
-
-        <span class="pill bad">
-          Open
-        </span>
-
-      </div>
-
-    `);
-
-  }
-
-  if(!items.length){
-
-    items.push(`
-
-      <div class="issue">
-
-        <i class="dot good"></i>
-
-        <div class="issue-text">
-
-          <b>No Critical Attention Items</b>
-
-          <span>
-            Current system data shows no open alerts.
-          </span>
-
-        </div>
-
-        <span class="pill">
-          OK
-        </span>
-
-      </div>
-
-    `);
-
-  }
-
-  box.innerHTML=items.join("");
-
-}
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
+/* ---------- NAVIGATION ---------- */
+
+const moduleNames={
+ dashboard:['Food Safety Command Center','Ice Manufacturing & Flavored Ice · System Status'],
+ documents:['Document Control','Controlled documents, revisions, approval and review'],
+ records:['Records & Plans','Compliance plans, scheduled tasks and records'],
+ haccp:['HACCP / CCP / OPRP','Hazard analysis, CCP and OPRP monitoring'],
+ gmp:['PRP / GMP / GHP','Prerequisite programs and hygiene controls'],
+ 'water-ro':['Water & RO','Water treatment, RO and disinfection monitoring'],
+ calibration:['Calibration','Equipment calibration and certificates'],
+ training:['Training','Food safety competence and training records'],
+ suppliers:['Suppliers','Supplier approval and evaluation'],
+ ncr:['NCR / CAPA','Nonconformity, root cause and corrective action'],
+ reports:['Reports','FSMS reports and management information'],
+ settings:['Settings','System configuration'],
+ users:['User Management','Profiles, roles and access']
+};
 
 function switchModule(module){
+ state.currentModule=module;
+ document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
 
-  const allowed=
-    ROLE_ACCESS[appState.role]||
-    ROLE_ACCESS["Auditor / Read Only"];
+ const btn=document.querySelector(`[data-module="${module}"]`);
+ if(btn)btn.classList.add('active');
 
-  if(!allowed.includes(module)){
+ if(module==='dashboard')$('dashboard-section').classList.add('active');
+ else if(module==='documents')$('documents-section').classList.add('active');
+ else if(module==='records')$('records-section').classList.add('active');
+ else if(module==='users')$('users-section').classList.add('active');
+ else{
+  $('placeholder-section').classList.add('active');
+  $('placeholder-icon').textContent=module==='haccp'?'⚠':module==='water-ro'?'💧':'⚙';
+  $('placeholder-title').textContent=moduleNames[module]?.[0]||module;
+  $('placeholder-text').textContent=moduleNames[module]?.[1]||'FSMS module';
+ }
 
-    showToast(
-      "You do not have access to this module.",
-      "error"
-    );
+ $('page-title').textContent=moduleNames[module]?.[0]||'PURE ICE FSMS';
+ $('page-subtitle').textContent=moduleNames[module]?.[1]||'Quality & Food Safety';
 
-    return;
-
-  }
-
-  appState.currentModule=module;
-
-  document.querySelectorAll(".nav")
-    .forEach(button=>{
-
-      button.classList.toggle(
-        "active",
-        button.dataset.module===module
-      );
-
-    });
-
-
-  $("dashboard-section")
-    .classList.add("hidden");
-
-  $("documents-section")
-    .classList.add("hidden");
-
-  $("records-section")
-    .classList.add("hidden");
-
-  $("user-management-section")
-    .classList.add("hidden");
-
-  $("module-placeholder-section")
-    .classList.add("hidden");
-
-
-  if(module==="dashboard"){
-
-    $("dashboard-section")
-      .classList.remove("hidden");
-
-  }else if(module==="documents"){
-
-    $("documents-section")
-      .classList.remove("hidden");
-
-    loadDocuments();
-
-  }else if(module==="records"){
-
-    $("records-section")
-      .classList.remove("hidden");
-
-    setRecordTab(
-      appState.currentRecordTab
-    );
-
-    loadRecords();
-
-    loadPlans();
-
-    loadTasks();
-
-    buildNotifications();
-
-  }else if(module==="user-management"){
-
-    $("user-management-section")
-      .classList.remove("hidden");
-
-    loadUsers();
-
-  }else{
-
-    $("module-placeholder-section")
-      .classList.remove("hidden");
-
-    const info=
-      MODULE_INFO[module]||
-      MODULE_INFO.dashboard;
-
-    $("placeholder-title").textContent=
-      info.title;
-
-    $("placeholder-text").textContent=
-      `${info.subtitle}. This module is connected to the FSMS architecture and is ready for operational records, plans, monitoring and reporting.`;
-
-    $("placeholder-icon").textContent=
-      module==="haccp"
-        ?"◉"
-        :module==="gmp"
-          ?"◇"
-          :module==="water-ro"
-            ?"≋"
-            :module==="calibration"
-              ?"⌁"
-              :module==="ncr"
-                ?"⚠"
-                :"◈";
-
-  }
-
-
-  const info=
-    MODULE_INFO[module]||
-    MODULE_INFO.dashboard;
-
-  $("page-title").textContent=
-    info.title;
-
-  $("page-subtitle").textContent=
-    info.subtitle;
-
+ if(module==='dashboard')refreshDashboard();
+ if(module==='documents')loadDocuments();
+ if(module==='records')renderRecords();
+ if(module==='users')renderUsers();
 }
 
+/* ---------- DOCUMENTS ---------- */
 
-function setRecordTab(tab){
+function renderDocuments(){
+ const tbody=$('documents-tbody');if(!tbody)return;
+ let rows=state.documents.slice();
 
-  appState.currentRecordTab=tab;
+ const q=($('document-search')?.value||'').toLowerCase();
+ const type=$('document-type-filter')?.value||'';
+ const st=$('document-status-filter')?.value||'';
+ const ap=$('document-approval-filter')?.value||'';
+ const dep=$('document-department-filter')?.value||'';
 
-  const views={
-    records:"records-view",
-    plans:"plans-view",
-    tasks:"tasks-view",
-    notifications:"notifications-view"
+ rows=rows.filter(d=>
+  (!q||`${d.document_code} ${d.title} ${d.description||''}`.toLowerCase().includes(q))&&
+  (!type||d.document_type===type)&&
+  (!st||d.status===st)&&
+  (!ap||d.approval_status===ap)&&
+  (!dep||d.department===dep)
+ );
+
+ if(!rows.length){tbody.innerHTML='<tr><td colspan="9" class="empty">No documents found.</td></tr>';return}
+
+ tbody.innerHTML=rows.map(d=>`
+ <tr>
+  <td><b>${esc(d.document_code)}</b></td>
+  <td>${esc(d.title)}${d.file_name?'<br><small>📎 '+esc(d.file_name)+'</small>':''}</td>
+  <td>${badge(d.document_type)}</td>
+  <td>${esc(d.department||'-')}</td>
+  <td>${esc(d.revision||'-')}</td>
+  <td>${fmt(d.review_date)}</td>
+  <td>${badge(d.status)}</td>
+  <td>${badge(d.approval_status)}</td>
+  <td class="action-cell">
+   <button class="btn btn-light btn-sm" onclick="editDocument('${d.id}')">Edit</button>
+   ${d.file_path?`<button class="btn btn-light btn-sm" onclick="openDocumentFile('${d.file_path}')">View</button>`:''}
+   ${d.approval_status!=='Approved'?`<button class="btn btn-success btn-sm" onclick="approveDocument('${d.id}')">Approve</button>`:''}
+   <button class="btn btn-danger btn-sm" onclick="deleteDocument('${d.id}')">Delete</button>
+  </td>
+ </tr>`).join('');
+}
+
+function openDocumentModal(id=null){
+ state.editingDocumentId=id;
+ $('document-modal-title').textContent=id?'Edit Document':'New Document';
+ $('document-form').reset();
+ $('current-file-info').innerHTML='';
+ $('document-form-status').textContent='';
+
+ if(id){
+  const d=state.documents.find(x=>x.id===id);if(!d)return;
+  $('document-code').value=d.document_code||'';
+  $('document-type').value=d.document_type||'';
+  $('document-title').value=d.title||'';
+  $('document-department').value=d.department||'';
+  $('document-revision').value=d.revision||'01';
+  $('document-issue-date').value=d.issue_date||'';
+  $('document-review-date').value=d.review_date||'';
+  $('document-status').value=d.status||'Draft';
+  $('document-approval-status').value=d.approval_status||'Draft';
+  $('document-description').value=d.description||'';
+  if(d.file_name)$('current-file-info').innerHTML=`Current file: <b>${esc(d.file_name)}</b>`;
+ }
+ openModal('document-modal');
+}
+
+async function saveDocument(e){
+ e.preventDefault();
+ const st=$('document-form-status');status(st,'Saving...');
+ const id=state.editingDocumentId;
+ const old=id?state.documents.find(x=>x.id===id):null;
+ const file=$('document-file').files[0];
+
+ try{
+  let path=old?.file_path||null;
+  if(file)path=await uploadFile(file,'documents');
+
+  const payload={
+   document_code:$('document-code').value.trim(),
+   document_type:$('document-type').value,
+   title:$('document-title').value.trim(),
+   department:$('document-department').value||null,
+   revision:$('document-revision').value.trim()||'01',
+   issue_date:$('document-issue-date').value||null,
+   review_date:$('document-review-date').value||null,
+   status:$('document-status').value,
+   approval_status:$('document-approval-status').value,
+   description:$('document-description').value.trim()||null,
+   file_path:path,
+   file_name:file?.name||old?.file_name||null,
+   file_size:file?.size||old?.file_size||null,
+   file_type:file?.type||old?.file_type||null,
+   owner_id:state.user.id
   };
 
-  Object.entries(views).forEach(
-    ([key,id])=>{
+  let result;
+  if(id)result=await sb.from('documents').update(payload).eq('id',id).select().single();
+  else result=await sb.from('documents').insert({...payload,created_by:state.user.id}).select().single();
 
-      $(id)?.classList.toggle(
-        "hidden",
-        key!==tab
-      );
+  if(result.error)throw result.error;
+  if(file&&old?.file_path&&old.file_path!==path)await removeFile(old.file_path);
 
-    }
-  );
+  await audit(id?'UPDATE':'CREATE','Document Control','documents',result.data.id,
+   `${id?'Updated':'Created'} document ${payload.document_code}`,old,result.data);
 
-  document.querySelectorAll(
-    ".engine-tab"
-  ).forEach(button=>{
-
-    button.classList.toggle(
-      "active",
-      button.dataset.recordTab===tab
-    );
-
-  });
-
+  closeModal('document-modal');toast('Document saved successfully');
+  await loadDocuments();await refreshDashboard();
+ }catch(err){status(st,err.message,true)}
 }
 
+async function editDocument(id){openDocumentModal(id)}
 
-/* =========================================================
-   AUTH
-========================================================= */
-
-async function handleLogin(event){
-
-  event.preventDefault();
-
-  const email=
-    $("login-email").value.trim();
-
-  const password=
-    $("login-password").value;
-
-  if(!email||!password){
-
-    setStatus(
-      "login-status",
-      "Please enter both email and password.",
-      "error"
-    );
-
-    return;
-
-  }
-
-  setStatus(
-    "login-status",
-    "Signing in...",
-    "info"
-  );
-
-  try{
-
-    const {data,error}=
-      await appState.supabase.auth
-        .signInWithPassword({
-          email,
-          password
-        });
-
-    if(error)throw error;
-
-    appState.session=
-      data.session;
-
-    await loadProfile(
-      data.user
-    );
-
-    await Promise.all([
-      loadDepartments(),
-      loadUsers(),
-      loadDocuments(),
-      loadRecords(),
-      loadPlans(),
-      loadTasks()
-    ]);
-
-    await buildNotifications();
-
-    showDashboard();
-
-    await refreshDashboard();
-
-    setStatus(
-      "login-status",
-      "Signed in successfully.",
-      "success"
-    );
-
-  }catch(error){
-
-    setStatus(
-      "login-status",
-      error.message||
-      "Unable to sign in.",
-      "error"
-    );
-
-  }
-
+async function openDocumentFile(path){
+ try{
+  const url=await signedUrl(path);window.open(url,'_blank');
+ }catch(e){alert(e.message)}
 }
 
-
-async function handleForgotPassword(){
-
-  const email=
-    $("login-email").value.trim();
-
-  if(!email){
-
-    setStatus(
-      "login-status",
-      "Enter your email first.",
-      "error"
-    );
-
-    return;
-
-  }
-
-  try{
-
-    const {error}=
-      await appState.supabase.auth
-        .resetPasswordForEmail(
-          email,
-          {
-            redirectTo:
-              `${window.location.origin}${window.location.pathname}`
-          }
-        );
-
-    if(error)throw error;
-
-    setStatus(
-      "login-status",
-      "Password reset instructions sent.",
-      "success"
-    );
-
-  }catch(error){
-
-    setStatus(
-      "login-status",
-      error.message,
-      "error"
-    );
-
-  }
-
+async function approveDocument(id){
+ const d=state.documents.find(x=>x.id===id);if(!d)return;
+ const {data,error}=await sb.from('documents').update({
+  approval_status:'Approved',approved_by:state.user.id,approved_at:new Date().toISOString(),status:'Active'
+ }).eq('id',id).select().single();
+ if(error){alert(error.message);return}
+ await audit('APPROVE','Document Control','documents',id,`Approved ${d.document_code}`,d,data);
+ toast('Document approved');
+ await loadDocuments();refreshDashboard();
 }
 
-
-async function handleSignOut(){
-
-  if(!appState.supabase)return;
-
-  await appState.supabase.auth.signOut();
-
-  appState.session=null;
-
-  appState.profile=null;
-
-  appState.role=
-    "Auditor / Read Only";
-
-  showLogin();
-
+async function deleteDocument(id){
+ const d=state.documents.find(x=>x.id===id);if(!d)return;
+ if(!confirm(`Delete ${d.document_code} — ${d.title}?`))return;
+ const {error}=await sb.from('documents').delete().eq('id',id);
+ if(error){alert(error.message);return}
+ if(d.file_path)await removeFile(d.file_path);
+ await audit('DELETE','Document Control','documents',id,`Deleted ${d.document_code}`,d,null);
+ toast('Document deleted');await loadDocuments();refreshDashboard();
 }
 
+/* ---------- RECORDS ---------- */
 
-/* =========================================================
-   GLOBAL SEARCH
-========================================================= */
+function renderRecords(){
+ const box=$('records-content');if(!box)return;
 
-function filterCurrentModule(value){
-
-  if(
-    appState.currentModule==="documents"
-  ){
-
-    $("document-search").value=
-      value;
-
-    renderDocuments();
-
-  }else if(
-    appState.currentModule==="user-management"
-  ){
-
-    $("users-filter").value=
-      value;
-
-    renderUsersTable();
-
-  }
-
+ if(state.recordTab==='records'){
+  box.innerHTML=`
+  <div class="table-wrap"><table><thead><tr>
+  <th>Code</th><th>Title</th><th>Type</th><th>Department</th><th>Frequency</th><th>Status</th><th>Actions</th>
+  </tr></thead><tbody>
+  ${state.records.length?state.records.map(r=>`<tr>
+   <td><b>${esc(r.record_code)}</b></td><td>${esc(r.title)}</td><td>${badge(r.record_type)}</td>
+   <td>${esc(r.department||'-')}</td><td>${esc(r.frequency||'-')}</td><td>${badge(r.status)}</td>
+   <td><button class="btn btn-light btn-sm" onclick="editRecord('${r.id}')">Edit</button>
+   ${r.file_path?`<button class="btn btn-light btn-sm" onclick="openDocumentFile('${r.file_path}')">View</button>`:''}
+   </td></tr>`).join(''):'<tr><td colspan="7" class="empty">No records yet.</td></tr>'}
+  </tbody></table></div>`;
+ }
+ else if(state.recordTab==='plans'){
+  box.innerHTML=`
+  <div class="table-wrap"><table><thead><tr>
+  <th>Code</th><th>Plan</th><th>Frequency</th><th>Next Due</th><th>Responsible</th><th>Status</th><th>Actions</th>
+  </tr></thead><tbody>
+  ${state.plans.length?state.plans.map(p=>{
+   const u=state.users.find(x=>x.id===p.responsible_id);
+   return `<tr><td><b>${esc(p.plan_code)}</b></td><td>${esc(p.title)}</td><td>${esc(p.frequency)}</td>
+   <td>${fmt(p.next_due_date)}</td><td>${esc(u?.full_name||'-')}</td><td>${badge(p.status)}</td>
+   <td><button class="btn btn-light btn-sm" onclick="editPlan('${p.id}')">Edit</button></td></tr>`
+  }).join(''):'<tr><td colspan="7" class="empty">No plans yet.</td></tr>'}
+  </tbody></table></div>`;
+ }
+ else{
+  box.innerHTML=`
+  <div class="table-wrap"><table><thead><tr>
+  <th>Task</th><th>Plan</th><th>Scheduled</th><th>Due</th><th>Status</th><th>Result</th><th>Actions</th>
+  </tr></thead><tbody>
+  ${state.tasks.length?state.tasks.map(t=>{
+   const p=state.plans.find(x=>x.id===t.plan_id);
+   const overdue=t.status==='Pending'&&t.due_date<todayIso();
+   return `<tr><td><b>${esc(t.task_number||'-')}</b></td><td>${esc(p?.title||'-')}</td>
+   <td>${fmt(t.scheduled_date)}</td><td>${overdue?'<span class="badge badge-red">OVERDUE</span>':fmt(t.due_date)}</td>
+   <td>${badge(t.status)}</td><td>${badge(t.result||'-')}</td>
+   <td><button class="btn btn-primary btn-sm" onclick="openTask('${t.id}')">${t.status==='Pending'?'Complete':'View'}</button>
+   ${t.status==='Pending Verification'?`<button class="btn btn-success btn-sm" onclick="verifyTask('${t.id}')">Verify</button>`:''}</td></tr>`
+  }).join(''):'<tr><td colspan="7" class="empty">No scheduled tasks.</td></tr>'}
+  </tbody></table></div>`;
+ }
 }
 
-
-/* =========================================================
-   SESSION
-========================================================= */
-
-async function initializeSession(){
-
-  const {
-    data:{
-      session
-    },
-    error
-  }=
-    await appState.supabase.auth
-      .getSession();
-
-  if(error||!session){
-
-    showLogin();
-
-    return;
-
-  }
-
-  appState.session=
-    session;
-
-  await loadProfile(
-    session.user
-  );
-
-  await Promise.all([
-    loadDepartments(),
-    loadUsers(),
-    loadDocuments(),
-    loadRecords(),
-    loadPlans(),
-    loadTasks()
-  ]);
-
-  await buildNotifications();
-
-  showDashboard();
-
-  await refreshDashboard();
-
+function openRecordModal(id=null){
+ state.editingRecordId=id;
+ $('record-form').reset();
+ $('record-modal').querySelector('h2').textContent=id?'Edit Record':'New Record';
+ if(id){
+  const r=state.records.find(x=>x.id===id);if(!r)return;
+  $('record-code').value=r.record_code||'';
+  $('record-type').value=r.record_type||'Daily Record';
+  $('record-title').value=r.title||'';
+  $('record-department').value=r.department||'';
+  $('record-frequency').value=r.frequency||'Monthly';
+  $('record-document').value=r.related_document_id||'';
+  $('record-status').value=r.status||'Active';
+  $('record-description').value=r.description||'';
+ }
+ openModal('record-modal');
 }
 
+async function saveRecord(e){
+ e.preventDefault();status('record-form-status','Saving...');
+ try{
+  const id=state.editingRecordId,old=id?state.records.find(x=>x.id===id):null;
+  const file=$('record-file').files[0];
+  let path=old?.file_path||null;
+  if(file)path=await uploadFile(file,'records');
 
-/* =========================================================
-   EVENTS
-========================================================= */
+  const payload={
+   record_code:$('record-code').value.trim(),
+   title:$('record-title').value.trim(),
+   record_type:$('record-type').value,
+   department:$('record-department').value||null,
+   frequency:$('record-frequency').value,
+   related_document_id:$('record-document').value||null,
+   status:$('record-status').value,
+   file_path:path,file_name:file?.name||old?.file_name||null,
+   file_size:file?.size||old?.file_size||null,file_type:file?.type||old?.file_type||null,
+   description:$('record-description').value.trim()||null,
+   created_by:state.user.id
+  };
 
-function setupEvents(){
+  const q=id?sb.from('records').update(payload).eq('id',id).select().single():
+    sb.from('records').insert(payload).select().single();
+  const {data,error}=await q;if(error)throw error;
+  if(file&&old?.file_path&&old.file_path!==path)await removeFile(old.file_path);
+  await audit(id?'UPDATE':'CREATE','Records','records',data.id,`${id?'Updated':'Created'} ${payload.record_code}`,old,data);
+  closeModal('record-modal');toast('Record saved');
+  await loadRecords();renderRecords();
+ }catch(e){status('record-form-status',e.message,true)}
+}
 
-  $("login-form")
-    .addEventListener(
-      "submit",
-      handleLogin
-    );
+/* ---------- PLANS ---------- */
 
-  $("forgot-password-btn")
-    .addEventListener(
-      "click",
-      handleForgotPassword
-    );
+function openPlanModal(id=null){
+ state.editingPlanId=id;
+ $('plan-form').reset();
+ $('plan-start-date').value=todayIso();
+ $('plan-reminder-days').value=1;
+ $('plan-modal-title').textContent=id?'Edit Compliance Plan':'New Compliance Plan';
 
-  $("signout-button")
-    .addEventListener(
-      "click",
-      handleSignOut
-    );
+ if(id){
+  const p=state.plans.find(x=>x.id===id);if(!p)return;
+  $('plan-code').value=p.plan_code||'';
+  $('plan-title').value=p.title||'';
+  $('plan-department').value=p.department||'';
+  $('plan-document').value=p.sop_document_id||'';
+  $('plan-record').value=p.record_id||'';
+  $('plan-frequency').value=p.frequency||'Monthly';
+  $('plan-frequency-value').value=p.frequency_value||'';
+  $('plan-start-date').value=p.start_date||todayIso();
+  $('plan-reminder-days').value=p.reminder_days??1;
+  $('plan-responsible').value=p.responsible_id||'';
+  $('plan-verifier').value=p.verifier_id||'';
+  $('plan-attachment-required').value=String(!!p.attachment_required);
+  $('plan-verification-required').value=String(p.verification_required!==false);
+  $('plan-instructions').value=p.instructions||'';
+ }
+ openModal('plan-modal');
+}
 
+async function savePlan(e){
+ e.preventDefault();status('plan-form-status','Saving...');
+ try{
+  const id=state.editingPlanId;
+  const old=id?state.plans.find(x=>x.id===id):null;
+  const start=$('plan-start-date').value||todayIso();
+  const freq=$('plan-frequency').value;
+  const value=Number($('plan-frequency-value').value)||1;
 
-  $("profile-button")
-    .addEventListener(
-      "click",
-      ()=>{
+  const payload={
+   plan_code:$('plan-code').value.trim(),
+   title:$('plan-title').value.trim(),
+   department:$('plan-department').value||null,
+   sop_document_id:$('plan-document').value||null,
+   record_id:$('plan-record').value||null,
+   responsible_id:$('plan-responsible').value||null,
+   verifier_id:$('plan-verifier').value||null,
+   frequency:freq,frequency_value:value,start_date:start,
+   next_due_date:start,due_time:null,
+   reminder_days:Number($('plan-reminder-days').value)||1,
+   attachment_required:$('plan-attachment-required').value==='true',
+   verification_required:$('plan-verification-required').value==='true',
+   status:'Active',
+   instructions:$('plan-instructions').value.trim()||null,
+   created_by:state.user.id
+  };
 
-        alert(
-          `User: ${appState.profile?.full_name||"—"}\n`+
-          `Email: ${appState.profile?.email||"—"}\n`+
-          `Role: ${appState.role||"—"}\n`+
-          `Job Title: ${appState.profile?.job_title||"—"}`
-        );
+  const q=id?sb.from('compliance_plans').update(payload).eq('id',id).select().single():
+   sb.from('compliance_plans').insert(payload).select().single();
+  const {data,error}=await q;if(error)throw error;
 
-      }
-    );
+  await audit(id?'UPDATE':'CREATE','Records & Plans','compliance_plans',data.id,
+   `${id?'Updated':'Created'} plan ${payload.plan_code}`,old,data);
 
+  closeModal('plan-modal');toast('Plan saved');
+  await loadPlans();await generateTasks();await loadTasks();renderRecords();refreshDashboard();
+ }catch(e){status('plan-form-status',e.message,true)}
+}
 
-  $("document-form")
-    .addEventListener(
-      "submit",
-      handleDocumentSubmit
-    );
-
-
-  $("document-search")
-    .addEventListener(
-      "input",
-      renderDocuments
-    );
-
-  $("document-type-filter")
-    .addEventListener(
-      "change",
-      renderDocuments
-    );
-
-  $("document-status-filter")
-    .addEventListener(
-      "change",
-      renderDocuments
-    );
-
-  $("document-approval-filter")
-    .addEventListener(
-      "change",
-      renderDocuments
-    );
-
-  $("document-department-filter")
-    .addEventListener(
-      "change",
-      renderDocuments
-    );
-
-
-  $("record-form")
-    .addEventListener(
-      "submit",
-      handleRecordSubmit
-    );
-
-  $("add-record")
-    .addEventListener(
-      "click",
-      ()=>openRecordModal()
-    );
-
-
-  $("plan-form")
-    .addEventListener(
-      "submit",
-      handlePlanSubmit
-    );
-
-  $("add-plan")
-    .addEventListener(
-      "click",
-      ()=>openPlanModal()
-    );
-
-
-  $("task-form")
-    .addEventListener(
-      "submit",
-      handleTaskSubmit
-    );
-
-
-  $("add-user-btn")
-    .addEventListener(
-      "click",
-      openUserModal
-    );
-
-  $("user-form")
-    .addEventListener(
-      "submit",
-      handleUserFormSubmit
-    );
-
-  $("users-filter")
-    .addEventListener(
-      "input",
-      renderUsersTable
-    );
-
-  $("role-filter")
-    .addEventListener(
-      "change",
-      renderUsersTable
-    );
-
-
-  $("global-search")
-    .addEventListener(
-      "input",
-      event=>
-        filterCurrentModule(
-          event.target.value
-        )
-    );
-
-
-  document.querySelectorAll(".nav")
-    .forEach(button=>{
-
-      button.addEventListener(
-        "click",
-        ()=>{
-
-          if(!button.disabled){
-
-            switchModule(
-              button.dataset.module
-            );
-
-          }
-
-        }
-      );
-
+async function generateTasks(){
+ const today=todayIso();
+ for(const p of state.plans.filter(x=>x.status==='Active')){
+  let due=p.next_due_date||p.start_date||today;
+  let count=0;
+  while(due<=addDays(today,30)&&count<40){
+   const exists=state.tasks.some(t=>t.plan_id===p.id&&t.scheduled_date===due);
+   if(!exists){
+    const num=`${p.plan_code}-${due.replaceAll('-','')}`;
+    const {error}=await sb.from('compliance_tasks').insert({
+     task_number:num,plan_id:p.id,scheduled_date:due,due_date:due,
+     responsible_id:p.responsible_id,verifier_id:p.verifier_id,status:'Pending'
     });
-
-
-  document.querySelectorAll(
-    "[data-record-tab]"
-  ).forEach(button=>{
-
-    button.addEventListener(
-      "click",
-      ()=>{
-
-        setRecordTab(
-          button.dataset.recordTab
-        );
-
-      }
-    );
-
-  });
-
-
-  document.querySelectorAll(".modal")
-    .forEach(modal=>{
-
-      modal.addEventListener(
-        "click",
-        event=>{
-
-          if(event.target===modal){
-
-            modal.classList.remove(
-              "active"
-            );
-
-          }
-
-        }
-      );
-
-    });
-
-
-  document.addEventListener(
-    "keydown",
-    event=>{
-
-      if(event.key==="Escape"){
-
-        document.querySelectorAll(
-          ".modal.active"
-        ).forEach(modal=>
-          modal.classList.remove(
-            "active"
-          )
-        );
-
-      }
-
-    }
-  );
-
-
-  appState.supabase.auth
-    .onAuthStateChange(
-      async(event,session)=>{
-
-        if(event==="SIGNED_OUT"){
-
-          appState.session=null;
-
-          appState.profile=null;
-
-          appState.role=
-            "Auditor / Read Only";
-
-          showLogin();
-
-        }
-
-      }
-    );
-
+    if(error&&!error.message.includes('duplicate'))console.warn('Task:',error.message);
+   }
+   due=nextDate(due,p.frequency,p.frequency_value);count++;
+  }
+  const next=due;
+  if(p.next_due_date!==next){
+   await sb.from('compliance_plans').update({next_due_date:next}).eq('id',p.id);
+  }
+ }
 }
 
-
-/* =========================================================
-   GLOBAL FUNCTIONS
-========================================================= */
-
-window.switchModule=
-  switchModule;
-
-window.openDocumentModal=
-  openDocumentModal;
-
-window.closeDocumentModal=
-  closeDocumentModal;
-
-window.editDocument=
-  editDocument;
-
-window.deleteDocument=
-  deleteDocument;
-
-window.approveDocument=
-  approveDocument;
-
-window.openDocumentFile=
-  openDocumentFile;
-
-window.refreshDashboard=
-  refreshDashboard;
-
-window.openRecordModal=
-  openRecordModal;
-
-window.closeRecordModal=
-  closeRecordModal;
-
-window.editRecord=
-  editRecord;
-
-window.deleteRecord=
-  deleteRecord;
-
-window.openRecordFile=
-  openRecordFile;
-
-window.openPlanModal=
-  openPlanModal;
-
-window.closePlanModal=
-  closePlanModal;
-
-window.editPlan=
-  editPlan;
-
-window.generateTasksForPlan=
-  generateTasksForPlan;
-
-window.openTaskModal=
-  openTaskModal;
-
-window.closeTaskModal=
-  closeTaskModal;
-
-window.verifyTask=
-  verifyTask;
-
-window.openUserModal=
-  openUserModal;
-
-window.closeUserModal=
-  closeUserModal;
-
-window.editUser=
-  editUser;
-
-window.toggleUserStatus=
-  toggleUserStatus;
-
-
-/* =========================================================
-   INIT
-========================================================= */
-
-async function init(){
-
-  if(
-    !window.PURE_ICE_CONFIG||
-    !window.PURE_ICE_CONFIG.supabaseUrl||
-    !window.PURE_ICE_CONFIG.supabaseAnonKey
-  ){
-
-    setStatus(
-      "login-status",
-      "Supabase configuration is missing. Check config.js.",
-      "error"
-    );
-
-    return;
-
-  }
-
-  try{
-
-    appState.supabase=
-      window.supabase.createClient(
-        window.PURE_ICE_CONFIG.supabaseUrl,
-        window.PURE_ICE_CONFIG.supabaseAnonKey
-      );
-
-    setupEvents();
-
-    await initializeSession();
-
-  }catch(error){
-
-    console.error(
-      "Application initialization:",
-      error
-    );
-
-    setStatus(
-      "login-status",
-      "Application initialization failed: "+
-      error.message,
-      "error"
-    );
-
-    showLogin();
-
-  }
-
+function openTask(id){
+ const t=state.tasks.find(x=>x.id===id);if(!t)return;
+ $('task-id').value=id;$('task-status').value=t.status;$('task-result').value=t.result||'Pass';$('task-notes').value=t.notes||'';
+ $('task-form-status').textContent='';
+ openModal('task-modal');
 }
 
+async function saveTask(e){
+ e.preventDefault();status('task-form-status','Saving...');
+ try{
+  const id=$('task-id').value,t=state.tasks.find(x=>x.id===id);
+  if(!t)throw new Error('Task not found');
 
-document.addEventListener(
-  "DOMContentLoaded",
-  init
-);
+  let st=$('task-status').value;
+  if(t.status==='Pending'&&st==='Pending'){
+   const p=state.plans.find(x=>x.id===t.plan_id);
+   st=p?.verification_required!==false?'Pending Verification':'Completed';
+  }
 
+  const file=$('task-file').files[0];
+  const {data,error}=await sb.from('compliance_tasks').update({
+   status:st,result:$('task-result').value,notes:$('task-notes').value.trim(),
+   completed_by:state.user.id,completed_date:new Date().toISOString()
+  }).eq('id',id).select().single();
+  if(error)throw error;
+
+  if(file){
+   const path=await uploadFile(file,'tasks');
+   const a=await sb.from('fsms_attachments').insert({
+    file_name:file.name,file_path:path,file_size:file.size,file_type:file.type,
+    task_id:id,uploaded_by:state.user.id
+   });
+   if(a.error)console.warn(a.error.message);
+  }
+
+  await audit('UPDATE','Records & Plans','compliance_tasks',id,`Updated task ${t.task_number}`,t,data);
+  closeModal('task-modal');toast('Task updated');
+  await loadTasks();await loadPlans();renderRecords();refreshDashboard();
+ }catch(e){status('task-form-status',e.message,true)}
+}
+
+async function verifyTask(id){
+ const t=state.tasks.find(x=>x.id===id);if(!t)return;
+ if(!confirm('Verify and close this task?'))return;
+ const {data,error}=await sb.from('compliance_tasks').update({
+  status:'Verified',verified_by:state.user.id,verified_at:new Date().toISOString()
+ }).eq('id',id).select().single();
+ if(error){alert(error.message);return}
+ await audit('VERIFY','Records & Plans','compliance_tasks',id,`Verified task ${t.task_number}`,t,data);
+ toast('Task verified');await loadTasks();renderRecords();refreshDashboard();
+}
+
+/* ---------- USERS ---------- */
+
+function renderUsers(){
+ const tbody=$('users-tbody');if(!tbody)return;
+ const q=($('users-filter')?.value||'').toLowerCase();
+ const role=$('role-filter')?.value||'';
+ const rows=state.users.filter(u=>
+  (!q||`${u.full_name||''} ${u.email||''} ${u.employee_code||''}`.toLowerCase().includes(q))&&
+  (!role||u.role===role)
+ );
+ tbody.innerHTML=rows.length?rows.map(u=>`<tr>
+  <td><b>${esc(u.full_name||'-')}</b></td><td>${esc(u.email||'-')}</td>
+  <td>${esc(u.employee_code||'-')}</td><td>${badge(u.role)}</td>
+  <td>${esc(u.job_title||'-')}</td><td>${badge(u.status)}</td>
+  <td><button class="btn btn-light btn-sm" onclick="editUser('${u.id}')">Edit</button>
+  <button class="btn btn-light btn-sm" onclick="toggleUser('${u.id}')">${u.status==='active'?'Deactivate':'Activate'}</button></td>
+ </tr>`).join(''):'<tr><td colspan="7" class="empty">No users found.</td></tr>';
+}
+
+function editUser(id){
+ const u=state.users.find(x=>x.id===id);if(!u)return;
+ state.editingUserId=id;
+ $('user-full-name').value=u.full_name||'';
+ $('user-email').value=u.email||'';
+ $('user-employee-code').value=u.employee_code||'';
+ $('user-department').value=u.department_id||'';
+ $('user-role').value=u.role||'Employee';
+ $('user-job-title').value=u.job_title||'';
+ $('user-phone').value=u.phone||'';
+ $('user-status').value=u.status||'active';
+ openModal('user-modal');
+}
+
+async function saveUser(e){
+ e.preventDefault();status('user-form-status','Saving...');
+ const id=state.editingUserId;
+ try{
+  const {data,error}=await sb.from('profiles').update({
+   full_name:$('user-full-name').value.trim(),
+   employee_code:$('user-employee-code').value.trim()||null,
+   department_id:$('user-department').value||null,
+   role:$('user-role').value,
+   job_title:$('user-job-title').value.trim()||null,
+   phone:$('user-phone').value.trim()||null,
+   status:$('user-status').value
+  }).eq('id',id).select().single();
+  if(error)throw error;
+  await audit('UPDATE','Administration','profiles',id,'Updated user profile',null,data);
+  closeModal('user-modal');toast('User updated');await loadUsers();
+ }catch(e){status('user-form-status',e.message,true)}
+}
+
+async function toggleUser(id){
+ const u=state.users.find(x=>x.id===id);if(!u)return;
+ if(id===state.user.id)return alert('You cannot deactivate your own account.');
+ const next=u.status==='active'?'inactive':'active';
+ const {error}=await sb.from('profiles').update({status:next}).eq('id',id);
+ if(error){alert(error.message);return}
+ await loadUsers();toast('User status updated');
+}
+
+/* ---------- DASHBOARD ---------- */
+
+function pct(a,b){return b?Math.round(a/b*100):0}
+
+async function refreshDashboard(){
+ if(!state.user)return;
+ const docs=state.documents,plans=state.plans,tasks=state.tasks;
+ const today=todayIso(),near=addDays(today,30);
+
+ const pending=docs.filter(d=>d.approval_status!=='Approved').length;
+ const approved=docs.filter(d=>d.approval_status==='Approved').length;
+ const nearReview=docs.filter(d=>d.review_date&&d.review_date>=today&&d.review_date<=near).length;
+ const open=tasks.filter(t=>['Pending','Pending Verification'].includes(t.status)).length;
+ const activePlans=plans.filter(p=>p.status==='Active').length;
+ const completed=tasks.filter(t=>['Completed','Verified'].includes(t.status)).length;
+
+ $('kpi-total-documents').textContent=docs.length;
+ $('kpi-pending-documents').textContent=pending;
+ $('kpi-documents-near-review').textContent=nearReview;
+ $('kpi-open-tasks').textContent=open;
+ $('kpi-active-plans').textContent=activePlans;
+ $('kpi-approved-documents').textContent=approved;
+
+ $('kpi-document-control').textContent=pct(approved,docs.length)+'%';
+ $('progress-document-control').style.width=pct(approved,docs.length)+'%';
+
+ const linked=plans.filter(p=>p.sop_document_id||p.record_id).length;
+ $('kpi-plan-coverage').textContent=pct(linked,plans.length)+'%';
+ $('progress-plan-coverage').style.width=pct(linked,plans.length)+'%';
+
+ $('kpi-task-completion').textContent=pct(completed,tasks.length)+'%';
+ $('progress-task-completion').style.width=pct(completed,tasks.length)+'%';
+
+ $('kpi-audit-readiness').textContent=Math.round(
+  (pct(approved,docs.length)+pct(linked,plans.length)+pct(completed,tasks.length))/3
+ )+'%';
+
+ $('document-status-summary').innerHTML=`
+ <div class="grid grid-4">
+  <div><small>Draft</small><h3>${docs.filter(x=>x.approval_status==='Draft').length}</h3></div>
+  <div><small>Review</small><h3>${docs.filter(x=>x.approval_status==='Pending Approval').length}</h3></div>
+  <div><small>Approved</small><h3>${approved}</h3></div>
+  <div><small>Near Due</small><h3>${nearReview}</h3></div>
+ </div>`;
+
+ const alerts=[];
+ tasks.filter(t=>t.status==='Pending'&&t.due_date<today).slice(0,5).forEach(t=>{
+  alerts.push(`<div class="alert danger"><b>OVERDUE</b> · ${esc(t.task_number)} · Due ${fmt(t.due_date)}</div>`);
+ });
+ docs.filter(d=>d.review_date&&d.review_date<today&&d.status!=='Obsolete').slice(0,5).forEach(d=>{
+  alerts.push(`<div class="alert warning"><b>DOCUMENT REVIEW OVERDUE</b> · ${esc(d.document_code)}</div>`);
+ });
+ if(!alerts.length)alerts.push('<div class="alert success">✓ No Critical Attention Items<br><small>Current system data shows no open alerts.</small></div>');
+ $('attention-list').innerHTML=alerts.join('');
+}
+
+/* ---------- INIT ---------- */
+
+async function boot(){
+ $('login-screen').style.display='none';
+ $('app-shell').style.display='block';
+
+ await loadProfile();
+ await loadDepartments();
+ await loadUsers();
+ await loadDocuments();
+ await loadRecords();
+ await loadPlans();
+ await generateTasks();
+ await loadTasks();
+ await refreshDashboard();
+}
+
+async function initialize(){
+ $('login-form').addEventListener('submit',login);
+ $('forgot-password-btn').addEventListener('click',forgotPassword);
+ $('signout-button').addEventListener('click',logout);
+
+ $('new-document-btn').addEventListener('click',()=>openDocumentModal());
+ $('document-form').addEventListener('submit',saveDocument);
+
+ $('new-record-btn').addEventListener('click',()=>openRecordModal());
+ $('record-form').addEventListener('submit',saveRecord);
+
+ $('new-plan-btn').addEventListener('click',()=>openPlanModal());
+ $('plan-form').addEventListener('submit',savePlan);
+
+ $('task-form').addEventListener('submit',saveTask);
+ $('user-form').addEventListener('submit',saveUser);
+
+ $('document-search').addEventListener('input',renderDocuments);
+ $('document-type-filter').addEventListener('change',renderDocuments);
+ $('document-status-filter').addEventListener('change',renderDocuments);
+ $('document-approval-filter').addEventListener('change',renderDocuments);
+ $('document-department-filter').addEventListener('change',renderDocuments);
+ $('users-filter').addEventListener('input',renderUsers);
+ $('role-filter').addEventListener('change',renderUsers);
+
+ document.addEventListener('click',e=>{
+  const nav=e.target.closest('[data-module]');
+  if(nav){switchModule(nav.dataset.module);return}
+
+  const close=e.target.closest('[data-close]');
+  if(close){closeModal(close.dataset.close);return}
+
+  const action=e.target.closest('[data-action]');
+  if(action){
+   if(action.dataset.action==='new-document')openDocumentModal();
+   if(action.dataset.action==='documents')switchModule('documents');
+   if(action.dataset.action==='records')switchModule('records');
+   if(action.dataset.action==='refresh')refreshDashboard();
+  }
+
+  const tab=e.target.closest('[data-record-tab]');
+  if(tab){
+   state.recordTab=tab.dataset.recordTab;renderRecords();
+  }
+ });
+
+ document.querySelectorAll('.modal').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')});
+ });
+
+ document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));
+ });
+
+ window.openDocumentModal=openDocumentModal;
+ window.editDocument=editDocument;
+ window.openDocumentFile=openDocumentFile;
+ window.approveDocument=approveDocument;
+ window.deleteDocument=deleteDocument;
+ window.openRecordModal=openRecordModal;
+ window.editRecord=openRecordModal;
+ window.openPlanModal=openPlanModal;
+ window.editPlan=openPlanModal;
+ window.openTask=openTask;
+ window.verifyTask=verifyTask;
+ window.editUser=editUser;
+ window.toggleUser=toggleUser;
+
+ const {data}=await sb.auth.getSession();
+ if(data?.session){
+  state.user=data.session.user;
+  await boot();
+ }else{
+  $('login-screen').style.display='flex';
+  $('app-shell').style.display='none';
+ }
+
+ sb.auth.onAuthStateChange(async(event,session)=>{
+  if(event==='SIGNED_OUT'){
+   state.user=null;
+   $('app-shell').style.display='none';
+   $('login-screen').style.display='flex';
+  }
+ });
+}
+
+document.addEventListener('DOMContentLoaded',initialize);
 </script>
-
 </body>
 </html>
