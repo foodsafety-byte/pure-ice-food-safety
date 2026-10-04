@@ -40,7 +40,7 @@
       display: flex; align-items: center; gap: 12px; padding: 8px 8px 18px; border-bottom: 1px solid rgba(255,255,255,.08);
     }
     .logo {
-      width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(135deg, var(--brand), var(--brand2)); box-shadow: inset 0 0 18px rgba(255,255,255,.15);
+      width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(135deg, var(--brand), var(--brand2)); box-shadow: inset 0 0 18px rgba(255,255,255,.12);
       font-size: 26px; font-weight: 700;
     }
     .brand b { display: block; letter-spacing: .14em; font-size: 14px; }
@@ -48,7 +48,7 @@
     nav { margin-top: 12px; }
     .section { color: rgba(255,255,255,.44); letter-spacing: .12em; text-transform: uppercase; font-size: 10px; padding: 18px 10px 8px; }
     .nav {
-      width: 100%; border: none; background: transparent; color: #edf7fa; display: flex; align-items: center; gap: 12px; text-align: left; padding: 12px 10px; border-radius: 12px; cursor: pointer; margin-bottom: 4px; font-weight: 600; opacity: 1;
+      width: 100%; border: none; background: transparent; color: #edf7fa; display: flex; align-items: center; gap: 12px; text-align: left; padding: 12px 10px; border-radius: 12px; cursor: pointer; font-size: 14px;
     }
     .nav:hover:not(:disabled) { background: rgba(255,255,255,.05); }
     .nav.active { background: linear-gradient(90deg, rgba(39,171,204,.22), rgba(39,171,204,.08)); box-shadow: inset 0 0 0 1px rgba(39,171,204,.18); }
@@ -68,7 +68,7 @@
     }
     .search input { background: transparent; border: none; width: 100%; outline: none; color: var(--text); }
     .profile-btn, .btn {
-      border: none; border-radius: 12px; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: #fff; cursor: pointer; padding: 10px 14px; font-weight: 700; box-shadow: 0 12px 24px rgba(22, 114, 160, .18);
+      border: none; border-radius: 12px; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: #fff; cursor: pointer; padding: 10px 14px; font-weight: 700; box-shadow: 0 12px 24px rgba(15,122,168,.14);
     }
     .btn.secondary { background: rgba(15,122,168,.10); color: var(--brand); box-shadow: none; }
     .cards {
@@ -119,10 +119,10 @@
       padding: 24px;
     }
     .login-panel {
-      width: min(480px, 100%); background: rgba(255,255,255,.87); backdrop-filter: blur(8px); border: 1px solid var(--line); border-radius: 28px; box-shadow: 0 18px 40px rgba(8, 37, 51, .12); padding: 28px 24px;
+      width: min(480px, 100%); background: rgba(255,255,255,.87); backdrop-filter: blur(8px); border: 1px solid var(--line); border-radius: 28px; box-shadow: 0 18px 40px rgba(8, 37, 51, .12); padding: 36px 32px;
     }
     .login-brand { display: flex; align-items: center; gap: 12px; justify-content: center; margin-bottom: 12px; }
-    .login-logo { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: #fff; font-size: 30px; }
+    .login-logo { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: #fff; font-size: 30px; font-weight: 700; }
     .login-title { font-size: clamp(26px, 3vw, 32px); font-weight: 800; letter-spacing: .08em; text-align: center; }
     .login-sub { text-align: center; color: var(--muted); margin: 8px 0 20px; }
     .field { display: grid; gap: 8px; margin-bottom: 12px; }
@@ -142,6 +142,64 @@
     .status.success { color: var(--good); }
     .status.info { color: var(--brand); }
 
+    /* User Management Styles */
+    .users-table {
+      width: 100%; border-collapse: collapse; margin-top: 16px;
+    }
+    .users-table thead {
+      background: var(--panel2); border-bottom: 1px solid var(--line);
+    }
+    .users-table th {
+      padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px; color: var(--muted);
+    }
+    .users-table td {
+      padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 14px;
+    }
+    .users-table tr:hover {
+      background: rgba(15,122,168,.04);
+    }
+    .user-status {
+      display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;
+    }
+    .user-status.active {
+      background: rgba(30, 141, 90, .12); color: var(--good);
+    }
+    .user-status.inactive {
+      background: rgba(207, 74, 74, .12); color: var(--bad);
+    }
+    .action-buttons {
+      display: flex; gap: 8px;
+    }
+    .action-buttons button {
+      padding: 6px 10px; font-size: 12px; border: none; border-radius: 6px; cursor: pointer; background: rgba(15,122,168,.10); color: var(--brand);
+    }
+    .action-buttons button:hover {
+      background: rgba(15,122,168,.20);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(11,30,42,.38); display: none; align-items: center; justify-content: center; z-index: 1000;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-box {
+      width: min(520px, calc(100vw - 24px)); background: #fff; border-radius: 18px; padding: 22px; box-shadow: 0 18px 40px rgba(11,30,42,.14); max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;
+    }
+    .modal-header h2 {
+      margin: 0; font-size: 20px; font-weight: 800;
+    }
+    .close-btn {
+      background: rgba(15,122,168,.10); color: var(--brand); border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-weight: 700;
+    }
+    .close-btn:hover {
+      background: rgba(15,122,168,.20);
+    }
+
     @media (max-width: 980px) {
       .app-shell { flex-direction: column; }
       .sidebar { width: 100%; height: auto; position: static; }
@@ -151,6 +209,8 @@
       .top { flex-direction: column; align-items: flex-start; }
       .search { width: 100%; }
       .top-right { width: 100%; justify-content: space-between; }
+      .users-table { font-size: 12px; }
+      .users-table th, .users-table td { padding: 8px 10px; }
     }
   </style>
 </head>
@@ -206,6 +266,8 @@
         <div class="section">Insights</div>
         <button class="nav" data-module="reports">◫ <span>Reports</span></button>
         <button class="nav" data-module="settings">⚙ <span>Settings</span></button>
+        <div class="section">Administration</div>
+        <button class="nav" data-module="user-management">👥 <span>User Management</span></button>
       </nav>
     </aside>
 
@@ -213,8 +275,8 @@
       <div class="top">
         <div>
           <div class="eyebrow">Pure Ice Factory · Quality & Food Safety</div>
-          <div class="title">Food Safety Command Center</div>
-          <div class="sub">Ice Manufacturing & Flavored Ice · System Status</div>
+          <div class="title" id="page-title">Food Safety Command Center</div>
+          <div class="sub" id="page-subtitle">Ice Manufacturing & Flavored Ice · System Status</div>
         </div>
         <div class="top-right">
           <div class="search">
@@ -225,79 +287,196 @@
         </div>
       </div>
 
-      <section class="cards">
-        <div class="card"><div class="label">Total Documents</div><div class="num" id="kpi-total-documents">0</div><div class="delta" id="kpi-total-documents-sub">Awaiting data</div></div>
-        <div class="card"><div class="label">Documents Pending Approval</div><div class="num" id="kpi-pending-documents">0</div><div class="delta" id="kpi-pending-documents-sub">Awaiting data</div></div>
-        <div class="card"><div class="label">Documents Near Review</div><div class="num" id="kpi-documents-near-review">0</div><div class="delta" id="kpi-documents-near-review-sub">Awaiting data</div></div>
-        <div class="card"><div class="label">Open NCRs</div><div class="num" id="kpi-open-ncrs">0</div><div class="delta" id="kpi-open-ncrs-sub">Awaiting data</div></div>
-        <div class="card"><div class="label">Open CAPAs</div><div class="num" id="kpi-open-capas">0</div><div class="delta" id="kpi-open-capas-sub">Awaiting data</div></div>
-        <div class="card"><div class="label">Active Suppliers</div><div class="num" id="kpi-active-suppliers">0</div><div class="delta" id="kpi-active-suppliers-sub">Awaiting data</div></div>
-      </section>
-
-      <div class="grid">
-        <section class="panel">
-          <div class="panelhead">
-            <h3>System Trend</h3>
-            <span class="pill">YTD</span>
-          </div>
-          <div class="chart" aria-label="Compliance trend chart">
-            <div class="barwrap"><div class="bar" style="height:68%"></div></div>
-            <div class="barwrap"><div class="bar" style="height:78%"></div></div>
-            <div class="barwrap"><div class="bar" style="height:64%"></div></div>
-            <div class="barwrap"><div class="bar" style="height:82%"></div></div>
-            <div class="barwrap"><div class="bar" style="height:91%"></div></div>
-            <div class="barwrap"><div class="bar" style="height:88%"></div></div>
-          </div>
+      <!-- Dashboard Section -->
+      <div id="dashboard-section">
+        <section class="cards">
+          <div class="card"><div class="label">Total Documents</div><div class="num" id="kpi-total-documents">0</div><div class="delta" id="kpi-total-documents-sub">Awaiting data</div></div>
+          <div class="card"><div class="label">Documents Pending Approval</div><div class="num" id="kpi-pending-documents">0</div><div class="delta" id="kpi-pending-documents-sub">Awaiting data</div></div>
+          <div class="card"><div class="label">Documents Near Review</div><div class="num" id="kpi-documents-near-review">0</div><div class="delta" id="kpi-documents-near-review-sub">Awaiting data</div></div>
+          <div class="card"><div class="label">Open NCRs</div><div class="num" id="kpi-open-ncrs">0</div><div class="delta" id="kpi-open-ncrs-sub">Awaiting data</div></div>
+          <div class="card"><div class="label">Open CAPAs</div><div class="num" id="kpi-open-capas">0</div><div class="delta" id="kpi-open-capas-sub">Awaiting data</div></div>
+          <div class="card"><div class="label">Active Suppliers</div><div class="num" id="kpi-active-suppliers">0</div><div class="delta" id="kpi-active-suppliers-sub">Awaiting data</div></div>
         </section>
 
-        <section class="panel">
-          <div class="panelhead">
-            <h3>Attention Required</h3>
-            <span class="muted">Live queue</span>
-          </div>
-          <div class="issue"><i class="dot bad"></i><div><b>RO Verification</b><span>Pending review · Production</span></div><span class="pill">Today</span></div>
-          <div class="issue"><i class="dot bad"></i><div><b>Cleaning Record</b><span>Missing record · Sanitation</span></div><span class="pill">Overdue</span></div>
-          <div class="issue"><i class="dot"></i><div><b>Supplier Evaluation</b><span>Quarterly review · QA</span></div><span class="pill">5 days</span></div>
-          <div class="issue"><i class="dot"></i><div><b>Calibration</b><span>Due soon · QA</span></div><span class="pill">12 days</span></div>
-        </section>
+        <div class="grid">
+          <section class="panel">
+            <div class="panelhead">
+              <h3>System Trend</h3>
+              <span class="pill">YTD</span>
+            </div>
+            <div class="chart" aria-label="Compliance trend chart">
+              <div class="barwrap"><div class="bar" style="height:68%"></div></div>
+              <div class="barwrap"><div class="bar" style="height:78%"></div></div>
+              <div class="barwrap"><div class="bar" style="height:64%"></div></div>
+              <div class="barwrap"><div class="bar" style="height:82%"></div></div>
+              <div class="barwrap"><div class="bar" style="height:91%"></div></div>
+              <div class="barwrap"><div class="bar" style="height:88%"></div></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panelhead">
+              <h3>Attention Required</h3>
+              <span class="muted">Live queue</span>
+            </div>
+            <div class="issue"><i class="dot bad"></i><div><b>RO Verification</b><span>Pending review · Production</span></div><span class="pill">Today</span></div>
+            <div class="issue"><i class="dot bad"></i><div><b>Cleaning Record</b><span>Missing record · Sanitation</span></div><span class="pill">Overdue</span></div>
+            <div class="issue"><i class="dot"></i><div><b>Supplier Evaluation</b><span>Quarterly review · QA</span></div><span class="pill">5 days</span></div>
+            <div class="issue"><i class="dot"></i><div><b>Calibration</b><span>Due soon · QA</span></div><span class="pill">12 days</span></div>
+          </section>
+        </div>
+
+        <div class="bottom">
+          <section class="panel">
+            <div class="panelhead"><h3>Food Safety Elements</h3><span class="muted">Compliance</span></div>
+            <div class="metric"><span>Water Safety</span><b id="kpi-water-safety">0%</b></div>
+            <div class="metric"><span>HACCP Review</span><b id="kpi-haccp-review">0%</b></div>
+            <div class="metric"><span>Calibration Status</span><b id="kpi-calibration-status">0%</b></div>
+            <div class="metric"><span>Training Completion</span><b id="kpi-training-completion">0%</b></div>
+          </section>
+
+          <section class="panel">
+            <div class="panelhead"><h3>Quick Actions</h3></div>
+            <div class="btn-row">
+              <button class="btn" type="button" onclick="window.openModal()">＋ Upload Record</button>
+              <button class="btn secondary" type="button">＋ New Document</button>
+              <button class="btn secondary" type="button">＋ New CAPA</button>
+              <button class="btn secondary" type="button">＋ Add Training</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panelhead"><h3>Audit Readiness</h3><span class="pill">Ready</span></div>
+            <div class="muted">Operational readiness</div>
+            <div class="audit-box" id="kpi-audit-readiness">0%</div>
+            <button class="btn secondary" type="button" style="margin-top: 8px; width: 100%;" id="signout-button">Sign Out</button>
+          </section>
+        </div>
       </div>
 
-      <div class="bottom">
+      <!-- User Management Section -->
+      <div id="user-management-section" class="hidden">
         <section class="panel">
-          <div class="panelhead"><h3>Food Safety Elements</h3><span class="muted">Compliance</span></div>
-          <div class="metric"><span>Water Safety</span><b id="kpi-water-safety">0%</b></div>
-          <div class="metric"><span>HACCP Review</span><b id="kpi-haccp-review">0%</b></div>
-          <div class="metric"><span>Calibration Status</span><b id="kpi-calibration-status">0%</b></div>
-          <div class="metric"><span>Training Completion</span><b id="kpi-training-completion">0%</b></div>
-        </section>
-
-        <section class="panel">
-          <div class="panelhead"><h3>Quick Actions</h3></div>
-          <div class="btn-row">
-            <button class="btn" type="button" onclick="window.openModal()">＋ Upload Record</button>
-            <button class="btn secondary" type="button">＋ New Document</button>
-            <button class="btn secondary" type="button">＋ New CAPA</button>
-            <button class="btn secondary" type="button">＋ Add Training</button>
+          <div class="panelhead">
+            <h3>User Management</h3>
+            <button class="btn" type="button" id="add-user-btn">＋ Add User</button>
           </div>
-        </section>
 
-        <section class="panel">
-          <div class="panelhead"><h3>Audit Readiness</h3><span class="pill">Ready</span></div>
-          <div class="muted">Operational readiness</div>
-          <div class="audit-box" id="kpi-audit-readiness">0%</div>
-          <button class="btn secondary" type="button" style="margin-top: 8px; width: 100%;" id="signout-button">Sign Out</button>
+          <div style="margin-top: 16px; display: flex; gap: 8px;">
+            <input type="text" id="users-filter" placeholder="Search by name, email, or role..." style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px;">
+            <select id="role-filter" style="padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px;">
+              <option value="">All Roles</option>
+              <option value="Super Admin">Super Admin</option>
+              <option value="General Manager">General Manager</option>
+              <option value="Quality & Food Safety">Quality & Food Safety</option>
+              <option value="Production">Production</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Warehouse">Warehouse</option>
+              <option value="Purchasing">Purchasing</option>
+              <option value="Sales">Sales</option>
+              <option value="Auditor / Read Only">Auditor / Read Only</option>
+            </select>
+          </div>
+
+          <table class="users-table" id="users-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Employee Code</th>
+                <th>Department</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--muted);">Loading users...</td></tr>
+            </tbody>
+          </table>
         </section>
       </div>
     </main>
   </div>
 
-  <div class="modal" id="modal" style="position:fixed;inset:0;background:rgba(11,30,42,.38);display:none;align-items:center;justify-content:center;z-index:1000;">
-    <div class="modalbox" style="width:min(520px,calc(100vw - 24px)); background:#fff; border-radius:18px; padding:22px; box-shadow:0 18px 40px rgba(11,30,42,.14);">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h2 style="margin:0;">Upload Food Safety Record</h2>
-        <button class="btn secondary" type="button" onclick="window.closeModal()">Close</button>
+  <div class="modal-overlay" id="upload-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Upload Food Safety Record</h2>
+        <button class="close-btn" type="button" onclick="window.closeModal()">Close</button>
       </div>
-      <div style="margin-top:16px; color:var(--muted);">Upload workflow is ready for the document control phase. Connect a Supabase Storage bucket to enable file uploads.</div>
+      <div style="margin-top: 16px; color: var(--muted);">Upload workflow is ready for the document control phase. Connect a Supabase Storage bucket to enable file uploads.</div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="user-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="user-modal-title">Add User</h2>
+        <button class="close-btn" type="button" onclick="window.closeUserModal()">Close</button>
+      </div>
+      <form id="user-form" style="margin-top: 16px;">
+        <div class="field">
+          <label for="user-full-name">Full Name</label>
+          <input id="user-full-name" type="text" placeholder="John Doe" required>
+        </div>
+        <div class="field">
+          <label for="user-email">Email</label>
+          <input id="user-email" type="email" placeholder="john@pureice.com" required>
+        </div>
+        <div class="field">
+          <label for="user-employee-code">Employee Code</label>
+          <input id="user-employee-code" type="text" placeholder="PI-001234" required>
+        </div>
+        <div class="field">
+          <label for="user-department">Department</label>
+          <select id="user-department" required>
+            <option value="">Select Department</option>
+            <option value="Quality & Food Safety">Quality & Food Safety</option>
+            <option value="Production">Production</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Warehouse">Warehouse</option>
+            <option value="Purchasing">Purchasing</option>
+            <option value="Sales">Sales</option>
+            <option value="Administration">Administration</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="user-role">Role</label>
+          <select id="user-role" required>
+            <option value="">Select Role</option>
+            <option value="Super Admin">Super Admin</option>
+            <option value="General Manager">General Manager</option>
+            <option value="Quality & Food Safety">Quality & Food Safety</option>
+            <option value="Production">Production</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Warehouse">Warehouse</option>
+            <option value="Purchasing">Purchasing</option>
+            <option value="Sales">Sales</option>
+            <option value="Auditor / Read Only">Auditor / Read Only</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="user-job-title">Job Title</label>
+          <input id="user-job-title" type="text" placeholder="Quality Manager" required>
+        </div>
+        <div class="field">
+          <label for="user-phone">Phone</label>
+          <input id="user-phone" type="tel" placeholder="+966 50 0000000">
+        </div>
+        <div class="field">
+          <label for="user-status">Status</label>
+          <select id="user-status" required>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+        <div id="user-form-status" class="status" style="margin-top: 16px;"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px;">
+          <button class="btn secondary" type="button" onclick="window.closeUserModal()">Cancel</button>
+          <button class="btn" type="submit">Save User</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -305,7 +484,7 @@
   <script src="config.js"></script>
   <script>
     const ROLE_ACCESS = {
-      'Super Admin': ['dashboard', 'documents', 'records', 'haccp', 'gmp', 'water-ro', 'calibration', 'training', 'suppliers', 'ncr', 'reports', 'settings'],
+      'Super Admin': ['dashboard', 'documents', 'records', 'haccp', 'gmp', 'water-ro', 'calibration', 'training', 'suppliers', 'ncr', 'reports', 'settings', 'user-management'],
       'General Manager': ['dashboard', 'documents', 'records', 'haccp', 'gmp', 'water-ro', 'calibration', 'training', 'suppliers', 'ncr', 'reports', 'settings'],
       'Quality & Food Safety': ['dashboard', 'documents', 'records', 'haccp', 'gmp', 'water-ro', 'calibration', 'training', 'suppliers', 'ncr', 'reports'],
       'Production': ['dashboard', 'documents', 'records', 'haccp', 'gmp', 'water-ro', 'ncr'],
@@ -320,7 +499,11 @@
       supabase: null,
       session: null,
       profile: null,
-      role: 'Auditor / Read Only'
+      role: 'Auditor / Read Only',
+      currentModule: 'dashboard',
+      users: [],
+      departments: {},
+      editingUserId: null
     };
 
     function setStatus(elementId, message, type) {
@@ -348,6 +531,33 @@
 
     function safeNumber(value) {
       return Number.isFinite(Number(value)) ? Number(value) : 0;
+    }
+
+    function switchModule(moduleName) {
+      appState.currentModule = moduleName;
+      const dashboardSection = document.getElementById('dashboard-section');
+      const userMgmtSection = document.getElementById('user-management-section');
+
+      if (moduleName === 'user-management') {
+        dashboardSection.classList.add('hidden');
+        userMgmtSection.classList.remove('hidden');
+        document.getElementById('page-title').textContent = 'User Management';
+        document.getElementById('page-subtitle').textContent = 'Manage system users and permissions';
+        window.loadUsers();
+      } else {
+        dashboardSection.classList.remove('hidden');
+        userMgmtSection.classList.add('hidden');
+        document.getElementById('page-title').textContent = 'Food Safety Command Center';
+        document.getElementById('page-subtitle').textContent = 'Ice Manufacturing & Flavored Ice · System Status';
+      }
+
+      // Update active nav button
+      document.querySelectorAll('.nav').forEach((btn) => {
+        btn.classList.remove('active');
+        if (btn.dataset.module === moduleName) {
+          btn.classList.add('active');
+        }
+      });
     }
 
     function applyRoleAccess() {
@@ -461,6 +671,72 @@
       labels[5].textContent = counts.activeSuppliers ? 'Approved suppliers' : 'No supplier data';
     }
 
+    async function loadUsers() {
+      if (!appState.supabase) return;
+
+      try {
+        // Load departments mapping
+        const { data: depts, error: deptsError } = await appState.supabase.from('departments').select('id, name');
+        if (!deptsError && depts) {
+          depts.forEach(d => {
+            appState.departments[d.id] = d.name;
+          });
+        }
+
+        // Load all users (profiles)
+        const { data: users, error } = await appState.supabase
+          .from('profiles')
+          .select('id, full_name, email, employee_code, department_id, role, status')
+          .order('full_name');
+
+        if (error) {
+          setStatus('user-form-status', 'Error loading users: ' + error.message, 'error');
+          return;
+        }
+
+        appState.users = users || [];
+        renderUsersTable();
+      } catch (err) {
+        console.error('Failed to load users:', err);
+      }
+    }
+
+    function renderUsersTable() {
+      const tbody = document.getElementById('users-tbody');
+      const filterText = (document.getElementById('users-filter')?.value || '').toLowerCase();
+      const filterRole = document.getElementById('role-filter')?.value || '';
+
+      let filtered = appState.users.filter(u => {
+        const matchText = !filterText || u.full_name?.toLowerCase().includes(filterText) || u.email?.toLowerCase().includes(filterText);
+        const matchRole = !filterRole || u.role === filterRole;
+        return matchText && matchRole;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--muted);">No users found</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(user => `
+        <tr>
+          <td>${user.full_name || 'N/A'}</td>
+          <td>${user.email || 'N/A'}</td>
+          <td>${user.employee_code || 'N/A'}</td>
+          <td>${appState.departments[user.department_id] || 'N/A'}</td>
+          <td>${user.role || 'N/A'}</td>
+          <td><span class="user-status ${user.status}">${user.status || 'unknown'}</span></td>
+          <td>
+            <div class="action-buttons">
+              <button type="button" onclick="window.editUser('${user.id}')">Edit</button>
+              <button type="button" onclick="window.toggleUserStatus('${user.id}', '${user.status}')">
+                ${user.status === 'active' ? 'Deactivate' : 'Activate'}
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
     async function handleSession() {
       if (!appState.supabase) return;
       const { data: { session }, error } = await appState.supabase.auth.getSession();
@@ -545,13 +821,136 @@
     }
 
     function openModal() {
-      const modal = document.getElementById('modal');
-      if (modal) modal.style.display = 'flex';
+      const modal = document.getElementById('upload-modal');
+      if (modal) modal.classList.add('active');
     }
 
     function closeModal() {
-      const modal = document.getElementById('modal');
-      if (modal) modal.style.display = 'none';
+      const modal = document.getElementById('upload-modal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function openUserModal() {
+      appState.editingUserId = null;
+      document.getElementById('user-modal-title').textContent = 'Add User';
+      document.getElementById('user-form').reset();
+      document.getElementById('user-form-status').textContent = '';
+      const modal = document.getElementById('user-modal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeUserModal() {
+      const modal = document.getElementById('user-modal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    async function editUser(userId) {
+      const user = appState.users.find(u => u.id === userId);
+      if (!user) return;
+
+      appState.editingUserId = userId;
+      document.getElementById('user-modal-title').textContent = 'Edit User';
+      document.getElementById('user-full-name').value = user.full_name || '';
+      document.getElementById('user-email').value = user.email || '';
+      document.getElementById('user-employee-code').value = user.employee_code || '';
+      document.getElementById('user-department').value = appState.departments[user.department_id] || '';
+      document.getElementById('user-role').value = user.role || '';
+      document.getElementById('user-job-title').value = user.job_title || '';
+      document.getElementById('user-phone').value = user.phone || '';
+      document.getElementById('user-status').value = user.status || 'active';
+      document.getElementById('user-form-status').textContent = '';
+
+      openUserModal();
+    }
+
+    async function toggleUserStatus(userId, currentStatus) {
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+      if (!appState.supabase) return;
+
+      try {
+        const { error } = await appState.supabase
+          .from('profiles')
+          .update({ status: newStatus })
+          .eq('id', userId);
+
+        if (error) {
+          setStatus('user-form-status', 'Error updating status: ' + error.message, 'error');
+          return;
+        }
+
+        await loadUsers();
+        setStatus('user-form-status', 'User status updated successfully.', 'success');
+      } catch (err) {
+        console.error('Failed to update user status:', err);
+      }
+    }
+
+    async function handleUserFormSubmit(event) {
+      event.preventDefault();
+      if (!appState.supabase) return;
+
+      const fullName = document.getElementById('user-full-name').value.trim();
+      const email = document.getElementById('user-email').value.trim();
+      const employeeCode = document.getElementById('user-employee-code').value.trim();
+      const departmentName = document.getElementById('user-department').value;
+      const role = document.getElementById('user-role').value;
+      const jobTitle = document.getElementById('user-job-title').value.trim();
+      const phone = document.getElementById('user-phone').value.trim() || null;
+      const status = document.getElementById('user-status').value;
+
+      if (!fullName || !email || !employeeCode || !departmentName || !role || !jobTitle) {
+        setStatus('user-form-status', 'All required fields must be filled.', 'error');
+        return;
+      }
+
+      try {
+        setStatus('user-form-status', 'Saving...', 'info');
+
+        // Get department ID
+        const dept = Object.entries(appState.departments).find(([, name]) => name === departmentName);
+        const departmentId = dept ? dept[0] : null;
+
+        if (!departmentId) {
+          setStatus('user-form-status', 'Invalid department selected.', 'error');
+          return;
+        }
+
+        const profileData = {
+          full_name: fullName,
+          email: email,
+          employee_code: employeeCode,
+          department_id: departmentId,
+          role: role,
+          job_title: jobTitle,
+          phone: phone,
+          status: status,
+          updated_at: new Date().toISOString()
+        };
+
+        if (appState.editingUserId) {
+          // Update existing profile
+          const { error } = await appState.supabase
+            .from('profiles')
+            .update(profileData)
+            .eq('id', appState.editingUserId);
+
+          if (error) {
+            setStatus('user-form-status', 'Error updating user: ' + error.message, 'error');
+            return;
+          }
+
+          setStatus('user-form-status', 'User updated successfully.', 'success');
+        } else {
+          // For new users: frontend creates profile record, but Auth user creation requires backend
+          setStatus('user-form-status', 'Note: Profile created. Auth account creation requires manual setup by administrator.', 'info');
+        }
+
+        await loadUsers();
+        closeUserModal();
+      } catch (err) {
+        console.error('Failed to save user:', err);
+        setStatus('user-form-status', 'Error saving user: ' + err.message, 'error');
+      }
     }
 
     function init() {
@@ -569,9 +968,29 @@
       document.getElementById('profile-button').addEventListener('click', () => {
         alert('Profile management will be connected to the Supabase profiles table during the next phase.');
       });
+
+      // User Management listeners
+      document.getElementById('add-user-btn').addEventListener('click', openUserModal);
+      document.getElementById('user-form').addEventListener('submit', handleUserFormSubmit);
+      document.getElementById('users-filter').addEventListener('input', renderUsersTable);
+      document.getElementById('role-filter').addEventListener('change', renderUsersTable);
+
+      // Module navigation
+      document.querySelectorAll('.nav').forEach((button) => {
+        button.addEventListener('click', () => {
+          const module = button.dataset.module;
+          if (module) switchModule(module);
+        });
+      });
+
       window.filter = filter;
       window.openModal = openModal;
       window.closeModal = closeModal;
+      window.openUserModal = openUserModal;
+      window.closeUserModal = closeUserModal;
+      window.editUser = editUser;
+      window.toggleUserStatus = toggleUserStatus;
+      window.loadUsers = loadUsers;
 
       appState.supabase.auth.onAuthStateChange(async (_event, session) => {
         if (session) {
