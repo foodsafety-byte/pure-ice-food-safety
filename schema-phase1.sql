@@ -1,25 +1,20 @@
--- ============================================
--- PURE ICE FOOD SAFETY SYSTEM
--- Phase 1: User Profiles & Role Management
--- ============================================
+-- Phase 1 SQL migration for Pure Ice Food Safety System
+-- Purpose: create profiles/users table linked to Supabase Auth, role management, and secure RLS
 
--- Enable necessary extensions
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+create extension if not exists pgcrypto;
 
--- ============================================
--- 1. Roles table
--- ============================================
-CREATE TABLE IF NOT EXISTS public.roles (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL UNIQUE,
-  description TEXT,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
+-- 1) Roles
+create table if not exists public.roles (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  description text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
 );
 
--- Seed roles
-INSERT INTO public.roles (name, description) VALUES
-  ('Super Admin', 'Full system administration rights'),
+insert into public.roles (name, description)
+values
+  ('Super Admin', 'Full system access'),
   ('General Manager', 'Management oversight and approvals'),
   ('Quality & Food Safety', 'Quality and compliance oversight'),
   ('Production', 'Production and manufacturing records'),
@@ -28,23 +23,21 @@ INSERT INTO public.roles (name, description) VALUES
   ('Purchasing', 'Supplier and procurement coordination'),
   ('Sales', 'Commercial and customer-facing operations'),
   ('Auditor / Read Only', 'Read-only audit access')
-ON CONFLICT (name) DO NOTHING;
+on conflict (name) do nothing;
 
--- ============================================
--- 2. Departments table
--- ============================================
-CREATE TABLE IF NOT EXISTS public.departments (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL UNIQUE,
-  code TEXT,
-  location TEXT,
-  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
+-- 2) Departments
+create table if not exists public.departments (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  code text,
+  location text,
+  status text default 'active' check (status in ('active','inactive')),
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
 );
 
--- Seed departments
-INSERT INTO public.departments (name, code, location, status) VALUES
+insert into public.departments (name, code, location, status)
+values
   ('Quality & Food Safety', 'QFS', 'Plant', 'active'),
   ('Production', 'PROD', 'Plant', 'active'),
   ('Maintenance', 'MNT', 'Plant', 'active'),
@@ -52,148 +45,196 @@ INSERT INTO public.departments (name, code, location, status) VALUES
   ('Purchasing', 'PUR', 'Office', 'active'),
   ('Sales', 'SAL', 'Office', 'active'),
   ('Administration', 'ADM', 'Office', 'active')
-ON CONFLICT (name) DO NOTHING;
+on conflict (name) do nothing;
 
--- ============================================
--- 3. Profiles table (linked to auth.users)
--- ============================================
-CREATE TABLE IF NOT EXISTS public.profiles (
-  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  full_name TEXT,
-  email TEXT,
-  employee_code TEXT,
-  department_id UUID REFERENCES public.departments(id) ON DELETE SET NULL,
-  role TEXT NOT NULL DEFAULT 'Auditor / Read Only' REFERENCES public.roles(name),
-  job_title TEXT,
-  phone TEXT,
-  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
-  avatar_url TEXT,
-  language TEXT DEFAULT 'en' CHECK (language IN ('en', 'ar')),
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
+-- 3) Profiles linked to Supabase Auth users
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  full_name text,
+  email text,
+  employee_code text,
+  department_id uuid references public.departments(id) on delete set null,
+  role text not null default 'Auditor / Read Only',
+  job_title text,
+  phone text,
+  status text default 'active' check (status in ('active','inactive')),
+  avatar_url text,
+  language text default 'en' check (language in ('en','ar')),
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
 );
 
--- ============================================
--- 4. Triggers for updated_at
--- ============================================
-CREATE OR REPLACE FUNCTION public.set_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = now();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-DROP TRIGGER IF EXISTS set_roles_updated_at ON public.roles;
-CREATE TRIGGER set_roles_updated_at BEFORE UPDATE ON public.roles
-FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
-
-DROP TRIGGER IF EXISTS set_departments_updated_at ON public.departments;
-CREATE TRIGGER set_departments_updated_at BEFORE UPDATE ON public.departments
-FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
-
-DROP TRIGGER IF EXISTS set_profiles_updated_at ON public.profiles;
-CREATE TRIGGER set_profiles_updated_at BEFORE UPDATE ON public.profiles
-FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
-
--- ============================================
--- 5. Helper functions for role/access checks
--- ============================================
-CREATE OR REPLACE FUNCTION public.get_user_role()
-RETURNS TEXT
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-AS $$
-  SELECT role FROM public.profiles WHERE id = auth.uid();
+-- 4) Updated-at trigger
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
 $$;
 
-CREATE OR REPLACE FUNCTION public.is_admin()
-RETURNS BOOLEAN
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-AS $$
-  SELECT COALESCE((SELECT TRUE FROM public.profiles WHERE id = auth.uid() AND role = 'Super Admin'), FALSE);
+drop trigger if exists set_roles_updated_at on public.roles;
+create trigger set_roles_updated_at
+before update on public.roles
+for each row execute function public.set_updated_at();
+
+drop trigger if exists set_departments_updated_at on public.departments;
+create trigger set_departments_updated_at
+before update on public.departments
+for each row execute function public.set_updated_at();
+
+drop trigger if exists set_profiles_updated_at on public.profiles;
+create trigger set_profiles_updated_at
+before update on public.profiles
+for each row execute function public.set_updated_at();
+
+-- 5) Access helpers
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+as $$
+  select coalesce(
+    (
+      select true
+      from public.profiles
+      where id = auth.uid()
+        and role = 'Super Admin'
+    ),
+    false
+  );
 $$;
 
-CREATE OR REPLACE FUNCTION public.is_manager()
-RETURNS BOOLEAN
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-AS $$
-  SELECT COALESCE((SELECT TRUE FROM public.profiles WHERE id = auth.uid() AND role IN ('Super Admin', 'General Manager')), FALSE);
+create or replace function public.is_manager()
+returns boolean
+language sql
+stable
+security definer
+as $$
+  select coalesce(
+    (
+      select true
+      from public.profiles
+      where id = auth.uid()
+        and role in ('Super Admin', 'General Manager')
+    ),
+    false
+  );
 $$;
 
--- ============================================
--- 6. Enable Row Level Security (RLS)
--- ============================================
-ALTER TABLE public.roles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.departments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+-- 6) RLS on core tables
+alter table public.roles enable row level security;
+alter table public.departments enable row level security;
+alter table public.profiles enable row level security;
 
--- ============================================
--- 7. RLS Policies for Roles table
--- ============================================
-DROP POLICY IF EXISTS "Authenticated users can view roles" ON public.roles;
-CREATE POLICY "Authenticated users can view roles"
-  ON public.roles FOR SELECT
-  USING (auth.role() = 'authenticated');
+-- 7) Roles policies
+drop policy if exists "roles_authenticated_select" on public.roles;
+create policy "roles_authenticated_select"
+on public.roles
+for select
+using (auth.role() = 'authenticated');
 
-DROP POLICY IF EXISTS "Only admins can manage roles" ON public.roles;
-CREATE POLICY "Only admins can manage roles"
-  ON public.roles FOR ALL
-  USING (public.is_admin())
-  WITH CHECK (public.is_admin());
+drop policy if exists "roles_admin_all" on public.roles;
+create policy "roles_admin_all"
+on public.roles
+for all
+using (public.is_admin())
+with check (public.is_admin());
 
--- ============================================
--- 8. RLS Policies for Departments table
--- ============================================
-DROP POLICY IF EXISTS "Authenticated users can view departments" ON public.departments;
-CREATE POLICY "Authenticated users can view departments"
-  ON public.departments FOR SELECT
-  USING (auth.role() = 'authenticated');
+-- 8) Departments policies
 
-DROP POLICY IF EXISTS "Only admins can manage departments" ON public.departments;
-CREATE POLICY "Only admins can manage departments"
-  ON public.departments FOR ALL
-  USING (public.is_admin())
-  WITH CHECK (public.is_admin());
+drop policy if exists "departments_authenticated_select" on public.departments;
+create policy "departments_authenticated_select"
+on public.departments
+for select
+using (auth.role() = 'authenticated');
 
--- ============================================
--- 9. RLS Policies for Profiles table
--- ============================================
-DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
-CREATE POLICY "Users can view own profile"
-  ON public.profiles FOR SELECT
-  USING (auth.uid() = id OR public.is_admin());
+drop policy if exists "departments_admin_all" on public.departments;
+create policy "departments_admin_all"
+on public.departments
+for all
+using (public.is_admin())
+with check (public.is_admin());
 
-DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
-CREATE POLICY "Users can update own profile"
-  ON public.profiles FOR UPDATE
-  USING (auth.uid() = id OR public.is_admin())
-  WITH CHECK (auth.uid() = id OR public.is_admin());
+-- 9) Profiles policies
 
-DROP POLICY IF EXISTS "Admins can manage all profiles" ON public.profiles;
-CREATE POLICY "Admins can manage all profiles"
-  ON public.profiles FOR ALL
-  USING (public.is_admin())
-  WITH CHECK (public.is_admin());
+drop policy if exists "profiles_select_self_or_admin" on public.profiles;
+create policy "profiles_select_self_or_admin"
+on public.profiles
+for select
+using (auth.uid() = id or public.is_admin());
 
--- ============================================
--- 10. Indexes for performance
--- ============================================
-CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
-CREATE INDEX IF NOT EXISTS idx_profiles_status ON public.profiles(status);
-CREATE INDEX IF NOT EXISTS idx_profiles_department ON public.profiles(department_id);
-CREATE INDEX IF NOT EXISTS idx_departments_status ON public.departments(status);
+drop policy if exists "profiles_update_self_or_admin" on public.profiles;
+create policy "profiles_update_self_or_admin"
+on public.profiles
+for update
+using (auth.uid() = id or public.is_admin())
+with check (auth.uid() = id or public.is_admin());
 
--- ============================================
--- Note: After running this SQL:
--- 1. Set the authenticated user's role to 'Super Admin' in the profiles table
--- 2. Example UPDATE:
---    UPDATE public.profiles 
---    SET role = 'Super Admin' 
---    WHERE id = 'USER_UUID_HERE';
--- ============================================
+drop policy if exists "profiles_admin_all" on public.profiles;
+create policy "profiles_admin_all"
+on public.profiles
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+-- 10) Helpful indexes
+create index if not exists idx_profiles_role on public.profiles(role);
+create index if not exists idx_profiles_department on public.profiles(department_id);
+create index if not exists idx_profiles_status on public.profiles(status);
+create index if not exists idx_departments_status on public.departments(status);
+
+-- 11) Assign the existing auth user as Super Admin
+-- Replace the UUID below with the actual auth user id from Supabase Authentication > Users
+-- Example:
+-- select id, email from auth.users where email = 'your-user@example.com';
+-- then update/insert the profile for that auth user and set role = 'Super Admin'
+
+-- Example insert-or-update block:
+-- insert into public.profiles (
+--   id,
+--   full_name,
+--   email,
+--   employee_code,
+--   department_id,
+--   role,
+--   job_title,
+--   phone,
+--   status,
+--   language
+-- )
+-- values (
+--   'PASTE_AUTH_USER_UUID_HERE',
+--   'Pure Ice Admin',
+--   'your-user@example.com',
+--   'PI-ADMIN',
+--   (select id from public.departments where name = 'Administration' limit 1),
+--   'Super Admin',
+--   'System Administrator',
+--   '+966000000000',
+--   'active',
+--   'en'
+-- )
+-- on conflict (id) do update
+-- set
+--   full_name = excluded.full_name,
+--   email = excluded.email,
+--   employee_code = excluded.employee_code,
+--   department_id = excluded.department_id,
+--   role = 'Super Admin',
+--   job_title = excluded.job_title,
+--   phone = excluded.phone,
+--   status = 'active',
+--   language = excluded.language,
+--   updated_at = now();
+
+-- Or if the profile already exists:
+-- update public.profiles
+-- set role = 'Super Admin',
+--     job_title = 'System Administrator',
+--     status = 'active',
+--     updated_at = now()
+-- where id = 'PASTE_AUTH_USER_UUID_HERE';
