@@ -2,1248 +2,4277 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PURE ICE | Food Safety Management System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pure Ice | Food Safety Management System</title>
+<meta name="description" content="Pure Ice Food Safety Management System">
 <link rel="icon" href="data:,">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 
 <style>
 :root{
-  --bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#6b7280;
-  --line:#e5e7eb;--primary:#0f766e;--primary2:#115e59;
-  --danger:#dc2626;--warning:#d97706;--success:#15803d;
-  --sidebar:#0b1728;--sidebar2:#10243d;--radius:14px
+  --primary:#0b5cab;
+  --primary-dark:#08467f;
+  --secondary:#13a8d8;
+  --success:#159957;
+  --warning:#d99a00;
+  --danger:#d83a3a;
+  --info:#4b73d1;
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --text:#1e293b;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --sidebar:#092f55;
+  --sidebar-hover:#114d7e;
+  --shadow:0 8px 25px rgba(15,23,42,.07);
+  --radius:12px;
 }
+
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.hidden{display:none!important}
-#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#071426,#0f766e)}
-.login-card{width:min(420px,92%);background:#fff;border-radius:22px;padding:36px;box-shadow:0 25px 70px #0005}
-.logo{text-align:center;font-size:44px}
-.login-card h1{text-align:center;margin:8px 0 2px}
-.login-card p{text-align:center;color:var(--muted)}
-.form-group{margin:14px 0}
-label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
-input,select,textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:#fff}
-textarea{min-height:90px;resize:vertical}
-.btn{border:0;border-radius:9px;padding:10px 15px;font-weight:700}
-.btn-primary{background:var(--primary);color:white}
-.btn-primary:hover{background:var(--primary2)}
-.btn-light{background:#f1f5f9;color:#334155}
-.btn-danger{background:#fee2e2;color:#991b1b}
-.btn-success{background:#dcfce7;color:#166534}
-.btn-sm{padding:7px 10px;font-size:12px}
 
-#app-shell{display:none;min-height:100vh}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;background:var(--sidebar);color:#fff;padding:20px 14px;overflow:auto}
-.brand{display:flex;gap:10px;align-items:center;padding:8px 10px 20px;border-bottom:1px solid #ffffff18}
-.brand-icon{font-size:30px}.brand-title{font-size:18px;font-weight:800}.brand-sub{font-size:10px;color:#9ca3af}
-.nav-title{font-size:10px;text-transform:uppercase;color:#64748b;font-weight:800;margin:22px 10px 6px}
-.nav-btn{width:100%;border:0;background:transparent;color:#cbd5e1;text-align:left;padding:10px 12px;border-radius:8px;margin:2px 0;font-size:13px}
-.nav-btn:hover,.nav-btn.active{background:var(--sidebar2);color:#fff}
-.main{margin-left:250px;padding:22px;min-height:100vh}
-.topbar{height:55px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.page-title{font-size:24px;font-weight:800}.page-subtitle{color:var(--muted);font-size:12px}
-.top-actions{display:flex;align-items:center;gap:10px}
-.profile{background:#fff;border:1px solid var(--line);padding:8px 12px;border-radius:10px;font-size:12px}
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 
-.section{display:none}.section.active{display:block}
-.grid{display:grid;gap:15px}.grid-6{grid-template-columns:repeat(6,1fr)}
-.grid-4{grid-template-columns:repeat(4,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}
-.grid-2{grid-template-columns:repeat(2,1fr)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
-.kpi-label{font-size:12px;color:var(--muted);font-weight:700}.kpi-value{font-size:30px;font-weight:800;margin-top:5px}.kpi-sub{font-size:11px;color:var(--muted);margin-top:3px}
-.card-title{font-weight:800;margin-bottom:14px}
-.dashboard-header{margin-bottom:18px}.dashboard-header h1{margin:0;font-size:28px}.dashboard-header p{margin:5px 0;color:var(--muted)}
-.progress{height:8px;background:#e5e7eb;border-radius:20px;overflow:hidden}.progress>span{display:block;height:100%;background:var(--primary)}
-.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px}.toolbar>*{max-width:230px}
-.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}
-table{width:100%;border-collapse:collapse;min-width:850px;background:#fff}
-th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}
-th{background:#f8fafc;color:#475569;font-size:11px;text-transform:uppercase}
-.badge{display:inline-block;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:800}
-.badge-green{background:#dcfce7;color:#166534}.badge-yellow{background:#fef3c7;color:#92400e}
-.badge-red{background:#fee2e2;color:#991b1b}.badge-blue{background:#dbeafe;color:#1e40af}
-.empty{text-align:center;padding:35px;color:var(--muted)}
-.alert{padding:12px;border-radius:10px;background:#f8fafc;margin:7px 0;font-size:12px}
-.alert.danger{background:#fee2e2}.alert.warning{background:#fef3c7}.alert.success{background:#dcfce7}
+button,input,select,textarea{
+  font-family:inherit;
+}
 
-.modal{position:fixed;inset:0;background:#0007;display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
-.modal.open{display:flex}
-.modal-box{width:min(760px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}
-.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-.modal-head h2{margin:0;font-size:19px}.close{border:0;background:#f1f5f9;border-radius:8px;width:34px;height:34px}
-.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
-.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.full{grid-column:1/-1}
-.status{font-size:12px;margin-top:10px}
-.search{max-width:300px!important}
-.action-cell{white-space:nowrap}
-.toast{position:fixed;right:20px;bottom:20px;background:#172033;color:#fff;padding:13px 18px;border-radius:10px;z-index:200;display:none;font-size:13px}
-.toast.show{display:block}
-@media(max-width:1100px){.grid-6{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:750px){.sidebar{width:70px}.brand-title,.brand-sub,.nav-title,.nav-btn span{display:none}.main{margin-left:70px}.grid-6,.grid-4,.grid-3,.grid-2,.form-grid{grid-template-columns:1fr}.nav-btn{text-align:center}.topbar{align-items:flex-start}}
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* LOGIN */
+.login-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:
+    radial-gradient(circle at top right,rgba(19,168,216,.16),transparent 35%),
+    linear-gradient(135deg,#eef7ff,#f8fbff);
+}
+
+.login-card{
+  width:100%;
+  max-width:440px;
+  background:#fff;
+  border-radius:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,.12);
+  padding:38px;
+}
+
+.login-logo{
+  width:75px;
+  height:75px;
+  margin:0 auto 18px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
+  font-size:28px;
+  font-weight:800;
+}
+
+.login-title{
+  text-align:center;
+  font-size:25px;
+  font-weight:800;
+  margin-bottom:7px;
+}
+
+.login-subtitle{
+  text-align:center;
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:28px;
+}
+
+.form-group{
+  margin-bottom:15px;
+}
+
+.form-group label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:7px;
+  color:#334155;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:8px;
+  padding:11px 12px;
+  outline:none;
+  font-size:14px;
+  color:var(--text);
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:var(--secondary);
+  box-shadow:0 0 0 3px rgba(19,168,216,.10);
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.btn{
+  border:0;
+  border-radius:8px;
+  padding:10px 15px;
+  font-size:13px;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  transition:.2s;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+}
+
+.btn-primary{
+  background:var(--primary);
+  color:#fff;
+}
+
+.btn-primary:hover{
+  background:var(--primary-dark);
+}
+
+.btn-secondary{
+  background:#e8f2fb;
+  color:var(--primary);
+}
+
+.btn-success{
+  background:#e8f7ef;
+  color:#08743e;
+}
+
+.btn-warning{
+  background:#fff7dd;
+  color:#9a6a00;
+}
+
+.btn-danger{
+  background:#fdecec;
+  color:#b52626;
+}
+
+.btn-light{
+  background:#f1f5f9;
+  color:#334155;
+}
+
+.btn-block{
+  width:100%;
+}
+
+.login-error{
+  background:#fff0f0;
+  color:#b42323;
+  padding:10px 12px;
+  border-radius:8px;
+  margin-bottom:15px;
+  font-size:13px;
+  display:none;
+}
+
+/* APP */
+.app{
+  min-height:100vh;
+  display:flex;
+}
+
+.sidebar{
+  width:255px;
+  background:var(--sidebar);
+  color:#fff;
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  overflow-y:auto;
+  z-index:100;
+}
+
+.sidebar-header{
+  padding:22px 18px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.brand-icon{
+  width:43px;
+  height:43px;
+  border-radius:11px;
+  background:linear-gradient(135deg,#20b9e8,#0b5cab);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+
+.brand-name{
+  font-size:16px;
+  font-weight:800;
+}
+
+.brand-sub{
+  font-size:10px;
+  color:#b8d4eb;
+  margin-top:3px;
+}
+
+.sidebar-section{
+  padding:17px 12px 6px;
+  color:#8fb1cf;
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+
+.nav-item{
+  margin:2px 8px;
+  padding:10px 11px;
+  border-radius:8px;
+  color:#dceaf6;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px;
+  transition:.15s;
+  user-select:none;
+}
+
+.nav-item:hover{
+  background:var(--sidebar-hover);
+  color:#fff;
+}
+
+.nav-item.active{
+  background:#176ba4;
+  color:#fff;
+  box-shadow:inset 3px 0 0 #44d0f5;
+}
+
+.nav-icon{
+  width:20px;
+  text-align:center;
+  font-size:15px;
+}
+
+.main{
+  margin-left:255px;
+  width:calc(100% - 255px);
+  min-height:100vh;
+}
+
+.topbar{
+  height:67px;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 25px;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.page-title{
+  font-size:19px;
+  font-weight:800;
+}
+
+.user-area{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.user-avatar{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#e7f2fc;
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+  font-size:13px;
+}
+
+.user-name{
+  font-size:13px;
+  font-weight:700;
+}
+
+.user-role{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:2px;
+}
+
+.content{
+  padding:25px;
+}
+
+/* CARDS */
+.kpi-grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:14px;
+  margin-bottom:22px;
+}
+
+.kpi-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow:var(--shadow);
+}
+
+.kpi-label{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:700;
+  margin-bottom:9px;
+}
+
+.kpi-value{
+  font-size:27px;
+  font-weight:800;
+  line-height:1;
+}
+
+.kpi-note{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:7px;
+}
+
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:1.3fr 1fr;
+  gap:18px;
+  margin-bottom:18px;
+}
+
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+
+.card-header{
+  padding:16px 18px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.card-title{
+  font-size:14px;
+  font-weight:800;
+}
+
+.card-body{
+  padding:18px;
+}
+
+.section-heading{
+  margin-bottom:17px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.section-heading h2{
+  margin:0;
+  font-size:20px;
+}
+
+.section-heading p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* TABLE */
+.table-wrap{
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:750px;
+}
+
+th{
+  text-align:left;
+  padding:11px 12px;
+  background:#f8fafc;
+  border-bottom:1px solid var(--border);
+  color:#475569;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+td{
+  padding:12px;
+  border-bottom:1px solid #edf1f5;
+  font-size:12px;
+  vertical-align:middle;
+}
+
+tr:hover td{
+  background:#fbfdff;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.badge-success{
+  background:#e8f7ef;
+  color:#08743e;
+}
+
+.badge-warning{
+  background:#fff7dd;
+  color:#946900;
+}
+
+.badge-danger{
+  background:#fdecec;
+  color:#b52626;
+}
+
+.badge-info{
+  background:#eaf0ff;
+  color:#365ab7;
+}
+
+.badge-neutral{
+  background:#eef2f6;
+  color:#596579;
+}
+
+.actions{
+  display:flex;
+  gap:5px;
+  flex-wrap:wrap;
+}
+
+.btn-sm{
+  padding:6px 9px;
+  font-size:10px;
+}
+
+/* PROGRESS */
+.progress-row{
+  margin-bottom:17px;
+}
+
+.progress-head{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:7px;
+  font-size:11px;
+  font-weight:700;
+}
+
+.progress{
+  height:8px;
+  background:#edf2f7;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  border-radius:20px;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+}
+
+/* ATTENTION */
+.attention-item{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:11px 0;
+  border-bottom:1px solid #edf1f5;
+}
+
+.attention-item:last-child{
+  border-bottom:0;
+}
+
+.attention-icon{
+  width:31px;
+  height:31px;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:none;
+}
+
+.attention-content{
+  flex:1;
+}
+
+.attention-title{
+  font-size:12px;
+  font-weight:800;
+}
+
+.attention-text{
+  font-size:10px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+/* TOOLBAR */
+.toolbar{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin-bottom:17px;
+}
+
+.toolbar .search{
+  max-width:280px;
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+/* MODAL */
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.52);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:500;
+}
+
+.modal-backdrop.show{
+  display:flex;
+}
+
+.modal{
+  width:100%;
+  max-width:760px;
+  max-height:92vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:15px;
+  box-shadow:0 25px 80px rgba(0,0,0,.22);
+}
+
+.modal-header{
+  padding:17px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.modal-title{
+  font-size:16px;
+  font-weight:800;
+}
+
+.modal-close{
+  border:0;
+  background:#f1f5f9;
+  width:30px;
+  height:30px;
+  border-radius:7px;
+  font-size:18px;
+  color:#64748b;
+}
+
+.modal-body{
+  padding:20px;
+}
+
+.modal-footer{
+  padding:15px 20px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.form-grid .full{
+  grid-column:1/-1;
+}
+
+/* EMPTY */
+.empty{
+  padding:45px 20px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.empty-icon{
+  font-size:35px;
+  margin-bottom:8px;
+}
+
+/* TOAST */
+.toast-container{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:1000;
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+.toast{
+  min-width:280px;
+  max-width:420px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-left:4px solid var(--primary);
+  border-radius:9px;
+  padding:12px 14px;
+  box-shadow:0 15px 35px rgba(0,0,0,.14);
+  font-size:12px;
+  animation:toastIn .2s ease;
+}
+
+.toast.success{border-left-color:var(--success)}
+.toast.warning{border-left-color:var(--warning)}
+.toast.error{border-left-color:var(--danger)}
+
+@keyframes toastIn{
+  from{transform:translateY(10px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+
+/* LOADING */
+.loading{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:40px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.spinner{
+  width:18px;
+  height:18px;
+  border:2px solid #dbe6ef;
+  border-top-color:var(--primary);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+/* MODULE INTRO */
+.module-intro{
+  background:linear-gradient(135deg,#edf7ff,#fff);
+  border:1px solid #dcecf9;
+  border-radius:13px;
+  padding:20px;
+  margin-bottom:18px;
+}
+
+.module-intro h3{
+  margin:0 0 7px;
+  font-size:17px;
+}
+
+.module-intro p{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.7;
+}
+
+/* RESPONSIVE */
+@media(max-width:1200px){
+  .kpi-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media(max-width:900px){
+  .sidebar{
+    width:220px;
+  }
+
+  .main{
+    margin-left:220px;
+    width:calc(100% - 220px);
+  }
+
+  .dashboard-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:700px){
+  .sidebar{
+    position:relative;
+    width:100%;
+    height:auto;
+    max-height:none;
+  }
+
+  .app{
+    display:block;
+  }
+
+  .main{
+    margin-left:0;
+    width:100%;
+  }
+
+  .topbar{
+    position:relative;
+  }
+
+  .kpi-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .form-grid .full{
+    grid-column:auto;
+  }
+
+  .content{
+    padding:15px;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<div id="login-screen">
+<!-- LOGIN -->
+<div id="loginScreen" class="login-screen">
   <div class="login-card">
-    <div class="logo">❄</div>
-    <h1>PURE ICE</h1>
-    <p>Food Safety Management System</p>
-    <form id="login-form">
+    <div class="login-logo">PI</div>
+
+    <div class="login-title">Pure Ice</div>
+    <div class="login-subtitle">
+      Food Safety Management System
+    </div>
+
+    <div id="loginError" class="login-error"></div>
+
+    <form id="loginForm">
       <div class="form-group">
         <label>Email</label>
-        <input id="login-email" type="email" required value="food.safety@pureeice.com">
+        <input id="loginEmail" type="email" required
+               placeholder="Enter your email">
       </div>
+
       <div class="form-group">
         <label>Password</label>
-        <input id="login-password" type="password" required>
+        <input id="loginPassword" type="password" required
+               placeholder="Enter your password">
       </div>
-      <button class="btn btn-primary" style="width:100%">Sign In</button>
-      <div id="login-status" class="status"></div>
+
+      <button class="btn btn-primary btn-block" type="submit">
+        Sign In
+      </button>
     </form>
-    <button id="forgot-password-btn" class="btn btn-light" style="width:100%;margin-top:10px">Forgot Password</button>
   </div>
 </div>
 
-<div id="app-shell">
+<!-- APP -->
+<div id="app" class="app hidden">
 
-<aside class="sidebar">
-  <div class="brand">
-    <div class="brand-icon">❄</div>
-    <div><div class="brand-title">PURE ICE</div><div class="brand-sub">Quality & Food Safety</div></div>
-  </div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
 
-  <div class="nav-title">Workspace</div>
-  <button class="nav-btn active" data-module="dashboard">⌂ <span>Dashboard</span></button>
-  <button class="nav-btn" data-module="documents">▣ <span>Document Control</span></button>
-  <button class="nav-btn" data-module="records">▤ <span>Records & Plans</span></button>
-
-  <div class="nav-title">Food Safety</div>
-  <button class="nav-btn" data-module="haccp">⚠ <span>HACCP / CCP / OPRP</span></button>
-  <button class="nav-btn" data-module="gmp">✦ <span>PRP / GMP / GHP</span></button>
-  <button class="nav-btn" data-module="water-ro">💧 <span>Water & RO</span></button>
-
-  <div class="nav-title">Management</div>
-  <button class="nav-btn" data-module="calibration">⚙ <span>Calibration</span></button>
-  <button class="nav-btn" data-module="training">♙ <span>Training</span></button>
-  <button class="nav-btn" data-module="suppliers">▥ <span>Suppliers</span></button>
-  <button class="nav-btn" data-module="ncr">! <span>NCR / CAPA</span></button>
-
-  <div class="nav-title">Insights</div>
-  <button class="nav-btn" data-module="reports">◫ <span>Reports</span></button>
-  <button class="nav-btn" data-module="settings">⚙ <span>Settings</span></button>
-
-  <div class="nav-title">Administration</div>
-  <button class="nav-btn" data-module="users">👥 <span>User Management</span></button>
-</aside>
-
-<main class="main">
-<header class="topbar">
-  <div>
-    <div id="page-title" class="page-title">Food Safety Command Center</div>
-    <div id="page-subtitle" class="page-subtitle">Pure Ice Factory · Quality & Food Safety</div>
-  </div>
-  <div class="top-actions">
-    <input id="global-search" class="search" placeholder="⌕ Search documents...">
-    <div id="profile-button" class="profile">food.safety</div>
-    <button id="signout-button" class="btn btn-light btn-sm">Sign Out</button>
-  </div>
-</header>
-
-<!-- DASHBOARD -->
-<section id="dashboard-section" class="section active">
-  <div class="dashboard-header">
-    <h1>Food Safety Command Center</h1>
-    <p>Ice Manufacturing & Flavored Ice · System Status</p>
-  </div>
-
-  <div class="grid grid-6">
-    <div class="card"><div class="kpi-label">Total Documents</div><div id="kpi-total-documents" class="kpi-value">0</div><div id="kpi-total-documents-sub" class="kpi-sub">Live data connected</div></div>
-    <div class="card"><div class="kpi-label">Pending Approval</div><div id="kpi-pending-documents" class="kpi-value">0</div><div id="kpi-pending-documents-sub" class="kpi-sub">No pending approval</div></div>
-    <div class="card"><div class="kpi-label">Near Review</div><div id="kpi-documents-near-review" class="kpi-value">0</div><div id="kpi-documents-near-review-sub" class="kpi-sub">No reviews due soon</div></div>
-    <div class="card"><div class="kpi-label">Open Tasks</div><div id="kpi-open-tasks" class="kpi-value">0</div><div class="kpi-sub">Pending / verification</div></div>
-    <div class="card"><div class="kpi-label">Active Plans</div><div id="kpi-active-plans" class="kpi-value">0</div><div class="kpi-sub">Active compliance plans</div></div>
-    <div class="card"><div class="kpi-label">Approved Documents</div><div id="kpi-approved-documents" class="kpi-value">0</div><div id="kpi-approved-documents-sub" class="kpi-sub">Controlled documents</div></div>
-  </div>
-
-  <div class="grid grid-2" style="margin-top:15px">
-    <div class="card">
-      <div class="card-title">Document Control Status</div>
-      <div id="document-status-summary"></div>
+    <div class="sidebar-header">
+      <div class="brand">
+        <div class="brand-icon">PI</div>
+        <div>
+          <div class="brand-name">PURE ICE</div>
+          <div class="brand-sub">FOOD SAFETY MANAGEMENT SYSTEM</div>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <div class="card-title">Attention Required</div>
-      <div id="attention-list"><div class="empty">Loading...</div></div>
+
+    <div class="sidebar-section">Workspace</div>
+
+    <div class="nav-item active" data-page="dashboard">
+      <span class="nav-icon">▦</span>
+      Dashboard
     </div>
-  </div>
 
-  <div class="grid grid-4" style="margin-top:15px">
-    <div class="card"><div class="card-title">Document Control</div><div id="kpi-document-control" class="kpi-value">0%</div><div class="progress"><span id="progress-document-control" style="width:0"></span></div></div>
-    <div class="card"><div class="card-title">Plan Coverage</div><div id="kpi-plan-coverage" class="kpi-value">0%</div><div class="progress"><span id="progress-plan-coverage" style="width:0"></span></div></div>
-    <div class="card"><div class="card-title">Task Completion</div><div id="kpi-task-completion" class="kpi-value">0%</div><div class="progress"><span id="progress-task-completion" style="width:0"></span></div></div>
-    <div class="card"><div class="card-title">Audit Trail</div><div id="kpi-audit-trail" class="kpi-value">Ready</div><div class="kpi-sub">System logging enabled</div></div>
-  </div>
-
-  <div class="card" style="margin-top:15px">
-    <div class="card-title">Quick Actions</div>
-    <div class="toolbar">
-      <button class="btn btn-primary" data-action="new-document">＋ New Document</button>
-      <button class="btn btn-light" data-action="documents">▣ Document Control</button>
-      <button class="btn btn-light" data-action="records">▤ Records & Plans</button>
-      <button class="btn btn-light" data-action="refresh">↻ Refresh Dashboard</button>
+    <div class="nav-item" data-page="documents">
+      <span class="nav-icon">▤</span>
+      Document Control
     </div>
-    <div class="card-title" style="margin-top:15px">Audit Readiness</div>
-    <div id="kpi-audit-readiness" class="kpi-value">0%</div>
-  </div>
-</section>
 
-<!-- DOCUMENTS -->
-<section id="documents-section" class="section">
-  <div class="card">
-    <div class="card-title">Document Control</div>
-    <div class="toolbar">
-      <input id="document-search" placeholder="Search documents...">
-      <select id="document-type-filter"><option value="">All Types</option><option>SOP</option><option>Policy</option><option>Procedure</option><option>Work Instruction</option><option>Form</option><option>Manual</option><option>Plan</option><option>Other</option></select>
-      <select id="document-status-filter"><option value="">All Status</option><option>Active</option><option>Draft</option><option>Obsolete</option></select>
-      <select id="document-approval-filter"><option value="">All Approval</option><option>Draft</option><option>Pending Approval</option><option>Approved</option><option>Rejected</option></select>
-      <select id="document-department-filter"><option value="">All Departments</option></select>
-      <button class="btn btn-primary" id="new-document-btn">＋ New Document</button>
+    <div class="nav-item" data-page="records">
+      <span class="nav-icon">▣</span>
+      Records & Plans
     </div>
-    <div class="table-wrap"><table><thead><tr>
-      <th>Code</th><th>Title</th><th>Type</th><th>Department</th><th>Rev.</th><th>Review</th><th>Status</th><th>Approval</th><th>Actions</th>
-    </tr></thead><tbody id="documents-tbody"></tbody></table></div>
-  </div>
-</section>
 
-<!-- RECORDS -->
-<section id="records-section" class="section">
-  <div class="card">
-    <div class="card-title">Records & Compliance Plans</div>
-    <div class="toolbar">
-      <button class="btn btn-primary" id="new-record-btn">＋ New Record</button>
-      <button class="btn btn-primary" id="new-plan-btn">＋ New Plan</button>
-      <button class="btn btn-light" data-record-tab="records">Records</button>
-      <button class="btn btn-light" data-record-tab="plans">Plans</button>
-      <button class="btn btn-light" data-record-tab="tasks">Scheduled Tasks</button>
+    <div class="sidebar-section">Food Safety</div>
+
+    <div class="nav-item" data-page="haccp">
+      <span class="nav-icon">◆</span>
+      HACCP / CCP / OPRP
     </div>
-    <div id="records-content"></div>
-  </div>
-</section>
 
-<!-- PLACEHOLDERS -->
-<section id="placeholder-section" class="section">
-  <div class="card" style="text-align:center;padding:70px">
-    <div id="placeholder-icon" style="font-size:50px">⚙</div>
-    <h2 id="placeholder-title">Module</h2>
-    <p id="placeholder-text">This FSMS module is ready for integration with the Records & Plans engine.</p>
-    <button class="btn btn-primary" data-action="records">Open Records & Plans</button>
-  </div>
-</section>
-
-<!-- USERS -->
-<section id="users-section" class="section">
-  <div class="card">
-    <div class="card-title">User Management</div>
-    <div class="toolbar">
-      <input id="users-filter" placeholder="Search users...">
-      <select id="role-filter"><option value="">All Roles</option><option>Super Admin</option><option>Admin</option><option>Manager</option><option>Quality Officer</option><option>Employee</option></select>
+    <div class="nav-item" data-page="gmp">
+      <span class="nav-icon">✓</span>
+      PRP / GMP / GHP
     </div>
-    <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Employee Code</th><th>Role</th><th>Job Title</th><th>Status</th><th>Actions</th></tr></thead><tbody id="users-tbody"></tbody></table></div>
-  </div>
-</section>
 
-</main>
+    <div class="nav-item" data-page="water-ro">
+      <span class="nav-icon">◈</span>
+      Water & RO
+    </div>
+
+    <div class="sidebar-section">Management</div>
+
+    <div class="nav-item" data-page="calibration">
+      <span class="nav-icon">⌁</span>
+      Calibration
+    </div>
+
+    <div class="nav-item" data-page="training">
+      <span class="nav-icon">♙</span>
+      Training
+    </div>
+
+    <div class="nav-item" data-page="suppliers">
+      <span class="nav-icon">♧</span>
+      Suppliers
+    </div>
+
+    <div class="nav-item" data-page="ncr">
+      <span class="nav-icon">!</span>
+      NCR / CAPA
+    </div>
+
+    <div class="sidebar-section">Insights</div>
+
+    <div class="nav-item" data-page="reports">
+      <span class="nav-icon">▥</span>
+      Reports
+    </div>
+
+    <div class="nav-item" data-page="settings">
+      <span class="nav-icon">⚙</span>
+      Settings
+    </div>
+
+    <div class="sidebar-section">Administration</div>
+
+    <div class="nav-item" data-page="user-management">
+      <span class="nav-icon">♟</span>
+      User Management
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="topbar">
+      <div id="pageTitle" class="page-title">
+        Dashboard
+      </div>
+
+      <div class="user-area">
+        <div>
+          <div id="currentUserName" class="user-name">
+            Loading...
+          </div>
+          <div id="currentUserRole" class="user-role">
+            Loading...
+          </div>
+        </div>
+
+        <div id="userAvatar" class="user-avatar">PI</div>
+
+        <button id="logoutBtn" class="btn btn-light btn-sm">
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <section id="page-dashboard" class="page active">
+
+        <div class="section-heading">
+          <div>
+            <h2>FSMS Dashboard</h2>
+            <p>Real-time overview of the Pure Ice Food Safety Management System.</p>
+          </div>
+
+          <button class="btn btn-primary" onclick="refreshAll()">
+            ↻ Refresh
+          </button>
+        </div>
+
+        <div class="kpi-grid">
+
+          <div class="kpi-card">
+            <div class="kpi-label">TOTAL DOCUMENTS</div>
+            <div id="kpiDocuments" class="kpi-value">0</div>
+            <div class="kpi-note">Controlled documents</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">PENDING APPROVAL</div>
+            <div id="kpiPending" class="kpi-value">0</div>
+            <div class="kpi-note">Documents awaiting approval</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">NEAR REVIEW</div>
+            <div id="kpiNearReview" class="kpi-value">0</div>
+            <div class="kpi-note">Review within 30 days</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">OPEN TASKS</div>
+            <div id="kpiOpenTasks" class="kpi-value">0</div>
+            <div class="kpi-note">Pending compliance tasks</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">ACTIVE PLANS</div>
+            <div id="kpiActivePlans" class="kpi-value">0</div>
+            <div class="kpi-note">Active compliance plans</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">APPROVED</div>
+            <div id="kpiApproved" class="kpi-value">0</div>
+            <div class="kpi-note">Approved documents</div>
+          </div>
+
+        </div>
+
+        <div class="dashboard-grid">
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Document Status</div>
+            </div>
+
+            <div class="card-body">
+
+              <div class="progress-row">
+                <div class="progress-head">
+                  <span>Approved</span>
+                  <span id="approvedPct">0%</span>
+                </div>
+                <div class="progress">
+                  <div id="approvedBar" class="progress-bar" style="width:0%"></div>
+                </div>
+              </div>
+
+              <div class="progress-row">
+                <div class="progress-head">
+                  <span>Pending Approval</span>
+                  <span id="pendingPct">0%</span>
+                </div>
+                <div class="progress">
+                  <div id="pendingBar" class="progress-bar" style="width:0%"></div>
+                </div>
+              </div>
+
+              <div class="progress-row">
+                <div class="progress-head">
+                  <span>Draft</span>
+                  <span id="draftPct">0%</span>
+                </div>
+                <div class="progress">
+                  <div id="draftBar" class="progress-bar" style="width:0%"></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Attention Required</div>
+            </div>
+
+            <div id="attentionList" class="card-body">
+              <div class="empty">
+                No critical items.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="dashboard-grid">
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Compliance Performance</div>
+            </div>
+
+            <div class="card-body">
+
+              <div class="progress-row">
+                <div class="progress-head">
+                  <span>Task Completion</span>
+                  <span id="taskCompletionPct">0%</span>
+                </div>
+                <div class="progress">
+                  <div id="taskCompletionBar" class="progress-bar" style="width:0%"></div>
+                </div>
+              </div>
+
+              <div class="progress-row">
+                <div class="progress-head">
+                  <span>Plan Coverage</span>
+                  <span id="planCoveragePct">0%</span>
+                </div>
+                <div class="progress">
+                  <div id="planCoverageBar" class="progress-bar" style="width:0%"></div>
+                </div>
+              </div>
+
+              <div class="progress-row">
+                <div class="progress-head">
+                  <span>Audit Readiness</span>
+                  <span id="auditReadinessPct">0%</span>
+                </div>
+                <div class="progress">
+                  <div id="auditReadinessBar" class="progress-bar" style="width:0%"></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Recent Tasks</div>
+            </div>
+
+            <div id="recentTasks" class="card-body">
+              <div class="empty">
+                No tasks available.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- DOCUMENTS -->
+      <section id="page-documents" class="page">
+
+        <div class="section-heading">
+          <div>
+            <h2>Document Control</h2>
+            <p>Controlled SOPs, policies, procedures, certificates and supporting documents.</p>
+          </div>
+
+          <button class="btn btn-primary" onclick="openDocumentModal()">
+            + New Document
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <input id="documentSearch"
+                 class="search"
+                 type="text"
+                 placeholder="Search documents..."
+                 oninput="renderDocuments()">
+
+          <select id="documentStatusFilter" onchange="renderDocuments()">
+            <option value="">All Status</option>
+            <option value="Approved">Approved</option>
+            <option value="Pending Approval">Pending Approval</option>
+            <option value="Draft">Draft</option>
+          </select>
+
+          <button class="btn btn-light" onclick="loadDocuments()">
+            ↻ Refresh
+          </button>
+        </div>
+
+        <div class="card">
+          <div id="documentsTable" class="table-wrap"></div>
+        </div>
+
+      </section>
+
+      <!-- RECORDS -->
+      <section id="page-records" class="page">
+
+        <div class="section-heading">
+          <div>
+            <h2>Records & Plans</h2>
+            <p>Link SOPs to plans, schedules and compliance records.</p>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" onclick="openRecordModal()">
+              + New Record
+            </button>
+
+            <button class="btn btn-primary" onclick="openPlanModal()">
+              + New Plan
+            </button>
+
+            <button class="btn btn-light" onclick="generateTasks()">
+              Generate Tasks
+            </button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px">
+          <div class="card-header">
+            <div class="card-title">Compliance Plans</div>
+          </div>
+
+          <div id="plansTable" class="table-wrap"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Scheduled Tasks</div>
+          </div>
+
+          <div id="tasksTable" class="table-wrap"></div>
+        </div>
+
+      </section>
+
+      <!-- HACCP -->
+      <section id="page-haccp" class="page">
+
+        <div class="module-intro">
+          <h3>HACCP / CCP / OPRP</h3>
+          <p>
+            HACCP plan management, hazard analysis, CCPs, OPRPs,
+            critical limits, monitoring, corrective actions and verification.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="empty">
+              <div class="empty-icon">◆</div>
+              <strong>HACCP Module</strong>
+              <p>
+                Ready for HACCP plans, hazard analysis and CCP/OPRP monitoring records.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- GMP -->
+      <section id="page-gmp" class="page">
+
+        <div class="module-intro">
+          <h3>PRP / GMP / GHP</h3>
+          <p>
+            Prerequisite programs, Good Manufacturing Practices,
+            Good Hygiene Practices, sanitation, personnel hygiene and environmental controls.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="empty">
+              <div class="empty-icon">✓</div>
+              <strong>PRP / GMP / GHP Module</strong>
+              <p>
+                Ready for operational prerequisite programs and inspection records.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- WATER -->
+      <section id="page-water-ro" class="page">
+
+        <div class="module-intro">
+          <h3>Water & RO Management</h3>
+          <p>
+            Water treatment, RO performance, TDS, chlorine, pH,
+            UV verification, membrane monitoring and water quality records.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="empty">
+              <div class="empty-icon">◈</div>
+              <strong>Water & RO Module</strong>
+              <p>
+                Ready for water treatment monitoring and verification records.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- CALIBRATION -->
+      <section id="page-calibration" class="page">
+
+        <div class="module-intro">
+          <h3>Calibration Management</h3>
+          <p>
+            Equipment register, calibration schedules, certificates,
+            due dates, results and out-of-calibration actions.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="empty">
+              <div class="empty-icon">⌁</div>
+              <strong>Calibration Module</strong>
+              <p>
+                Ready for calibration equipment and certificate management.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TRAINING -->
+      <section id="page-training" class="page">
+
+        <div class="module-intro">
+          <h3>Training & Competence</h3>
+          <p>
+            Training matrix, employee competence, food safety training,
+            attendance, evaluation and refresher training schedules.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="empty">
+              <div class="empty-icon">♙</div>
+              <strong>Training Module</strong>
+              <p>
+                Ready for training matrix and competence records.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- SUPPLIERS -->
+      <section id="page-suppliers" class="page">
+
+        <div class="module-intro">
+          <h3>Supplier Management</h3>
+          <p>
+            Supplier approval, risk classification, evaluation,
+            re-evaluation, raw materials, services and supplier performance.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="empty">
+              <div class="empty-icon">♧</div>
+              <strong>Supplier Module</strong>
+              <p>
+                Ready for supplier approval and evaluation management.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- NCR -->
+      <section id="page-ncr" class="page">
+
+        <div class="module-intro">
+          <h3>NCR / CAPA</h3>
+          <p>
+            Nonconformity reporting, root cause analysis,
+            corrective action, preventive action, verification and closure.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="empty">
+              <div class="empty-icon">!</div>
+              <strong>NCR / CAPA Module</strong>
+              <p>
+                Ready for nonconformity and corrective action workflows.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- REPORTS -->
+      <section id="page-reports" class="page">
+
+        <div class="module-intro">
+          <h3>Reports & Analytics</h3>
+          <p>
+            FSMS performance, compliance trends, task completion,
+            document status, audit readiness and management reporting.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="empty">
+              <div class="empty-icon">▥</div>
+              <strong>Reports Module</strong>
+              <p>
+                Dashboard data will feed reports and KPIs automatically.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="page-settings" class="page">
+
+        <div class="module-intro">
+          <h3>System Settings</h3>
+          <p>
+            FSMS configuration, company information,
+            document settings and system preferences.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="form-grid">
+
+              <div class="form-group">
+                <label>Company</label>
+                <input value="Pure Ice Factory Company" disabled>
+              </div>
+
+              <div class="form-group">
+                <label>System</label>
+                <input value="Food Safety Management System" disabled>
+              </div>
+
+              <div class="form-group">
+                <label>Standard</label>
+                <input value="ISO 22000 / SFDA" disabled>
+              </div>
+
+              <div class="form-group">
+                <label>Storage Bucket</label>
+                <input value="fsms-documents" disabled>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- USERS -->
+      <section id="page-user-management" class="page">
+
+        <div class="section-heading">
+          <div>
+            <h2>User Management</h2>
+            <p>Manage FSMS users, roles and account status.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div id="usersTable" class="table-wrap"></div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
 </div>
 
 <!-- DOCUMENT MODAL -->
-<div id="document-modal" class="modal">
-<div class="modal-box">
-<div class="modal-head"><h2 id="document-modal-title">New Document</h2><button class="close" data-close="document-modal">×</button></div>
-<form id="document-form">
-<div class="form-grid">
-<div><label>Document Code *</label><input id="document-code" required></div>
-<div><label>Document Type *</label><select id="document-type" required><option value="">Select</option><option>SOP</option><option>Policy</option><option>Procedure</option><option>Work Instruction</option><option>Form</option><option>Manual</option><option>Plan</option><option>Other</option></select></div>
-<div class="full"><label>Title *</label><input id="document-title" required></div>
-<div><label>Department</label><select id="document-department"></select></div>
-<div><label>Revision</label><input id="document-revision" value="01"></div>
-<div><label>Issue Date</label><input id="document-issue-date" type="date"></div>
-<div><label>Review Date</label><input id="document-review-date" type="date"></div>
-<div><label>Status</label><select id="document-status"><option>Draft</option><option>Active</option><option>Obsolete</option></select></div>
-<div><label>Approval Status</label><select id="document-approval-status"><option>Draft</option><option>Pending Approval</option><option>Approved</option><option>Rejected</option></select></div>
-<div class="full"><label>File — Word / Excel / PDF / Image</label><input id="document-file" type="file" accept=".doc,.docx,.xls,.xlsx,.pdf,.jpg,.jpeg,.png"></div>
-<div id="current-file-info" class="full"></div>
-<div class="full"><label>Description</label><textarea id="document-description"></textarea></div>
+<div id="documentModal" class="modal-backdrop">
+  <div class="modal">
+
+    <div class="modal-header">
+      <div id="documentModalTitle" class="modal-title">
+        New Document
+      </div>
+      <button class="modal-close" onclick="closeModal('documentModal')">×</button>
+    </div>
+
+    <form id="documentForm">
+
+      <div class="modal-body">
+
+        <input type="hidden" id="documentId">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Document Code</label>
+            <input id="documentCode" placeholder="PI-QA-SOP-01">
+          </div>
+
+          <div class="form-group">
+            <label>Document Type</label>
+            <select id="documentType">
+              <option>SOP</option>
+              <option>Policy</option>
+              <option>Work Instruction</option>
+              <option>Form</option>
+              <option>Certificate</option>
+              <option>Procedure</option>
+              <option>Manual</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label>Title *</label>
+            <input id="documentTitle" required
+                   placeholder="Document title">
+          </div>
+
+          <div class="form-group">
+            <label>Department</label>
+            <input id="documentDepartment"
+                   placeholder="Quality / Production / Maintenance">
+          </div>
+
+          <div class="form-group">
+            <label>Revision</label>
+            <input id="documentRevision" placeholder="Rev. 01">
+          </div>
+
+          <div class="form-group">
+            <label>Issue Date</label>
+            <input id="documentIssueDate" type="date">
+          </div>
+
+          <div class="form-group">
+            <label>Review Date</label>
+            <input id="documentReviewDate" type="date">
+          </div>
+
+          <div class="form-group">
+            <label>Approval Status</label>
+            <select id="documentApprovalStatus">
+              <option>Draft</option>
+              <option>Pending Approval</option>
+              <option>Approved</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label>Description</label>
+            <textarea id="documentDescription"
+                      placeholder="Document description..."></textarea>
+          </div>
+
+          <div class="form-group full">
+            <label>File</label>
+            <input id="documentFile"
+                   type="file"
+                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+            <small style="display:block;margin-top:6px;color:#64748b">
+              Allowed: PDF, Word, Excel, JPG, PNG
+            </small>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-light"
+                onclick="closeModal('documentModal')">
+          Cancel
+        </button>
+
+        <button type="submit" class="btn btn-primary">
+          Save Document
+        </button>
+      </div>
+
+    </form>
+
+  </div>
 </div>
-<div id="document-form-status" class="status"></div>
-<div class="modal-footer"><button type="button" class="btn btn-light" data-close="document-modal">Cancel</button><button class="btn btn-primary">Save Document</button></div>
-</form>
-</div></div>
 
 <!-- RECORD MODAL -->
-<div id="record-modal" class="modal">
-<div class="modal-box">
-<div class="modal-head"><h2 id="record-modal-title">New Record</h2><button class="close" data-close="record-modal">×</button></div>
-<form id="record-form">
-<div class="form-grid">
-<div><label>Record Code *</label><input id="record-code" required></div>
-<div><label>Record Type *</label><select id="record-type"><option>Daily Record</option><option>Weekly Record</option><option>Monthly Record</option><option>Inspection</option><option>Checklist</option><option>Log</option><option>Certificate</option><option>Other</option></select></div>
-<div class="full"><label>Title *</label><input id="record-title" required></div>
-<div><label>Department</label><select id="record-department"></select></div>
-<div><label>Frequency</label><select id="record-frequency"><option>Daily</option><option>Weekly</option><option>Monthly</option><option>Quarterly</option><option>Semi-Annual</option><option>Annual</option><option>Custom</option></select></div>
-<div><label>Related SOP / Document</label><select id="record-document"></select></div>
-<div><label>Status</label><select id="record-status"><option>Active</option><option>Draft</option><option>Obsolete</option></select></div>
-<div class="full"><label>File</label><input id="record-file" type="file" accept=".doc,.docx,.xls,.xlsx,.pdf,.jpg,.jpeg,.png"></div>
-<div class="full"><label>Description</label><textarea id="record-description"></textarea></div>
+<div id="recordModal" class="modal-backdrop">
+  <div class="modal">
+
+    <div class="modal-header">
+      <div class="modal-title">New Record</div>
+      <button class="modal-close" onclick="closeModal('recordModal')">×</button>
+    </div>
+
+    <form id="recordForm">
+
+      <div class="modal-body">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Record Code</label>
+            <input id="recordCode" placeholder="PI-QA-FM-01">
+          </div>
+
+          <div class="form-group">
+            <label>Record Type</label>
+            <select id="recordType">
+              <option>Record</option>
+              <option>Form</option>
+              <option>Checklist</option>
+              <option>Log</option>
+              <option>Register</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label>Title *</label>
+            <input id="recordTitle" required
+                   placeholder="Record title">
+          </div>
+
+          <div class="form-group">
+            <label>Department</label>
+            <input id="recordDepartment">
+          </div>
+
+          <div class="form-group">
+            <label>Frequency</label>
+            <select id="recordFrequency">
+              <option>Daily</option>
+              <option>Weekly</option>
+              <option>Monthly</option>
+              <option>Quarterly</option>
+              <option>Semi-Annual</option>
+              <option>Annual</option>
+              <option>Custom</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Issue Date</label>
+            <input id="recordIssueDate" type="date">
+          </div>
+
+          <div class="form-group">
+            <label>Review Date</label>
+            <input id="recordReviewDate" type="date">
+          </div>
+
+          <div class="form-group full">
+            <label>Description</label>
+            <textarea id="recordDescription"></textarea>
+          </div>
+
+          <div class="form-group full">
+            <label>File</label>
+            <input id="recordFile"
+                   type="file"
+                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-light"
+                onclick="closeModal('recordModal')">
+          Cancel
+        </button>
+
+        <button type="submit" class="btn btn-primary">
+          Save Record
+        </button>
+      </div>
+
+    </form>
+
+  </div>
 </div>
-<div id="record-form-status" class="status"></div>
-<div class="modal-footer"><button type="button" class="btn btn-light" data-close="record-modal">Cancel</button><button class="btn btn-primary">Save Record</button></div>
-</form>
-</div></div>
 
 <!-- PLAN MODAL -->
-<div id="plan-modal" class="modal">
-<div class="modal-box">
-<div class="modal-head"><h2 id="plan-modal-title">New Compliance Plan</h2><button class="close" data-close="plan-modal">×</button></div>
-<form id="plan-form">
-<div class="form-grid">
-<div><label>Plan Code *</label><input id="plan-code" required></div>
-<div><label>Frequency *</label><select id="plan-frequency"><option>Daily</option><option>Weekly</option><option>Monthly</option><option>Quarterly</option><option>Semi-Annual</option><option>Annual</option><option>Custom</option></select></div>
-<div class="full"><label>Plan Title *</label><input id="plan-title" required></div>
-<div><label>Department</label><select id="plan-department"></select></div>
-<div><label>SOP / Procedure</label><select id="plan-document"></select></div>
-<div><label>Record</label><select id="plan-record"></select></div>
-<div><label>Start Date</label><input id="plan-start-date" type="date"></div>
-<div><label>Custom Frequency (days)</label><input id="plan-frequency-value" type="number" min="1" placeholder="For Custom only"></div>
-<div><label>Reminder Days</label><input id="plan-reminder-days" type="number" min="0" value="1"></div>
-<div><label>Responsible</label><select id="plan-responsible"></select></div>
-<div><label>Verifier</label><select id="plan-verifier"></select></div>
-<div><label>Attachment Required</label><select id="plan-attachment-required"><option value="false">No</option><option value="true">Yes</option></select></div>
-<div><label>Verification Required</label><select id="plan-verification-required"><option value="true">Yes</option><option value="false">No</option></select></div>
-<div class="full"><label>Instructions</label><textarea id="plan-instructions"></textarea></div>
-</div>
-<div id="plan-form-status" class="status"></div>
-<div class="modal-footer"><button type="button" class="btn btn-light" data-close="plan-modal">Cancel</button><button class="btn btn-primary">Save Plan</button></div>
-</form>
-</div></div>
+<div id="planModal" class="modal-backdrop">
+  <div class="modal">
 
-<!-- TASK MODAL -->
-<div id="task-modal" class="modal">
-<div class="modal-box">
-<div class="modal-head"><h2>Task</h2><button class="close" data-close="task-modal">×</button></div>
-<form id="task-form">
-<input type="hidden" id="task-id">
-<div class="form-grid">
-<div><label>Status</label><select id="task-status"><option>Pending</option><option>Pending Verification</option><option>Completed</option><option>Verified</option><option>Cancelled</option></select></div>
-<div><label>Result</label><select id="task-result"><option>Pass</option><option>Fail</option><option>Acceptable</option><option>Not Applicable</option></select></div>
-<div class="full"><label>Notes / Findings</label><textarea id="task-notes"></textarea></div>
-<div class="full"><label>Evidence Attachment</label><input id="task-file" type="file" accept=".doc,.docx,.xls,.xlsx,.pdf,.jpg,.jpeg,.png"></div>
+    <div class="modal-header">
+      <div class="modal-title">New Compliance Plan</div>
+      <button class="modal-close" onclick="closeModal('planModal')">×</button>
+    </div>
+
+    <form id="planForm">
+
+      <div class="modal-body">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Plan Code</label>
+            <input id="planCode" placeholder="PI-QA-PLAN-01">
+          </div>
+
+          <div class="form-group">
+            <label>Department</label>
+            <input id="planDepartment" placeholder="Quality">
+          </div>
+
+          <div class="form-group full">
+            <label>Plan Title *</label>
+            <input id="planTitle" required
+                   placeholder="Monthly Cleaning Verification">
+          </div>
+
+          <div class="form-group">
+            <label>SOP / Procedure</label>
+            <select id="planSop"></select>
+          </div>
+
+          <div class="form-group">
+            <label>Record</label>
+            <select id="planRecord"></select>
+          </div>
+
+          <div class="form-group">
+            <label>Responsible</label>
+            <select id="planResponsible"></select>
+          </div>
+
+          <div class="form-group">
+            <label>Verifier</label>
+            <select id="planVerifier"></select>
+          </div>
+
+          <div class="form-group">
+            <label>Frequency</label>
+            <select id="planFrequency">
+              <option>Daily</option>
+              <option>Weekly</option>
+              <option selected>Monthly</option>
+              <option>Quarterly</option>
+              <option>Semi-Annual</option>
+              <option>Annual</option>
+              <option>Custom</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Frequency Value</label>
+            <input id="planFrequencyValue"
+                   type="number"
+                   min="1"
+                   placeholder="For Custom">
+          </div>
+
+          <div class="form-group">
+            <label>Start Date *</label>
+            <input id="planStartDate" type="date" required>
+          </div>
+
+          <div class="form-group">
+            <label>Due Time</label>
+            <input id="planDueTime" type="time">
+          </div>
+
+          <div class="form-group">
+            <label>Reminder Days</label>
+            <input id="planReminderDays"
+                   type="number"
+                   min="0"
+                   value="1">
+          </div>
+
+          <div class="form-group">
+            <label>Attachment Required</label>
+            <select id="planAttachmentRequired">
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Verification Required</label>
+            <select id="planVerificationRequired">
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label>Instructions</label>
+            <textarea id="planInstructions"
+                      placeholder="Instructions for responsible person..."></textarea>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-light"
+                onclick="closeModal('planModal')">
+          Cancel
+        </button>
+
+        <button type="submit" class="btn btn-primary">
+          Save Plan
+        </button>
+      </div>
+
+    </form>
+
+  </div>
 </div>
-<div id="task-form-status" class="status"></div>
-<div class="modal-footer"><button type="button" class="btn btn-light" data-close="task-modal">Cancel</button><button class="btn btn-primary">Save Task</button></div>
-</form>
-</div></div>
 
 <!-- USER MODAL -->
-<div id="user-modal" class="modal">
-<div class="modal-box">
-<div class="modal-head"><h2>Edit User</h2><button class="close" data-close="user-modal">×</button></div>
-<form id="user-form">
-<div class="form-grid">
-<div><label>Full Name</label><input id="user-full-name"></div>
-<div><label>Email</label><input id="user-email" disabled></div>
-<div><label>Employee Code</label><input id="user-employee-code"></div>
-<div><label>Department</label><select id="user-department"></select></div>
-<div><label>Role</label><select id="user-role"><option>Super Admin</option><option>Admin</option><option>Manager</option><option>Quality Officer</option><option>Employee</option></select></div>
-<div><label>Job Title</label><input id="user-job-title"></div>
-<div><label>Phone</label><input id="user-phone"></div>
-<div><label>Status</label><select id="user-status"><option>active</option><option>inactive</option></select></div>
-</div>
-<div id="user-form-status" class="status"></div>
-<div class="modal-footer"><button type="button" class="btn btn-light" data-close="user-modal">Cancel</button><button class="btn btn-primary">Save User</button></div>
-</form>
-</div></div>
+<div id="userModal" class="modal-backdrop">
+  <div class="modal">
 
-<div id="toast" class="toast"></div>
+    <div class="modal-header">
+      <div class="modal-title">User Details</div>
+      <button class="modal-close" onclick="closeModal('userModal')">×</button>
+    </div>
+
+    <form id="userForm">
+
+      <div class="modal-body">
+
+        <input type="hidden" id="userId">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Full Name</label>
+            <input id="userFullName">
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input id="userEmail" disabled>
+          </div>
+
+          <div class="form-group">
+            <label>Employee Code</label>
+            <input id="userEmployeeCode">
+          </div>
+
+          <div class="form-group">
+            <label>Job Title</label>
+            <input id="userJobTitle">
+          </div>
+
+          <div class="form-group">
+            <label>Department</label>
+            <select id="userDepartment"></select>
+          </div>
+
+          <div class="form-group">
+            <label>Role</label>
+            <select id="userRole">
+              <option>Super Admin</option>
+              <option>Admin</option>
+              <option>Manager</option>
+              <option>Quality Officer</option>
+              <option>User</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Phone</label>
+            <input id="userPhone">
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <select id="userStatus">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-light"
+                onclick="closeModal('userModal')">
+          Cancel
+        </button>
+
+        <button type="submit" class="btn btn-primary">
+          Save User
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
 
 <script>
-/* ============================================================
-   PURE ICE FSMS — FINAL APPLICATION ENGINE
-   ============================================================ */
+"use strict";
 
-const CONFIG=window.PURE_ICE_CONFIG||{};
-if(!CONFIG.supabaseUrl||!CONFIG.supabaseAnonKey){
-  document.body.innerHTML='<div style="padding:40px;font-family:Arial"><h2>Configuration Error</h2><p>Please check config.js.</p></div>';
-  throw new Error('PURE_ICE_CONFIG missing');
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+const CONFIG = window.PURE_ICE_CONFIG || {};
+
+if(!CONFIG.supabaseUrl || !CONFIG.supabaseAnonKey){
+  document.body.innerHTML = `
+    <div style="
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#f4f7fb;
+      font-family:Arial;
+      padding:20px;">
+      <div style="
+        background:white;
+        max-width:600px;
+        padding:35px;
+        border-radius:15px;
+        box-shadow:0 15px 40px rgba(0,0,0,.1);">
+        <h2 style="color:#d83a3a;margin-top:0">
+          Configuration Error
+        </h2>
+        <p>
+          The Supabase configuration was not loaded.
+        </p>
+        <p>
+          Make sure <strong>config.js</strong> exists in the same
+          folder as <strong>index.html</strong>.
+        </p>
+      </div>
+    </div>
+  `;
+  throw new Error("PURE_ICE_CONFIG is missing");
 }
 
-const sb=window.supabase.createClient(CONFIG.supabaseUrl,CONFIG.supabaseAnonKey);
+const supabaseClient =
+  window.supabase.createClient(
+    CONFIG.supabaseUrl,
+    CONFIG.supabaseAnonKey
+  );
 
-const state={
- user:null,profile:null,role:null,
- departments:[],users:[],documents:[],records:[],plans:[],tasks:[],
- currentModule:'dashboard',recordTab:'records',
- editingDocumentId:null,editingRecordId:null,editingPlanId:null
+/* =========================================================
+   STATE
+========================================================= */
+
+const appState = {
+  user:null,
+  profile:null,
+  role:null,
+  departments:[],
+  users:[],
+  documents:[],
+  records:[],
+  plans:[],
+  tasks:[],
+  currentPage:"dashboard"
 };
 
-const $=id=>document.getElementById(id);
+/* =========================================================
+   HELPERS
+========================================================= */
 
-function esc(v){
- return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-}
-function todayIso(){
- const d=new Date();
- return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-function addDays(date,n){
- const d=new Date(date+'T00:00:00');d.setDate(d.getDate()+Number(n));return d.toISOString().slice(0,10);
-}
-function addMonths(date,n){
- const d=new Date(date+'T00:00:00');d.setMonth(d.getMonth()+Number(n));return d.toISOString().slice(0,10);
-}
-function nextDate(date,freq,val){
- switch(freq){
-  case'Daily':return addDays(date,1);
-  case'Weekly':return addDays(date,7);
-  case'Monthly':return addMonths(date,1);
-  case'Quarterly':return addMonths(date,3);
-  case'Semi-Annual':return addMonths(date,6);
-  case'Annual':return addMonths(date,12);
-  default:return addDays(date,val||1);
- }
-}
-function fmt(d){
- if(!d)return'-';
- return new Date(d+'T00:00:00').toLocaleDateString('en-GB');
-}
-function toast(msg){
- $('toast').textContent=msg;$('toast').classList.add('show');
- setTimeout(()=>$('toast').classList.remove('show'),3000);
-}
-function status(el,msg,error=false){
- if(typeof el==='string')el=$(el);
- if(el){el.textContent=msg;el.style.color=error?'#dc2626':'#15803d';}
-}
-function openModal(id){$(id).classList.add('open')}
-function closeModal(id){$(id).classList.remove('open')}
-
-function badge(v){
- const s=String(v||'').toLowerCase();
- let c='badge-blue';
- if(s.includes('approved')||s.includes('completed')||s.includes('verified')||s==='active')c='badge-green';
- if(s.includes('pending')||s.includes('review')||s.includes('draft'))c='badge-yellow';
- if(s.includes('overdue')||s.includes('fail')||s.includes('rejected')||s.includes('obsolete'))c='badge-red';
- return `<span class="badge ${c}">${esc(v||'-')}</span>`;
+function escapeHtml(value){
+  if(value === null || value === undefined) return "";
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
-/* ---------- PROFILE / AUTH ---------- */
+function formatDate(date){
+  if(!date) return "-";
+
+  try{
+    return new Date(date + "T00:00:00")
+      .toLocaleDateString("en-GB");
+  }catch(e){
+    return date;
+  }
+}
+
+function formatDateTime(value){
+  if(!value) return "-";
+
+  try{
+    return new Date(value).toLocaleString("en-GB");
+  }catch(e){
+    return value;
+  }
+}
+
+function todayString(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
+function addDays(dateString,days){
+  const d = new Date(dateString + "T00:00:00");
+  d.setDate(d.getDate()+days);
+
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+
+  return `${y}-${m}-${day}`;
+}
+
+function addMonths(dateString,months){
+  const d = new Date(dateString + "T00:00:00");
+  d.setMonth(d.getMonth()+months);
+
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+
+  return `${y}-${m}-${day}`;
+}
+
+function addYears(dateString,years){
+  return addMonths(dateString,years*12);
+}
+
+function showToast(message,type=""){
+  const container=document.getElementById("toastContainer");
+
+  const toast=document.createElement("div");
+  toast.className=`toast ${type}`;
+  toast.textContent=message;
+
+  container.appendChild(toast);
+
+  setTimeout(()=>{
+    toast.remove();
+  },4000);
+}
+
+function statusBadge(status){
+  const value=String(status || "");
+
+  let cls="badge-neutral";
+
+  if(
+    value==="Approved" ||
+    value==="Active" ||
+    value==="Completed" ||
+    value==="Verified"
+  ){
+    cls="badge-success";
+  }
+
+  if(
+    value==="Pending Approval" ||
+    value==="Pending" ||
+    value==="In Progress"
+  ){
+    cls="badge-warning";
+  }
+
+  if(
+    value==="Overdue" ||
+    value==="Rejected" ||
+    value==="Inactive"
+  ){
+    cls="badge-danger";
+  }
+
+  if(
+    value==="Draft" ||
+    value==="Scheduled"
+  ){
+    cls="badge-info";
+  }
+
+  return `<span class="badge ${cls}">${escapeHtml(value || "-")}</span>`;
+}
+
+function openModal(id){
+  document.getElementById(id).classList.add("show");
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.remove("show");
+}
+
+/* =========================================================
+   AUDIT
+========================================================= */
+
+async function writeAudit(
+  action,
+  module,
+  tableName,
+  recordId,
+  description,
+  oldData=null,
+  newData=null
+){
+  try{
+    await supabaseClient
+      .from("fsms_audit_log")
+      .insert({
+        user_id:appState.user?.id || null,
+        action,
+        module,
+        table_name:tableName,
+        record_id:recordId || null,
+        description,
+        old_data:oldData,
+        new_data:newData
+      });
+  }catch(error){
+    console.warn("Audit log failed:",error);
+  }
+}
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+async function initAuth(){
+
+  const {
+    data:{
+      session
+    }
+  } = await supabaseClient.auth.getSession();
+
+  if(session?.user){
+    appState.user=session.user;
+    await enterApplication();
+  }else{
+    showLogin();
+  }
+
+  supabaseClient.auth.onAuthStateChange(
+    async(event,session)=>{
+      if(session?.user){
+        appState.user=session.user;
+      }
+
+      if(event==="SIGNED_OUT"){
+        appState.user=null;
+        appState.profile=null;
+        showLogin();
+      }
+    }
+  );
+}
+
+function showLogin(){
+  document.getElementById("loginScreen")
+    .classList.remove("hidden");
+
+  document.getElementById("app")
+    .classList.add("hidden");
+}
+
+async function enterApplication(){
+
+  document.getElementById("loginScreen")
+    .classList.add("hidden");
+
+  document.getElementById("app")
+    .classList.remove("hidden");
+
+  await loadProfile();
+  await loadDepartments();
+  await loadUsers();
+  await loadDocuments();
+  await loadRecords();
+  await loadPlans();
+  await loadTasks();
+
+  applyRoleAccess();
+  updateUserHeader();
+  renderDashboard();
+  renderUsers();
+}
+
+/* =========================================================
+   PROFILE
+========================================================= */
 
 async function loadProfile(){
- if(!state.user)return;
- const {data,error}=await sb.from('profiles').select('*').eq('id',state.user.id).maybeSingle();
- if(error)console.warn(error.message);
- state.profile=data||{
-  id:state.user.id,email:state.user.email,full_name:state.user.email,
-  role:'Super Admin',status:'active'
- };
- state.role=state.profile.role||'Super Admin';
- $('profile-button').textContent=state.profile.full_name||state.profile.email;
+
+  if(!appState.user) return;
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id",appState.user.id)
+    .maybeSingle();
+
+  if(error){
+    console.error("Profile error:",error);
+    return;
+  }
+
+  appState.profile=data || {
+    id:appState.user.id,
+    full_name:appState.user.email?.split("@")[0] || "User",
+    email:appState.user.email,
+    role:"User",
+    status:"active"
+  };
+
+  appState.role=appState.profile.role || "User";
 }
 
-async function login(e){
- e.preventDefault();
- status('login-status','Signing in...');
- const email=$('login-email').value.trim();
- const password=$('login-password').value;
- const {data,error}=await sb.auth.signInWithPassword({email,password});
- if(error){status('login-status',error.message,true);return}
- state.user=data.user;
- await boot();
+function updateUserHeader(){
+
+  const profile=appState.profile || {};
+
+  const name=
+    profile.full_name ||
+    appState.user?.email ||
+    "User";
+
+  document.getElementById("currentUserName")
+    .textContent=name;
+
+  document.getElementById("currentUserRole")
+    .textContent=profile.role || "User";
+
+  const initials=name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0,2)
+    .map(x=>x[0])
+    .join("")
+    .toUpperCase();
+
+  document.getElementById("userAvatar")
+    .textContent=initials || "PI";
 }
 
-async function logout(){
- await sb.auth.signOut();
- state.user=null;
- $('app-shell').style.display='none';
- $('login-screen').style.display='flex';
-}
-
-async function forgotPassword(){
- const email=$('login-email').value.trim();
- if(!email)return alert('Enter your email first.');
- const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
- alert(error?error.message:'Password reset email sent.');
-}
-
-/* ---------- DATA ---------- */
+/* =========================================================
+   DEPARTMENTS / USERS
+========================================================= */
 
 async function loadDepartments(){
- const {data,error}=await sb.from('departments').select('*').order('name');
- if(!error)state.departments=data||[];
- fillDepartmentSelects();
-}
 
-function fillDepartmentSelects(){
- const ids=['document-department','record-department','plan-department','user-department'];
- ids.forEach(id=>{
-  const el=$(id);if(!el)return;
-  const current=el.value;
-  el.innerHTML='<option value="">Select Department</option>'+state.departments.map(d=>`<option value="${esc(d.name)}">${esc(d.name)}</option>`).join('');
-  el.value=current;
- });
- const filter=$('document-department-filter');
- if(filter)filter.innerHTML='<option value="">All Departments</option>'+state.departments.map(d=>`<option value="${esc(d.name)}">${esc(d.name)}</option>`).join('');
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("departments")
+    .select("*")
+    .order("name");
+
+  if(error){
+    console.warn("Departments:",error.message);
+    appState.departments=[];
+    return;
+  }
+
+  appState.departments=data || [];
 }
 
 async function loadUsers(){
- const {data,error}=await sb.from('profiles').select('*').order('full_name');
- if(!error)state.users=data||[];
- fillUserSelects();
- renderUsers();
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .order("full_name");
+
+  if(error){
+    console.warn("Users:",error.message);
+    appState.users=[];
+    return;
+  }
+
+  appState.users=data || [];
 }
 
-function fillUserSelects(){
- ['plan-responsible','plan-verifier'].forEach(id=>{
-  const el=$(id);if(!el)return;
-  el.innerHTML='<option value="">Select User</option>'+state.users.filter(u=>u.status!=='inactive').map(u=>`<option value="${u.id}">${esc(u.full_name||u.email)}</option>`).join('');
- });
-}
+function applyRoleAccess(){
 
-async function loadDocuments(){
- const {data,error}=await sb.from('documents').select('*').order('created_at',{ascending:false});
- if(error){console.warn('Documents:',error.message);state.documents=[]}
- else state.documents=data||[];
- fillDocumentSelects();
- renderDocuments();
-}
+  const allowedForAdmin=[
+    "dashboard",
+    "documents",
+    "records",
+    "haccp",
+    "gmp",
+    "water-ro",
+    "calibration",
+    "training",
+    "suppliers",
+    "ncr",
+    "reports",
+    "settings",
+    "user-management"
+  ];
 
-function fillDocumentSelects(){
- ['record-document','plan-document'].forEach(id=>{
-  const el=$(id);if(!el)return;
-  const current=el.value;
-  el.innerHTML='<option value="">Select Document</option>'+state.documents.map(d=>`<option value="${d.id}">${esc(d.document_code)} — ${esc(d.title)}</option>`).join('');
-  el.value=current;
- });
-}
+  document.querySelectorAll(".nav-item")
+    .forEach(item=>{
+      const page=item.dataset.page;
 
-async function loadRecords(){
- const {data,error}=await sb.from('records').select('*').order('created_at',{ascending:false});
- if(error){console.warn('Records:',error.message);state.records=[]}
- else state.records=data||[];
- fillRecordSelect();
-}
-
-function fillRecordSelect(){
- const el=$('plan-record');if(!el)return;
- const current=el.value;
- el.innerHTML='<option value="">Select Record</option>'+state.records.map(r=>`<option value="${r.id}">${esc(r.record_code)} — ${esc(r.title)}</option>`).join('');
- el.value=current;
-}
-
-async function loadPlans(){
- const {data,error}=await sb.from('compliance_plans').select('*').order('next_due_date');
- if(error){console.warn('Plans:',error.message);state.plans=[]}
- else state.plans=data||[];
-}
-
-async function loadTasks(){
- const {data,error}=await sb.from('compliance_tasks').select('*').order('due_date');
- if(error){console.warn('Tasks:',error.message);state.tasks=[]}
- else state.tasks=data||[];
-}
-
-/* ---------- STORAGE ---------- */
-
-function safeName(name){
- return name.replace(/[^a-zA-Z0-9._-]/g,'_');
-}
-
-async function uploadFile(file,folder){
- if(!file)return null;
- const path=`${folder}/${state.user.id}/${Date.now()}-${safeName(file.name)}`;
- const {error}=await sb.storage.from('fsms-documents').upload(path,file,{upsert:false});
- if(error)throw error;
- return path;
-}
-
-async function signedUrl(path){
- if(!path)return null;
- const {data,error}=await sb.storage.from('fsms-documents').createSignedUrl(path,3600);
- if(error)throw error;
- return data.signedUrl;
-}
-
-async function removeFile(path){
- if(!path)return;
- const {error}=await sb.storage.from('fsms-documents').remove([path]);
- if(error)console.warn(error.message);
-}
-
-/* ---------- AUDIT ---------- */
-
-async function audit(action,module,table,recordId,description,oldData=null,newData=null){
- try{
-  await sb.from('fsms_audit_log').insert({
-   user_id:state.user?.id||null,action,module,table_name:table,
-   record_id:recordId||null,description,
-   old_data:oldData,new_data:newData
-  });
- }catch(e){console.warn('Audit:',e.message)}
-}
-
-/* ---------- NAVIGATION ---------- */
-
-const moduleNames={
- dashboard:['Food Safety Command Center','Ice Manufacturing & Flavored Ice · System Status'],
- documents:['Document Control','Controlled documents, revisions, approval and review'],
- records:['Records & Plans','Compliance plans, scheduled tasks and records'],
- haccp:['HACCP / CCP / OPRP','Hazard analysis, CCP and OPRP monitoring'],
- gmp:['PRP / GMP / GHP','Prerequisite programs and hygiene controls'],
- 'water-ro':['Water & RO','Water treatment, RO and disinfection monitoring'],
- calibration:['Calibration','Equipment calibration and certificates'],
- training:['Training','Food safety competence and training records'],
- suppliers:['Suppliers','Supplier approval and evaluation'],
- ncr:['NCR / CAPA','Nonconformity, root cause and corrective action'],
- reports:['Reports','FSMS reports and management information'],
- settings:['Settings','System configuration'],
- users:['User Management','Profiles, roles and access']
-};
-
-function switchModule(module){
- state.currentModule=module;
- document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
- document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
-
- const btn=document.querySelector(`[data-module="${module}"]`);
- if(btn)btn.classList.add('active');
-
- if(module==='dashboard')$('dashboard-section').classList.add('active');
- else if(module==='documents')$('documents-section').classList.add('active');
- else if(module==='records')$('records-section').classList.add('active');
- else if(module==='users')$('users-section').classList.add('active');
- else{
-  $('placeholder-section').classList.add('active');
-  $('placeholder-icon').textContent=module==='haccp'?'⚠':module==='water-ro'?'💧':'⚙';
-  $('placeholder-title').textContent=moduleNames[module]?.[0]||module;
-  $('placeholder-text').textContent=moduleNames[module]?.[1]||'FSMS module';
- }
-
- $('page-title').textContent=moduleNames[module]?.[0]||'PURE ICE FSMS';
- $('page-subtitle').textContent=moduleNames[module]?.[1]||'Quality & Food Safety';
-
- if(module==='dashboard')refreshDashboard();
- if(module==='documents')loadDocuments();
- if(module==='records')renderRecords();
- if(module==='users')renderUsers();
-}
-
-/* ---------- DOCUMENTS ---------- */
-
-function renderDocuments(){
- const tbody=$('documents-tbody');if(!tbody)return;
- let rows=state.documents.slice();
-
- const q=($('document-search')?.value||'').toLowerCase();
- const type=$('document-type-filter')?.value||'';
- const st=$('document-status-filter')?.value||'';
- const ap=$('document-approval-filter')?.value||'';
- const dep=$('document-department-filter')?.value||'';
-
- rows=rows.filter(d=>
-  (!q||`${d.document_code} ${d.title} ${d.description||''}`.toLowerCase().includes(q))&&
-  (!type||d.document_type===type)&&
-  (!st||d.status===st)&&
-  (!ap||d.approval_status===ap)&&
-  (!dep||d.department===dep)
- );
-
- if(!rows.length){tbody.innerHTML='<tr><td colspan="9" class="empty">No documents found.</td></tr>';return}
-
- tbody.innerHTML=rows.map(d=>`
- <tr>
-  <td><b>${esc(d.document_code)}</b></td>
-  <td>${esc(d.title)}${d.file_name?'<br><small>📎 '+esc(d.file_name)+'</small>':''}</td>
-  <td>${badge(d.document_type)}</td>
-  <td>${esc(d.department||'-')}</td>
-  <td>${esc(d.revision||'-')}</td>
-  <td>${fmt(d.review_date)}</td>
-  <td>${badge(d.status)}</td>
-  <td>${badge(d.approval_status)}</td>
-  <td class="action-cell">
-   <button class="btn btn-light btn-sm" onclick="editDocument('${d.id}')">Edit</button>
-   ${d.file_path?`<button class="btn btn-light btn-sm" onclick="openDocumentFile('${d.file_path}')">View</button>`:''}
-   ${d.approval_status!=='Approved'?`<button class="btn btn-success btn-sm" onclick="approveDocument('${d.id}')">Approve</button>`:''}
-   <button class="btn btn-danger btn-sm" onclick="deleteDocument('${d.id}')">Delete</button>
-  </td>
- </tr>`).join('');
-}
-
-function openDocumentModal(id=null){
- state.editingDocumentId=id;
- $('document-modal-title').textContent=id?'Edit Document':'New Document';
- $('document-form').reset();
- $('current-file-info').innerHTML='';
- $('document-form-status').textContent='';
-
- if(id){
-  const d=state.documents.find(x=>x.id===id);if(!d)return;
-  $('document-code').value=d.document_code||'';
-  $('document-type').value=d.document_type||'';
-  $('document-title').value=d.title||'';
-  $('document-department').value=d.department||'';
-  $('document-revision').value=d.revision||'01';
-  $('document-issue-date').value=d.issue_date||'';
-  $('document-review-date').value=d.review_date||'';
-  $('document-status').value=d.status||'Draft';
-  $('document-approval-status').value=d.approval_status||'Draft';
-  $('document-description').value=d.description||'';
-  if(d.file_name)$('current-file-info').innerHTML=`Current file: <b>${esc(d.file_name)}</b>`;
- }
- openModal('document-modal');
-}
-
-async function saveDocument(e){
- e.preventDefault();
- const st=$('document-form-status');status(st,'Saving...');
- const id=state.editingDocumentId;
- const old=id?state.documents.find(x=>x.id===id):null;
- const file=$('document-file').files[0];
-
- try{
-  let path=old?.file_path||null;
-  if(file)path=await uploadFile(file,'documents');
-
-  const payload={
-   document_code:$('document-code').value.trim(),
-   document_type:$('document-type').value,
-   title:$('document-title').value.trim(),
-   department:$('document-department').value||null,
-   revision:$('document-revision').value.trim()||'01',
-   issue_date:$('document-issue-date').value||null,
-   review_date:$('document-review-date').value||null,
-   status:$('document-status').value,
-   approval_status:$('document-approval-status').value,
-   description:$('document-description').value.trim()||null,
-   file_path:path,
-   file_name:file?.name||old?.file_name||null,
-   file_size:file?.size||old?.file_size||null,
-   file_type:file?.type||old?.file_type||null,
-   owner_id:state.user.id
-  };
-
-  let result;
-  if(id)result=await sb.from('documents').update(payload).eq('id',id).select().single();
-  else result=await sb.from('documents').insert({...payload,created_by:state.user.id}).select().single();
-
-  if(result.error)throw result.error;
-  if(file&&old?.file_path&&old.file_path!==path)await removeFile(old.file_path);
-
-  await audit(id?'UPDATE':'CREATE','Document Control','documents',result.data.id,
-   `${id?'Updated':'Created'} document ${payload.document_code}`,old,result.data);
-
-  closeModal('document-modal');toast('Document saved successfully');
-  await loadDocuments();await refreshDashboard();
- }catch(err){status(st,err.message,true)}
-}
-
-async function editDocument(id){openDocumentModal(id)}
-
-async function openDocumentFile(path){
- try{
-  const url=await signedUrl(path);window.open(url,'_blank');
- }catch(e){alert(e.message)}
-}
-
-async function approveDocument(id){
- const d=state.documents.find(x=>x.id===id);if(!d)return;
- const {data,error}=await sb.from('documents').update({
-  approval_status:'Approved',approved_by:state.user.id,approved_at:new Date().toISOString(),status:'Active'
- }).eq('id',id).select().single();
- if(error){alert(error.message);return}
- await audit('APPROVE','Document Control','documents',id,`Approved ${d.document_code}`,d,data);
- toast('Document approved');
- await loadDocuments();refreshDashboard();
-}
-
-async function deleteDocument(id){
- const d=state.documents.find(x=>x.id===id);if(!d)return;
- if(!confirm(`Delete ${d.document_code} — ${d.title}?`))return;
- const {error}=await sb.from('documents').delete().eq('id',id);
- if(error){alert(error.message);return}
- if(d.file_path)await removeFile(d.file_path);
- await audit('DELETE','Document Control','documents',id,`Deleted ${d.document_code}`,d,null);
- toast('Document deleted');await loadDocuments();refreshDashboard();
-}
-
-/* ---------- RECORDS ---------- */
-
-function renderRecords(){
- const box=$('records-content');if(!box)return;
-
- if(state.recordTab==='records'){
-  box.innerHTML=`
-  <div class="table-wrap"><table><thead><tr>
-  <th>Code</th><th>Title</th><th>Type</th><th>Department</th><th>Frequency</th><th>Status</th><th>Actions</th>
-  </tr></thead><tbody>
-  ${state.records.length?state.records.map(r=>`<tr>
-   <td><b>${esc(r.record_code)}</b></td><td>${esc(r.title)}</td><td>${badge(r.record_type)}</td>
-   <td>${esc(r.department||'-')}</td><td>${esc(r.frequency||'-')}</td><td>${badge(r.status)}</td>
-   <td><button class="btn btn-light btn-sm" onclick="editRecord('${r.id}')">Edit</button>
-   ${r.file_path?`<button class="btn btn-light btn-sm" onclick="openDocumentFile('${r.file_path}')">View</button>`:''}
-   </td></tr>`).join(''):'<tr><td colspan="7" class="empty">No records yet.</td></tr>'}
-  </tbody></table></div>`;
- }
- else if(state.recordTab==='plans'){
-  box.innerHTML=`
-  <div class="table-wrap"><table><thead><tr>
-  <th>Code</th><th>Plan</th><th>Frequency</th><th>Next Due</th><th>Responsible</th><th>Status</th><th>Actions</th>
-  </tr></thead><tbody>
-  ${state.plans.length?state.plans.map(p=>{
-   const u=state.users.find(x=>x.id===p.responsible_id);
-   return `<tr><td><b>${esc(p.plan_code)}</b></td><td>${esc(p.title)}</td><td>${esc(p.frequency)}</td>
-   <td>${fmt(p.next_due_date)}</td><td>${esc(u?.full_name||'-')}</td><td>${badge(p.status)}</td>
-   <td><button class="btn btn-light btn-sm" onclick="editPlan('${p.id}')">Edit</button></td></tr>`
-  }).join(''):'<tr><td colspan="7" class="empty">No plans yet.</td></tr>'}
-  </tbody></table></div>`;
- }
- else{
-  box.innerHTML=`
-  <div class="table-wrap"><table><thead><tr>
-  <th>Task</th><th>Plan</th><th>Scheduled</th><th>Due</th><th>Status</th><th>Result</th><th>Actions</th>
-  </tr></thead><tbody>
-  ${state.tasks.length?state.tasks.map(t=>{
-   const p=state.plans.find(x=>x.id===t.plan_id);
-   const overdue=t.status==='Pending'&&t.due_date<todayIso();
-   return `<tr><td><b>${esc(t.task_number||'-')}</b></td><td>${esc(p?.title||'-')}</td>
-   <td>${fmt(t.scheduled_date)}</td><td>${overdue?'<span class="badge badge-red">OVERDUE</span>':fmt(t.due_date)}</td>
-   <td>${badge(t.status)}</td><td>${badge(t.result||'-')}</td>
-   <td><button class="btn btn-primary btn-sm" onclick="openTask('${t.id}')">${t.status==='Pending'?'Complete':'View'}</button>
-   ${t.status==='Pending Verification'?`<button class="btn btn-success btn-sm" onclick="verifyTask('${t.id}')">Verify</button>`:''}</td></tr>`
-  }).join(''):'<tr><td colspan="7" class="empty">No scheduled tasks.</td></tr>'}
-  </tbody></table></div>`;
- }
-}
-
-function openRecordModal(id=null){
- state.editingRecordId=id;
- $('record-form').reset();
- $('record-modal').querySelector('h2').textContent=id?'Edit Record':'New Record';
- if(id){
-  const r=state.records.find(x=>x.id===id);if(!r)return;
-  $('record-code').value=r.record_code||'';
-  $('record-type').value=r.record_type||'Daily Record';
-  $('record-title').value=r.title||'';
-  $('record-department').value=r.department||'';
-  $('record-frequency').value=r.frequency||'Monthly';
-  $('record-document').value=r.related_document_id||'';
-  $('record-status').value=r.status||'Active';
-  $('record-description').value=r.description||'';
- }
- openModal('record-modal');
-}
-
-async function saveRecord(e){
- e.preventDefault();status('record-form-status','Saving...');
- try{
-  const id=state.editingRecordId,old=id?state.records.find(x=>x.id===id):null;
-  const file=$('record-file').files[0];
-  let path=old?.file_path||null;
-  if(file)path=await uploadFile(file,'records');
-
-  const payload={
-   record_code:$('record-code').value.trim(),
-   title:$('record-title').value.trim(),
-   record_type:$('record-type').value,
-   department:$('record-department').value||null,
-   frequency:$('record-frequency').value,
-   related_document_id:$('record-document').value||null,
-   status:$('record-status').value,
-   file_path:path,file_name:file?.name||old?.file_name||null,
-   file_size:file?.size||old?.file_size||null,file_type:file?.type||old?.file_type||null,
-   description:$('record-description').value.trim()||null,
-   created_by:state.user.id
-  };
-
-  const q=id?sb.from('records').update(payload).eq('id',id).select().single():
-    sb.from('records').insert(payload).select().single();
-  const {data,error}=await q;if(error)throw error;
-  if(file&&old?.file_path&&old.file_path!==path)await removeFile(old.file_path);
-  await audit(id?'UPDATE':'CREATE','Records','records',data.id,`${id?'Updated':'Created'} ${payload.record_code}`,old,data);
-  closeModal('record-modal');toast('Record saved');
-  await loadRecords();renderRecords();
- }catch(e){status('record-form-status',e.message,true)}
-}
-
-/* ---------- PLANS ---------- */
-
-function openPlanModal(id=null){
- state.editingPlanId=id;
- $('plan-form').reset();
- $('plan-start-date').value=todayIso();
- $('plan-reminder-days').value=1;
- $('plan-modal-title').textContent=id?'Edit Compliance Plan':'New Compliance Plan';
-
- if(id){
-  const p=state.plans.find(x=>x.id===id);if(!p)return;
-  $('plan-code').value=p.plan_code||'';
-  $('plan-title').value=p.title||'';
-  $('plan-department').value=p.department||'';
-  $('plan-document').value=p.sop_document_id||'';
-  $('plan-record').value=p.record_id||'';
-  $('plan-frequency').value=p.frequency||'Monthly';
-  $('plan-frequency-value').value=p.frequency_value||'';
-  $('plan-start-date').value=p.start_date||todayIso();
-  $('plan-reminder-days').value=p.reminder_days??1;
-  $('plan-responsible').value=p.responsible_id||'';
-  $('plan-verifier').value=p.verifier_id||'';
-  $('plan-attachment-required').value=String(!!p.attachment_required);
-  $('plan-verification-required').value=String(p.verification_required!==false);
-  $('plan-instructions').value=p.instructions||'';
- }
- openModal('plan-modal');
-}
-
-async function savePlan(e){
- e.preventDefault();status('plan-form-status','Saving...');
- try{
-  const id=state.editingPlanId;
-  const old=id?state.plans.find(x=>x.id===id):null;
-  const start=$('plan-start-date').value||todayIso();
-  const freq=$('plan-frequency').value;
-  const value=Number($('plan-frequency-value').value)||1;
-
-  const payload={
-   plan_code:$('plan-code').value.trim(),
-   title:$('plan-title').value.trim(),
-   department:$('plan-department').value||null,
-   sop_document_id:$('plan-document').value||null,
-   record_id:$('plan-record').value||null,
-   responsible_id:$('plan-responsible').value||null,
-   verifier_id:$('plan-verifier').value||null,
-   frequency:freq,frequency_value:value,start_date:start,
-   next_due_date:start,due_time:null,
-   reminder_days:Number($('plan-reminder-days').value)||1,
-   attachment_required:$('plan-attachment-required').value==='true',
-   verification_required:$('plan-verification-required').value==='true',
-   status:'Active',
-   instructions:$('plan-instructions').value.trim()||null,
-   created_by:state.user.id
-  };
-
-  const q=id?sb.from('compliance_plans').update(payload).eq('id',id).select().single():
-   sb.from('compliance_plans').insert(payload).select().single();
-  const {data,error}=await q;if(error)throw error;
-
-  await audit(id?'UPDATE':'CREATE','Records & Plans','compliance_plans',data.id,
-   `${id?'Updated':'Created'} plan ${payload.plan_code}`,old,data);
-
-  closeModal('plan-modal');toast('Plan saved');
-  await loadPlans();await generateTasks();await loadTasks();renderRecords();refreshDashboard();
- }catch(e){status('plan-form-status',e.message,true)}
-}
-
-async function generateTasks(){
- const today=todayIso();
- for(const p of state.plans.filter(x=>x.status==='Active')){
-  let due=p.next_due_date||p.start_date||today;
-  let count=0;
-  while(due<=addDays(today,30)&&count<40){
-   const exists=state.tasks.some(t=>t.plan_id===p.id&&t.scheduled_date===due);
-   if(!exists){
-    const num=`${p.plan_code}-${due.replaceAll('-','')}`;
-    const {error}=await sb.from('compliance_tasks').insert({
-     task_number:num,plan_id:p.id,scheduled_date:due,due_date:due,
-     responsible_id:p.responsible_id,verifier_id:p.verifier_id,status:'Pending'
+      if(
+        appState.role==="Super Admin" ||
+        appState.role==="Admin"
+      ){
+        item.style.display=
+          allowedForAdmin.includes(page)
+            ? "flex"
+            : "none";
+      }
     });
-    if(error&&!error.message.includes('duplicate'))console.warn('Task:',error.message);
-   }
-   due=nextDate(due,p.frequency,p.frequency_value);count++;
-  }
-  const next=due;
-  if(p.next_due_date!==next){
-   await sb.from('compliance_plans').update({next_due_date:next}).eq('id',p.id);
-  }
- }
 }
-
-function openTask(id){
- const t=state.tasks.find(x=>x.id===id);if(!t)return;
- $('task-id').value=id;$('task-status').value=t.status;$('task-result').value=t.result||'Pass';$('task-notes').value=t.notes||'';
- $('task-form-status').textContent='';
- openModal('task-modal');
-}
-
-async function saveTask(e){
- e.preventDefault();status('task-form-status','Saving...');
- try{
-  const id=$('task-id').value,t=state.tasks.find(x=>x.id===id);
-  if(!t)throw new Error('Task not found');
-
-  let st=$('task-status').value;
-  if(t.status==='Pending'&&st==='Pending'){
-   const p=state.plans.find(x=>x.id===t.plan_id);
-   st=p?.verification_required!==false?'Pending Verification':'Completed';
-  }
-
-  const file=$('task-file').files[0];
-  const {data,error}=await sb.from('compliance_tasks').update({
-   status:st,result:$('task-result').value,notes:$('task-notes').value.trim(),
-   completed_by:state.user.id,completed_date:new Date().toISOString()
-  }).eq('id',id).select().single();
-  if(error)throw error;
-
-  if(file){
-   const path=await uploadFile(file,'tasks');
-   const a=await sb.from('fsms_attachments').insert({
-    file_name:file.name,file_path:path,file_size:file.size,file_type:file.type,
-    task_id:id,uploaded_by:state.user.id
-   });
-   if(a.error)console.warn(a.error.message);
-  }
-
-  await audit('UPDATE','Records & Plans','compliance_tasks',id,`Updated task ${t.task_number}`,t,data);
-  closeModal('task-modal');toast('Task updated');
-  await loadTasks();await loadPlans();renderRecords();refreshDashboard();
- }catch(e){status('task-form-status',e.message,true)}
-}
-
-async function verifyTask(id){
- const t=state.tasks.find(x=>x.id===id);if(!t)return;
- if(!confirm('Verify and close this task?'))return;
- const {data,error}=await sb.from('compliance_tasks').update({
-  status:'Verified',verified_by:state.user.id,verified_at:new Date().toISOString()
- }).eq('id',id).select().single();
- if(error){alert(error.message);return}
- await audit('VERIFY','Records & Plans','compliance_tasks',id,`Verified task ${t.task_number}`,t,data);
- toast('Task verified');await loadTasks();renderRecords();refreshDashboard();
-}
-
-/* ---------- USERS ---------- */
 
 function renderUsers(){
- const tbody=$('users-tbody');if(!tbody)return;
- const q=($('users-filter')?.value||'').toLowerCase();
- const role=$('role-filter')?.value||'';
- const rows=state.users.filter(u=>
-  (!q||`${u.full_name||''} ${u.email||''} ${u.employee_code||''}`.toLowerCase().includes(q))&&
-  (!role||u.role===role)
- );
- tbody.innerHTML=rows.length?rows.map(u=>`<tr>
-  <td><b>${esc(u.full_name||'-')}</b></td><td>${esc(u.email||'-')}</td>
-  <td>${esc(u.employee_code||'-')}</td><td>${badge(u.role)}</td>
-  <td>${esc(u.job_title||'-')}</td><td>${badge(u.status)}</td>
-  <td><button class="btn btn-light btn-sm" onclick="editUser('${u.id}')">Edit</button>
-  <button class="btn btn-light btn-sm" onclick="toggleUser('${u.id}')">${u.status==='active'?'Deactivate':'Activate'}</button></td>
- </tr>`).join(''):'<tr><td colspan="7" class="empty">No users found.</td></tr>';
+
+  const container=document.getElementById("usersTable");
+
+  if(!container) return;
+
+  if(!appState.users.length){
+    container.innerHTML=`
+      <div class="empty">
+        No users found.
+      </div>`;
+    return;
+  }
+
+  container.innerHTML=`
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Job Title</th>
+          <th>Department</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${appState.users.map(user=>{
+
+          const dept=
+            appState.departments.find(
+              d=>d.id===user.department_id
+            );
+
+          return `
+            <tr>
+              <td><strong>${escapeHtml(user.full_name || "-")}</strong></td>
+              <td>${escapeHtml(user.email || "-")}</td>
+              <td>${escapeHtml(user.job_title || "-")}</td>
+              <td>${escapeHtml(dept?.name || "-")}</td>
+              <td>${statusBadge(user.role || "User")}</td>
+              <td>${statusBadge(user.status || "active")}</td>
+              <td>
+                <div class="actions">
+                  <button
+                    class="btn btn-secondary btn-sm"
+                    onclick="editUser('${user.id}')">
+                    Edit
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
 }
 
 function editUser(id){
- const u=state.users.find(x=>x.id===id);if(!u)return;
- state.editingUserId=id;
- $('user-full-name').value=u.full_name||'';
- $('user-email').value=u.email||'';
- $('user-employee-code').value=u.employee_code||'';
- $('user-department').value=u.department_id||'';
- $('user-role').value=u.role||'Employee';
- $('user-job-title').value=u.job_title||'';
- $('user-phone').value=u.phone||'';
- $('user-status').value=u.status||'active';
- openModal('user-modal');
+
+  const user=appState.users.find(x=>x.id===id);
+
+  if(!user) return;
+
+  document.getElementById("userId").value=user.id;
+  document.getElementById("userFullName").value=user.full_name || "";
+  document.getElementById("userEmail").value=user.email || "";
+  document.getElementById("userEmployeeCode").value=user.employee_code || "";
+  document.getElementById("userJobTitle").value=user.job_title || "";
+  document.getElementById("userPhone").value=user.phone || "";
+  document.getElementById("userRole").value=user.role || "User";
+  document.getElementById("userStatus").value=user.status || "active";
+
+  const select=document.getElementById("userDepartment");
+
+  select.innerHTML=`
+    <option value="">No Department</option>
+    ${appState.departments.map(d=>`
+      <option value="${d.id}">
+        ${escapeHtml(d.name)}
+      </option>
+    `).join("")}
+  `;
+
+  select.value=user.department_id || "";
+
+  openModal("userModal");
 }
 
-async function saveUser(e){
- e.preventDefault();status('user-form-status','Saving...');
- const id=state.editingUserId;
- try{
-  const {data,error}=await sb.from('profiles').update({
-   full_name:$('user-full-name').value.trim(),
-   employee_code:$('user-employee-code').value.trim()||null,
-   department_id:$('user-department').value||null,
-   role:$('user-role').value,
-   job_title:$('user-job-title').value.trim()||null,
-   phone:$('user-phone').value.trim()||null,
-   status:$('user-status').value
-  }).eq('id',id).select().single();
-  if(error)throw error;
-  await audit('UPDATE','Administration','profiles',id,'Updated user profile',null,data);
-  closeModal('user-modal');toast('User updated');await loadUsers();
- }catch(e){status('user-form-status',e.message,true)}
-}
+/* =========================================================
+   DOCUMENTS
+========================================================= */
 
-async function toggleUser(id){
- const u=state.users.find(x=>x.id===id);if(!u)return;
- if(id===state.user.id)return alert('You cannot deactivate your own account.');
- const next=u.status==='active'?'inactive':'active';
- const {error}=await sb.from('profiles').update({status:next}).eq('id',id);
- if(error){alert(error.message);return}
- await loadUsers();toast('User status updated');
-}
+async function loadDocuments(){
 
-/* ---------- DASHBOARD ---------- */
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("documents")
+    .select("*")
+    .order("created_at",{ascending:false});
 
-function pct(a,b){return b?Math.round(a/b*100):0}
-
-async function refreshDashboard(){
- if(!state.user)return;
- const docs=state.documents,plans=state.plans,tasks=state.tasks;
- const today=todayIso(),near=addDays(today,30);
-
- const pending=docs.filter(d=>d.approval_status!=='Approved').length;
- const approved=docs.filter(d=>d.approval_status==='Approved').length;
- const nearReview=docs.filter(d=>d.review_date&&d.review_date>=today&&d.review_date<=near).length;
- const open=tasks.filter(t=>['Pending','Pending Verification'].includes(t.status)).length;
- const activePlans=plans.filter(p=>p.status==='Active').length;
- const completed=tasks.filter(t=>['Completed','Verified'].includes(t.status)).length;
-
- $('kpi-total-documents').textContent=docs.length;
- $('kpi-pending-documents').textContent=pending;
- $('kpi-documents-near-review').textContent=nearReview;
- $('kpi-open-tasks').textContent=open;
- $('kpi-active-plans').textContent=activePlans;
- $('kpi-approved-documents').textContent=approved;
-
- $('kpi-document-control').textContent=pct(approved,docs.length)+'%';
- $('progress-document-control').style.width=pct(approved,docs.length)+'%';
-
- const linked=plans.filter(p=>p.sop_document_id||p.record_id).length;
- $('kpi-plan-coverage').textContent=pct(linked,plans.length)+'%';
- $('progress-plan-coverage').style.width=pct(linked,plans.length)+'%';
-
- $('kpi-task-completion').textContent=pct(completed,tasks.length)+'%';
- $('progress-task-completion').style.width=pct(completed,tasks.length)+'%';
-
- $('kpi-audit-readiness').textContent=Math.round(
-  (pct(approved,docs.length)+pct(linked,plans.length)+pct(completed,tasks.length))/3
- )+'%';
-
- $('document-status-summary').innerHTML=`
- <div class="grid grid-4">
-  <div><small>Draft</small><h3>${docs.filter(x=>x.approval_status==='Draft').length}</h3></div>
-  <div><small>Review</small><h3>${docs.filter(x=>x.approval_status==='Pending Approval').length}</h3></div>
-  <div><small>Approved</small><h3>${approved}</h3></div>
-  <div><small>Near Due</small><h3>${nearReview}</h3></div>
- </div>`;
-
- const alerts=[];
- tasks.filter(t=>t.status==='Pending'&&t.due_date<today).slice(0,5).forEach(t=>{
-  alerts.push(`<div class="alert danger"><b>OVERDUE</b> · ${esc(t.task_number)} · Due ${fmt(t.due_date)}</div>`);
- });
- docs.filter(d=>d.review_date&&d.review_date<today&&d.status!=='Obsolete').slice(0,5).forEach(d=>{
-  alerts.push(`<div class="alert warning"><b>DOCUMENT REVIEW OVERDUE</b> · ${esc(d.document_code)}</div>`);
- });
- if(!alerts.length)alerts.push('<div class="alert success">✓ No Critical Attention Items<br><small>Current system data shows no open alerts.</small></div>');
- $('attention-list').innerHTML=alerts.join('');
-}
-
-/* ---------- INIT ---------- */
-
-async function boot(){
- $('login-screen').style.display='none';
- $('app-shell').style.display='block';
-
- await loadProfile();
- await loadDepartments();
- await loadUsers();
- await loadDocuments();
- await loadRecords();
- await loadPlans();
- await generateTasks();
- await loadTasks();
- await refreshDashboard();
-}
-
-async function initialize(){
- $('login-form').addEventListener('submit',login);
- $('forgot-password-btn').addEventListener('click',forgotPassword);
- $('signout-button').addEventListener('click',logout);
-
- $('new-document-btn').addEventListener('click',()=>openDocumentModal());
- $('document-form').addEventListener('submit',saveDocument);
-
- $('new-record-btn').addEventListener('click',()=>openRecordModal());
- $('record-form').addEventListener('submit',saveRecord);
-
- $('new-plan-btn').addEventListener('click',()=>openPlanModal());
- $('plan-form').addEventListener('submit',savePlan);
-
- $('task-form').addEventListener('submit',saveTask);
- $('user-form').addEventListener('submit',saveUser);
-
- $('document-search').addEventListener('input',renderDocuments);
- $('document-type-filter').addEventListener('change',renderDocuments);
- $('document-status-filter').addEventListener('change',renderDocuments);
- $('document-approval-filter').addEventListener('change',renderDocuments);
- $('document-department-filter').addEventListener('change',renderDocuments);
- $('users-filter').addEventListener('input',renderUsers);
- $('role-filter').addEventListener('change',renderUsers);
-
- document.addEventListener('click',e=>{
-  const nav=e.target.closest('[data-module]');
-  if(nav){switchModule(nav.dataset.module);return}
-
-  const close=e.target.closest('[data-close]');
-  if(close){closeModal(close.dataset.close);return}
-
-  const action=e.target.closest('[data-action]');
-  if(action){
-   if(action.dataset.action==='new-document')openDocumentModal();
-   if(action.dataset.action==='documents')switchModule('documents');
-   if(action.dataset.action==='records')switchModule('records');
-   if(action.dataset.action==='refresh')refreshDashboard();
+  if(error){
+    console.error("Documents:",error);
+    showToast("Unable to load documents","error");
+    return;
   }
 
-  const tab=e.target.closest('[data-record-tab]');
-  if(tab){
-   state.recordTab=tab.dataset.recordTab;renderRecords();
-  }
- });
+  appState.documents=data || [];
 
- document.querySelectorAll('.modal').forEach(m=>{
-  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')});
- });
-
- document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));
- });
-
- window.openDocumentModal=openDocumentModal;
- window.editDocument=editDocument;
- window.openDocumentFile=openDocumentFile;
- window.approveDocument=approveDocument;
- window.deleteDocument=deleteDocument;
- window.openRecordModal=openRecordModal;
- window.editRecord=openRecordModal;
- window.openPlanModal=openPlanModal;
- window.editPlan=openPlanModal;
- window.openTask=openTask;
- window.verifyTask=verifyTask;
- window.editUser=editUser;
- window.toggleUser=toggleUser;
-
- const {data}=await sb.auth.getSession();
- if(data?.session){
-  state.user=data.session.user;
-  await boot();
- }else{
-  $('login-screen').style.display='flex';
-  $('app-shell').style.display='none';
- }
-
- sb.auth.onAuthStateChange(async(event,session)=>{
-  if(event==='SIGNED_OUT'){
-   state.user=null;
-   $('app-shell').style.display='none';
-   $('login-screen').style.display='flex';
-  }
- });
+  renderDocuments();
+  updatePlanSelects();
+  renderDashboard();
 }
 
-document.addEventListener('DOMContentLoaded',initialize);
+function renderDocuments(){
+
+  const container=document.getElementById("documentsTable");
+
+  if(!container) return;
+
+  const search=
+    document.getElementById("documentSearch")?.value
+      .toLowerCase()
+      .trim() || "";
+
+  const status=
+    document.getElementById("documentStatusFilter")?.value || "";
+
+  let rows=appState.documents.filter(doc=>{
+
+    const text=`
+      ${doc.document_code || ""}
+      ${doc.title || ""}
+      ${doc.document_type || ""}
+      ${doc.department || ""}
+    `.toLowerCase();
+
+    const searchMatch=
+      !search || text.includes(search);
+
+    const statusMatch=
+      !status || doc.approval_status===status;
+
+    return searchMatch && statusMatch;
+  });
+
+  if(!rows.length){
+    container.innerHTML=`
+      <div class="empty">
+        <div class="empty-icon">▤</div>
+        No documents found.
+      </div>`;
+    return;
+  }
+
+  container.innerHTML=`
+    <table>
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Title</th>
+          <th>Type</th>
+          <th>Department</th>
+          <th>Revision</th>
+          <th>Review Date</th>
+          <th>Approval</th>
+          <th>File</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        ${rows.map(doc=>`
+          <tr>
+
+            <td>
+              <strong>
+                ${escapeHtml(doc.document_code || "-")}
+              </strong>
+            </td>
+
+            <td>
+              ${escapeHtml(doc.title || "-")}
+            </td>
+
+            <td>
+              ${escapeHtml(doc.document_type || "-")}
+            </td>
+
+            <td>
+              ${escapeHtml(doc.department || "-")}
+            </td>
+
+            <td>
+              ${escapeHtml(doc.revision || "-")}
+            </td>
+
+            <td>
+              ${formatDate(doc.review_date)}
+            </td>
+
+            <td>
+              ${statusBadge(doc.approval_status || doc.status || "Draft")}
+            </td>
+
+            <td>
+              ${
+                doc.file_path
+                  ? `
+                    <button
+                      class="btn btn-secondary btn-sm"
+                      onclick="openDocumentFile('${doc.id}')">
+                      View
+                    </button>
+                  `
+                  : "-"
+              }
+            </td>
+
+            <td>
+              <div class="actions">
+
+                <button
+                  class="btn btn-light btn-sm"
+                  onclick="editDocument('${doc.id}')">
+                  Edit
+                </button>
+
+                ${
+                  doc.approval_status!=="Approved"
+                  ? `
+                    <button
+                      class="btn btn-success btn-sm"
+                      onclick="approveDocument('${doc.id}')">
+                      Approve
+                    </button>
+                  `
+                  : ""
+                }
+
+                <button
+                  class="btn btn-danger btn-sm"
+                  onclick="deleteDocument('${doc.id}')">
+                  Delete
+                </button>
+
+              </div>
+            </td>
+
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function openDocumentModal(){
+
+  document.getElementById("documentForm").reset();
+  document.getElementById("documentId").value="";
+  document.getElementById("documentModalTitle")
+    .textContent="New Document";
+
+  openModal("documentModal");
+}
+
+function editDocument(id){
+
+  const doc=appState.documents.find(x=>x.id===id);
+
+  if(!doc) return;
+
+  document.getElementById("documentId").value=doc.id;
+  document.getElementById("documentCode").value=doc.document_code || "";
+  document.getElementById("documentType").value=doc.document_type || "SOP";
+  document.getElementById("documentTitle").value=doc.title || "";
+  document.getElementById("documentDepartment").value=doc.department || "";
+  document.getElementById("documentRevision").value=doc.revision || "";
+  document.getElementById("documentIssueDate").value=doc.issue_date || "";
+  document.getElementById("documentReviewDate").value=doc.review_date || "";
+  document.getElementById("documentApprovalStatus").value=
+    doc.approval_status || "Draft";
+  document.getElementById("documentDescription").value=
+    doc.description || "";
+
+  document.getElementById("documentModalTitle")
+    .textContent="Edit Document";
+
+  openModal("documentModal");
+}
+
+async function uploadFile(file,folder){
+
+  if(!file) return null;
+
+  const safeName=file.name
+    .replace(/[^a-zA-Z0-9._-]/g,"_");
+
+  const path=
+    `${folder}/${Date.now()}_${safeName}`;
+
+  const {
+    error
+  } = await supabaseClient
+    .storage
+    .from("fsms-documents")
+    .upload(path,file,{
+      upsert:false
+    });
+
+  if(error){
+    throw error;
+  }
+
+  return {
+    path,
+    name:file.name,
+    size:file.size,
+    type:file.type
+  };
+}
+
+async function getSignedUrl(path){
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .storage
+    .from("fsms-documents")
+    .createSignedUrl(path,3600);
+
+  if(error) throw error;
+
+  return data.signedUrl;
+}
+
+async function openDocumentFile(id){
+
+  const doc=appState.documents.find(x=>x.id===id);
+
+  if(!doc?.file_path){
+    showToast("No file attached","warning");
+    return;
+  }
+
+  try{
+    const url=await getSignedUrl(doc.file_path);
+    window.open(url,"_blank");
+  }catch(error){
+    console.error(error);
+    showToast("Unable to open file","error");
+  }
+}
+
+async function deleteStorageFile(path){
+
+  if(!path) return;
+
+  try{
+    await supabaseClient
+      .storage
+      .from("fsms-documents")
+      .remove([path]);
+  }catch(error){
+    console.warn("Storage delete failed:",error);
+  }
+}
+
+async function deleteDocument(id){
+
+  if(!confirm("Delete this document?")) return;
+
+  const doc=appState.documents.find(x=>x.id===id);
+
+  if(!doc) return;
+
+  const {
+    error
+  } = await supabaseClient
+    .from("documents")
+    .delete()
+    .eq("id",id);
+
+  if(error){
+    console.error(error);
+    showToast(error.message,"error");
+    return;
+  }
+
+  await deleteStorageFile(doc.file_path);
+
+  await writeAudit(
+    "DELETE",
+    "Document Control",
+    "documents",
+    id,
+    `Deleted document ${doc.title}`
+  );
+
+  showToast("Document deleted","success");
+
+  await loadDocuments();
+}
+
+async function approveDocument(id){
+
+  const doc=appState.documents.find(x=>x.id===id);
+
+  if(!doc) return;
+
+  const {
+    error
+  } = await supabaseClient
+    .from("documents")
+    .update({
+      approval_status:"Approved",
+      status:"Active",
+      approved_by:appState.user.id,
+      approved_at:new Date().toISOString()
+    })
+    .eq("id",id);
+
+  if(error){
+    showToast(error.message,"error");
+    return;
+  }
+
+  await writeAudit(
+    "APPROVE",
+    "Document Control",
+    "documents",
+    id,
+    `Approved document ${doc.title}`
+  );
+
+  showToast("Document approved","success");
+
+  await loadDocuments();
+}
+
+document.getElementById("documentForm")
+.addEventListener("submit",async e=>{
+
+  e.preventDefault();
+
+  const id=document.getElementById("documentId").value;
+
+  const payload={
+    document_code:
+      document.getElementById("documentCode").value.trim() || null,
+
+    title:
+      document.getElementById("documentTitle").value.trim(),
+
+    document_type:
+      document.getElementById("documentType").value,
+
+    department:
+      document.getElementById("documentDepartment").value.trim() || null,
+
+    revision:
+      document.getElementById("documentRevision").value.trim() || null,
+
+    issue_date:
+      document.getElementById("documentIssueDate").value || null,
+
+    review_date:
+      document.getElementById("documentReviewDate").value || null,
+
+    approval_status:
+      document.getElementById("documentApprovalStatus").value,
+
+    status:
+      document.getElementById("documentApprovalStatus").value==="Approved"
+        ? "Active"
+        : "Draft",
+
+    description:
+      document.getElementById("documentDescription").value.trim() || null
+  };
+
+  const file=document.getElementById("documentFile").files[0];
+
+  try{
+
+    if(id){
+
+      const old=appState.documents.find(x=>x.id===id);
+
+      if(file){
+
+        const uploaded=
+          await uploadFile(file,"documents");
+
+        payload.file_name=uploaded.name;
+        payload.file_path=uploaded.path;
+        payload.file_size=uploaded.size;
+        payload.file_type=uploaded.type;
+
+        if(old?.file_path){
+          await deleteStorageFile(old.file_path);
+        }
+      }
+
+      const {
+        error
+      }=await supabaseClient
+        .from("documents")
+        .update(payload)
+        .eq("id",id);
+
+      if(error) throw error;
+
+      await writeAudit(
+        "UPDATE",
+        "Document Control",
+        "documents",
+        id,
+        `Updated document ${payload.title}`,
+        old,
+        payload
+      );
+
+      showToast("Document updated","success");
+
+    }else{
+
+      if(file){
+
+        const uploaded=
+          await uploadFile(file,"documents");
+
+        payload.file_name=uploaded.name;
+        payload.file_path=uploaded.path;
+        payload.file_size=uploaded.size;
+        payload.file_type=uploaded.type;
+      }
+
+      payload.created_by=appState.user.id;
+      payload.owner_id=appState.user.id;
+
+      const {
+        data,
+        error
+      }=await supabaseClient
+        .from("documents")
+        .insert(payload)
+        .select()
+        .single();
+
+      if(error) throw error;
+
+      await writeAudit(
+        "CREATE",
+        "Document Control",
+        "documents",
+        data.id,
+        `Created document ${data.title}`,
+        null,
+        data
+      );
+
+      showToast("Document created","success");
+    }
+
+    closeModal("documentModal");
+    await loadDocuments();
+
+  }catch(error){
+
+    console.error(error);
+    showToast(error.message || "Unable to save document","error");
+  }
+
+});
+
+/* =========================================================
+   RECORDS
+========================================================= */
+
+async function loadRecords(){
+
+  const {
+    data,
+    error
+  }=await supabaseClient
+    .from("records")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(error){
+    console.warn("Records:",error.message);
+    appState.records=[];
+    return;
+  }
+
+  appState.records=data || [];
+
+  renderRecords();
+  updatePlanSelects();
+}
+
+function renderRecords(){
+
+  const plansContainer=document.getElementById("plansTable");
+  const tasksContainer=document.getElementById("tasksTable");
+
+  if(plansContainer){
+    renderPlans();
+  }
+
+  if(tasksContainer){
+    renderTasks();
+  }
+}
+
+function openRecordModal(){
+
+  document.getElementById("recordForm").reset();
+
+  openModal("recordModal");
+}
+
+document.getElementById("recordForm")
+.addEventListener("submit",async e=>{
+
+  e.preventDefault();
+
+  const payload={
+    record_code:
+      document.getElementById("recordCode").value.trim() || null,
+
+    title:
+      document.getElementById("recordTitle").value.trim(),
+
+    record_type:
+      document.getElementById("recordType").value,
+
+    department:
+      document.getElementById("recordDepartment").value.trim() || null,
+
+    frequency:
+      document.getElementById("recordFrequency").value,
+
+    issue_date:
+      document.getElementById("recordIssueDate").value || null,
+
+    review_date:
+      document.getElementById("recordReviewDate").value || null,
+
+    description:
+      document.getElementById("recordDescription").value.trim() || null,
+
+    created_by:
+      appState.user.id
+  };
+
+  const file=document.getElementById("recordFile").files[0];
+
+  try{
+
+    if(file){
+
+      const uploaded=
+        await uploadFile(file,"records");
+
+      payload.file_name=uploaded.name;
+      payload.file_path=uploaded.path;
+      payload.file_size=uploaded.size;
+      payload.file_type=uploaded.type;
+    }
+
+    const {
+      data,
+      error
+    }=await supabaseClient
+      .from("records")
+      .insert(payload)
+      .select()
+      .single();
+
+    if(error) throw error;
+
+    await writeAudit(
+      "CREATE",
+      "Records",
+      "records",
+      data.id,
+      `Created record ${data.title}`,
+      null,
+      data
+    );
+
+    showToast("Record created","success");
+
+    closeModal("recordModal");
+
+    await loadRecords();
+
+  }catch(error){
+
+    console.error(error);
+    showToast(error.message || "Unable to create record","error");
+  }
+
+});
+
+/* =========================================================
+   PLANS
+========================================================= */
+
+async function loadPlans(){
+
+  const {
+    data,
+    error
+  }=await supabaseClient
+    .from("compliance_plans")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(error){
+    console.warn("Plans:",error.message);
+    appState.plans=[];
+    return;
+  }
+
+  appState.plans=data || [];
+
+  renderPlans();
+  renderDashboard();
+}
+
+function updatePlanSelects(){
+
+  const sop=document.getElementById("planSop");
+  const record=document.getElementById("planRecord");
+  const responsible=document.getElementById("planResponsible");
+  const verifier=document.getElementById("planVerifier");
+
+  if(!sop) return;
+
+  sop.innerHTML=`
+    <option value="">No SOP</option>
+    ${appState.documents.map(doc=>`
+      <option value="${doc.id}">
+        ${escapeHtml(
+          `${doc.document_code || ""} ${doc.title || ""}`
+        )}
+      </option>
+    `).join("")}
+  `;
+
+  record.innerHTML=`
+    <option value="">No Record</option>
+    ${appState.records.map(rec=>`
+      <option value="${rec.id}">
+        ${escapeHtml(
+          `${rec.record_code || ""} ${rec.title || ""}`
+        )}
+      </option>
+    `).join("")}
+  `;
+
+  const users=appState.users;
+
+  const options=`
+    <option value="">Not Assigned</option>
+    ${users.map(user=>`
+      <option value="${user.id}">
+        ${escapeHtml(
+          user.full_name || user.email || user.id
+        )}
+      </option>
+    `).join("")}
+  `;
+
+  responsible.innerHTML=options;
+  verifier.innerHTML=options;
+}
+
+function openPlanModal(){
+
+  document.getElementById("planForm").reset();
+
+  document.getElementById("planStartDate").value=todayString();
+
+  updatePlanSelects();
+
+  openModal("planModal");
+}
+
+document.getElementById("planForm")
+.addEventListener("submit",async e=>{
+
+  e.preventDefault();
+
+  const frequency=
+    document.getElementById("planFrequency").value;
+
+  const startDate=
+    document.getElementById("planStartDate").value;
+
+  const payload={
+    plan_code:
+      document.getElementById("planCode").value.trim() || null,
+
+    title:
+      document.getElementById("planTitle").value.trim(),
+
+    department:
+      document.getElementById("planDepartment").value.trim() || null,
+
+    sop_document_id:
+      document.getElementById("planSop").value || null,
+
+    record_id:
+      document.getElementById("planRecord").value || null,
+
+    responsible_id:
+      document.getElementById("planResponsible").value || null,
+
+    verifier_id:
+      document.getElementById("planVerifier").value || null,
+
+    frequency,
+
+    frequency_value:
+      Number(
+        document.getElementById("planFrequencyValue").value
+      ) || null,
+
+    start_date:startDate,
+
+    next_due_date:startDate,
+
+    due_time:
+      document.getElementById("planDueTime").value || null,
+
+    reminder_days:
+      Number(
+        document.getElementById("planReminderDays").value
+      ) || 0,
+
+    attachment_required:
+      document.getElementById("planAttachmentRequired").value==="true",
+
+    verification_required:
+      document.getElementById("planVerificationRequired").value==="true",
+
+    status:"Active",
+
+    instructions:
+      document.getElementById("planInstructions").value.trim() || null,
+
+    created_by:appState.user.id
+  };
+
+  try{
+
+    const {
+      data,
+      error
+    }=await supabaseClient
+      .from("compliance_plans")
+      .insert(payload)
+      .select()
+      .single();
+
+    if(error) throw error;
+
+    await writeAudit(
+      "CREATE",
+      "Compliance Plans",
+      "compliance_plans",
+      data.id,
+      `Created plan ${data.title}`,
+      null,
+      data
+    );
+
+    showToast("Compliance plan created","success");
+
+    closeModal("planModal");
+
+    await loadPlans();
+
+    await generateTasks();
+
+  }catch(error){
+
+    console.error(error);
+    showToast(error.message || "Unable to create plan","error");
+  }
+
+});
+
+function renderPlans(){
+
+  const container=document.getElementById("plansTable");
+
+  if(!container) return;
+
+  if(!appState.plans.length){
+
+    container.innerHTML=`
+      <div class="empty">
+        <div class="empty-icon">▣</div>
+        No compliance plans found.
+      </div>`;
+
+    return;
+  }
+
+  container.innerHTML=`
+    <table>
+      <thead>
+        <tr>
+          <th>Plan Code</th>
+          <th>Title</th>
+          <th>Department</th>
+          <th>Frequency</th>
+          <th>Next Due</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        ${appState.plans.map(plan=>`
+          <tr>
+
+            <td>
+              <strong>
+                ${escapeHtml(plan.plan_code || "-")}
+              </strong>
+            </td>
+
+            <td>
+              ${escapeHtml(plan.title)}
+            </td>
+
+            <td>
+              ${escapeHtml(plan.department || "-")}
+            </td>
+
+            <td>
+              ${escapeHtml(plan.frequency || "-")}
+            </td>
+
+            <td>
+              ${formatDate(plan.next_due_date)}
+            </td>
+
+            <td>
+              ${statusBadge(plan.status)}
+            </td>
+
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+/* =========================================================
+   TASKS
+========================================================= */
+
+async function loadTasks(){
+
+  const {
+    data,
+    error
+  }=await supabaseClient
+    .from("compliance_tasks")
+    .select("*")
+    .order("due_date",{ascending:true});
+
+  if(error){
+    console.warn("Tasks:",error.message);
+    appState.tasks=[];
+    return;
+  }
+
+  appState.tasks=data || [];
+
+  renderTasks();
+  renderDashboard();
+}
+
+function renderTasks(){
+
+  const container=document.getElementById("tasksTable");
+
+  if(!container) return;
+
+  if(!appState.tasks.length){
+
+    container.innerHTML=`
+      <div class="empty">
+        <div class="empty-icon">✓</div>
+        No scheduled tasks found.
+      </div>`;
+
+    return;
+  }
+
+  const today=todayString();
+
+  container.innerHTML=`
+    <table>
+      <thead>
+        <tr>
+          <th>Task No.</th>
+          <th>Plan</th>
+          <th>Scheduled</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Result</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        ${appState.tasks.map(task=>{
+
+          let status=task.status;
+
+          if(
+            status==="Pending" &&
+            task.due_date < today
+          ){
+            status="Overdue";
+          }
+
+          const plan=
+            appState.plans.find(
+              p=>p.id===task.plan_id
+            );
+
+          return `
+            <tr>
+
+              <td>
+                <strong>
+                  ${escapeHtml(task.task_number || "-")}
+                </strong>
+              </td>
+
+              <td>
+                ${escapeHtml(plan?.title || "-")}
+              </td>
+
+              <td>
+                ${formatDate(task.scheduled_date)}
+              </td>
+
+              <td>
+                ${formatDate(task.due_date)}
+              </td>
+
+              <td>
+                ${statusBadge(status)}
+              </td>
+
+              <td>
+                ${escapeHtml(task.result || "-")}
+              </td>
+
+              <td>
+                <div class="actions">
+
+                  ${
+                    task.status!=="Completed"
+                    ? `
+                      <button
+                        class="btn btn-success btn-sm"
+                        onclick="completeTask('${task.id}')">
+                        Complete
+                      </button>
+                    `
+                    : ""
+                  }
+
+                  ${
+                    task.status==="Completed" &&
+                    !task.verified_at
+                    ? `
+                      <button
+                        class="btn btn-primary btn-sm"
+                        onclick="verifyTask('${task.id}')">
+                        Verify
+                      </button>
+                    `
+                    : ""
+                  }
+
+                </div>
+              </td>
+
+            </tr>
+          `;
+        }).join("")}
+
+      </tbody>
+    </table>
+  `;
+}
+
+async function generateTasks(){
+
+  const activePlans=
+    appState.plans.filter(
+      p=>p.status==="Active"
+    );
+
+  if(!activePlans.length){
+    showToast("No active plans found","warning");
+    return;
+  }
+
+  const horizon=30;
+  let created=0;
+
+  for(const plan of activePlans){
+
+    let current=
+      plan.next_due_date ||
+      plan.start_date;
+
+    if(!current) continue;
+
+    for(let i=0;i<10;i++){
+
+      if(current > addDays(todayString(),horizon)){
+        break;
+      }
+
+      const {
+        data:existing
+      }=await supabaseClient
+        .from("compliance_tasks")
+        .select("id")
+        .eq("plan_id",plan.id)
+        .eq("scheduled_date",current)
+        .maybeSingle();
+
+      if(!existing){
+
+        const taskNumber=
+          `TASK-${Date.now().toString().slice(-7)}-${created}`;
+
+        const {
+          error
+        }=await supabaseClient
+          .from("compliance_tasks")
+          .insert({
+            task_number:taskNumber,
+            plan_id:plan.id,
+            scheduled_date:current,
+            due_date:current,
+            responsible_id:plan.responsible_id,
+            verifier_id:plan.verifier_id,
+            status:"Pending"
+          });
+
+        if(!error){
+          created++;
+        }
+      }
+
+      current=
+        getNextDueDate(
+          current,
+          plan.frequency,
+          plan.frequency_value
+        );
+    }
+  }
+
+  await loadTasks();
+
+  if(created){
+    showToast(`${created} task(s) generated`,"success");
+  }else{
+    showToast("No new tasks were required","warning");
+  }
+}
+
+function getNextDueDate(
+  current,
+  frequency,
+  value
+){
+
+  switch(frequency){
+
+    case "Daily":
+      return addDays(current,1);
+
+    case "Weekly":
+      return addDays(current,7);
+
+    case "Monthly":
+      return addMonths(current,1);
+
+    case "Quarterly":
+      return addMonths(current,3);
+
+    case "Semi-Annual":
+      return addMonths(current,6);
+
+    case "Annual":
+      return addYears(current,1);
+
+    case "Custom":
+      return addDays(
+        current,
+        Number(value) || 1
+      );
+
+    default:
+      return addMonths(current,1);
+  }
+}
+
+async function completeTask(id){
+
+  const task=
+    appState.tasks.find(
+      x=>x.id===id
+    );
+
+  if(!task) return;
+
+  const result=
+    prompt(
+      "Enter task result:",
+      "Completed"
+    );
+
+  if(result===null) return;
+
+  const notes=
+    prompt(
+      "Enter notes (optional):",
+      ""
+    );
+
+  const {
+    error
+  }=await supabaseClient
+    .from("compliance_tasks")
+    .update({
+      status:"Completed",
+      result:result,
+      notes:notes || null,
+      completed_date:new Date().toISOString(),
+      completed_by:appState.user.id
+    })
+    .eq("id",id);
+
+  if(error){
+    showToast(error.message,"error");
+    return;
+  }
+
+  await writeAudit(
+    "COMPLETE",
+    "Compliance Tasks",
+    "compliance_tasks",
+    id,
+    `Completed task ${task.task_number}`
+  );
+
+  showToast("Task completed","success");
+
+  await loadTasks();
+}
+
+async function verifyTask(id){
+
+  const task=
+    appState.tasks.find(
+      x=>x.id===id
+    );
+
+  if(!task) return;
+
+  const {
+    error
+  }=await supabaseClient
+    .from("compliance_tasks")
+    .update({
+      status:"Verified",
+      verified_by:appState.user.id,
+      verified_at:new Date().toISOString()
+    })
+    .eq("id",id);
+
+  if(error){
+    showToast(error.message,"error");
+    return;
+  }
+
+  await writeAudit(
+    "VERIFY",
+    "Compliance Tasks",
+    "compliance_tasks",
+    id,
+    `Verified task ${task.task_number}`
+  );
+
+  showToast("Task verified","success");
+
+  await loadTasks();
+}
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function renderDashboard(){
+
+  const documents=appState.documents;
+  const plans=appState.plans;
+  const tasks=appState.tasks;
+
+  const total=documents.length;
+
+  const approved=
+    documents.filter(
+      d=>d.approval_status==="Approved"
+    ).length;
+
+  const pending=
+    documents.filter(
+      d=>d.approval_status==="Pending Approval"
+    ).length;
+
+  const draft=
+    documents.filter(
+      d=>d.approval_status==="Draft"
+    ).length;
+
+  const today=new Date();
+
+  const nearReview=
+    documents.filter(d=>{
+
+      if(!d.review_date) return false;
+
+      const review=
+        new Date(
+          d.review_date+"T00:00:00"
+        );
+
+      const diff=
+        Math.ceil(
+          (review-today)/(1000*60*60*24)
+        );
+
+      return diff>=0 && diff<=30;
+
+    }).length;
+
+  const openTasks=
+    tasks.filter(
+      t=>t.status==="Pending" ||
+         t.status==="In Progress"
+    ).length;
+
+  const activePlans=
+    plans.filter(
+      p=>p.status==="Active"
+    ).length;
+
+  setText("kpiDocuments",total);
+  setText("kpiPending",pending);
+  setText("kpiNearReview",nearReview);
+  setText("kpiOpenTasks",openTasks);
+  setText("kpiActivePlans",activePlans);
+  setText("kpiApproved",approved);
+
+  const approvedPercent=
+    total ? Math.round(approved/total*100) : 0;
+
+  const pendingPercent=
+    total ? Math.round(pending/total*100) : 0;
+
+  const draftPercent=
+    total ? Math.round(draft/total*100) : 0;
+
+  setProgress(
+    "approvedPct",
+    "approvedBar",
+    approvedPercent
+  );
+
+  setProgress(
+    "pendingPct",
+    "pendingBar",
+    pendingPercent
+  );
+
+  setProgress(
+    "draftPct",
+    "draftBar",
+    draftPercent
+  );
+
+  const completedTasks=
+    tasks.filter(
+      t=>t.status==="Completed" ||
+         t.status==="Verified"
+    ).length;
+
+  const taskCompletion=
+    tasks.length
+      ? Math.round(
+          completedTasks/tasks.length*100
+        )
+      : 0;
+
+  const planCoverage=
+    activePlans
+      ? Math.min(
+          100,
+          Math.round(
+            tasks.length/(activePlans*2)*100
+          )
+        )
+      : 0;
+
+  const auditReadiness=
+    Math.round(
+      (
+        (approvedPercent || 0) +
+        taskCompletion +
+        planCoverage
+      ) / 3
+    );
+
+  setProgress(
+    "taskCompletionPct",
+    "taskCompletionBar",
+    taskCompletion
+  );
+
+  setProgress(
+    "planCoveragePct",
+    "planCoverageBar",
+    planCoverage
+  );
+
+  setProgress(
+    "auditReadinessPct",
+    "auditReadinessBar",
+    auditReadiness
+  );
+
+  renderAttention();
+  renderRecentTasks();
+}
+
+function setText(id,value){
+
+  const el=document.getElementById(id);
+
+  if(el){
+    el.textContent=value;
+  }
+}
+
+function setProgress(
+  labelId,
+  barId,
+  value
+){
+
+  setText(
+    labelId,
+    `${value}%`
+  );
+
+  const bar=
+    document.getElementById(barId);
+
+  if(bar){
+    bar.style.width=
+      `${Math.max(0,Math.min(100,value))}%`;
+  }
+}
+
+function renderAttention(){
+
+  const container=
+    document.getElementById("attentionList");
+
+  if(!container) return;
+
+  const items=[];
+
+  const today=todayString();
+
+  appState.tasks
+    .filter(
+      t=>t.status==="Pending" &&
+         t.due_date <= today
+    )
+    .slice(0,5)
+    .forEach(task=>{
+
+      const overdue=
+        task.due_date < today;
+
+      items.push(`
+        <div class="attention-item">
+
+          <div class="attention-icon"
+               style="background:${overdue ? "#fdecec":"#fff7dd"}">
+            ${overdue ? "!" : "◷"}
+          </div>
+
+          <div class="attention-content">
+
+            <div class="attention-title">
+              ${overdue ? "Overdue Task":"Task Due Today"}
+            </div>
+
+            <div class="attention-text">
+              Task ${escapeHtml(task.task_number || "-")}
+              — ${formatDate(task.due_date)}
+            </div>
+
+          </div>
+
+        </div>
+      `);
+    });
+
+  appState.documents
+    .filter(d=>{
+
+      if(!d.review_date) return false;
+
+      const diff=
+        Math.ceil(
+          (
+            new Date(d.review_date+"T00:00:00") -
+            new Date(today+"T00:00:00")
+          )/(1000*60*60*24)
+        );
+
+      return diff>=0 && diff<=30;
+
+    })
+    .slice(0,5)
+    .forEach(doc=>{
+
+      items.push(`
+        <div class="attention-item">
+
+          <div class="attention-icon"
+               style="background:#eaf0ff">
+            ◷
+          </div>
+
+          <div class="attention-content">
+
+            <div class="attention-title">
+              Document Review
+            </div>
+
+            <div class="attention-text">
+              ${escapeHtml(doc.title)}
+              — ${formatDate(doc.review_date)}
+            </div>
+
+          </div>
+
+        </div>
+      `);
+    });
+
+  if(!items.length){
+
+    container.innerHTML=`
+      <div class="empty">
+        <div class="empty-icon">✓</div>
+        No critical items.
+      </div>`;
+
+    return;
+  }
+
+  container.innerHTML=items.join("");
+}
+
+function renderRecentTasks(){
+
+  const container=
+    document.getElementById("recentTasks");
+
+  if(!container) return;
+
+  const rows=
+    [...appState.tasks]
+      .sort(
+        (a,b)=>
+          String(a.due_date)
+            .localeCompare(
+              String(b.due_date)
+            )
+      )
+      .slice(0,5);
+
+  if(!rows.length){
+
+    container.innerHTML=`
+      <div class="empty">
+        No tasks available.
+      </div>`;
+
+    return;
+  }
+
+  container.innerHTML=
+    rows.map(task=>`
+      <div class="attention-item">
+
+        <div class="attention-icon"
+             style="background:#eaf0ff">
+          ✓
+        </div>
+
+        <div class="attention-content">
+
+          <div class="attention-title">
+            ${escapeHtml(task.task_number || "-")}
+          </div>
+
+          <div class="attention-text">
+            Due ${formatDate(task.due_date)}
+            · ${escapeHtml(task.status)}
+          </div>
+
+        </div>
+
+      </div>
+    `).join("");
+}
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function navigateTo(page){
+
+  document.querySelectorAll(".page")
+    .forEach(section=>{
+      section.classList.remove("active");
+    });
+
+  document.querySelectorAll(".nav-item")
+    .forEach(item=>{
+      item.classList.remove("active");
+    });
+
+  const section=
+    document.getElementById(`page-${page}`);
+
+  const nav=
+    document.querySelector(
+      `.nav-item[data-page="${page}"]`
+    );
+
+  if(section){
+    section.classList.add("active");
+  }
+
+  if(nav){
+    nav.classList.add("active");
+  }
+
+  appState.currentPage=page;
+
+  const titles={
+    dashboard:"Dashboard",
+    documents:"Document Control",
+    records:"Records & Plans",
+    haccp:"HACCP / CCP / OPRP",
+    gmp:"PRP / GMP / GHP",
+    "water-ro":"Water & RO",
+    calibration:"Calibration",
+    training:"Training",
+    suppliers:"Suppliers",
+    ncr:"NCR / CAPA",
+    reports:"Reports",
+    settings:"Settings",
+    "user-management":"User Management"
+  };
+
+  document.getElementById("pageTitle")
+    .textContent=titles[page] || "FSMS";
+
+  if(page==="dashboard"){
+    renderDashboard();
+  }
+
+  if(page==="documents"){
+    renderDocuments();
+  }
+
+  if(page==="records"){
+    renderPlans();
+    renderTasks();
+  }
+
+  if(page==="user-management"){
+    renderUsers();
+  }
+}
+
+document.querySelectorAll(".nav-item")
+.forEach(item=>{
+
+  item.addEventListener("click",()=>{
+
+    const page=item.dataset.page;
+
+    navigateTo(page);
+  });
+
+});
+
+/* =========================================================
+   USER SAVE
+========================================================= */
+
+document.getElementById("userForm")
+.addEventListener("submit",async e=>{
+
+  e.preventDefault();
+
+  const id=
+    document.getElementById("userId").value;
+
+  if(!id) return;
+
+  const old=
+    appState.users.find(
+      x=>x.id===id
+    );
+
+  const payload={
+    full_name:
+      document.getElementById("userFullName").value.trim(),
+
+    employee_code:
+      document.getElementById("userEmployeeCode").value.trim() || null,
+
+    job_title:
+      document.getElementById("userJobTitle").value.trim() || null,
+
+    department_id:
+      document.getElementById("userDepartment").value || null,
+
+    role:
+      document.getElementById("userRole").value,
+
+    phone:
+      document.getElementById("userPhone").value.trim() || null,
+
+    status:
+      document.getElementById("userStatus").value
+  };
+
+  const {
+    error
+  }=await supabaseClient
+    .from("profiles")
+    .update(payload)
+    .eq("id",id);
+
+  if(error){
+    showToast(error.message,"error");
+    return;
+  }
+
+  await writeAudit(
+    "UPDATE",
+    "User Management",
+    "profiles",
+    id,
+    `Updated user profile`,
+    old,
+    payload
+  );
+
+  showToast("User updated","success");
+
+  closeModal("userModal");
+
+  await loadUsers();
+
+  updatePlanSelects();
+  renderUsers();
+});
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+document.getElementById("logoutBtn")
+.addEventListener("click",async()=>{
+
+  await supabaseClient.auth.signOut();
+
+});
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+document.getElementById("loginForm")
+.addEventListener("submit",async e=>{
+
+  e.preventDefault();
+
+  const email=
+    document.getElementById("loginEmail").value.trim();
+
+  const password=
+    document.getElementById("loginPassword").value;
+
+  const errorBox=
+    document.getElementById("loginError");
+
+  errorBox.style.display="none";
+
+  const {
+    data,
+    error
+  }=await supabaseClient.auth
+    .signInWithPassword({
+      email,
+      password
+    });
+
+  if(error){
+
+    errorBox.textContent=
+      error.message;
+
+    errorBox.style.display="block";
+
+    return;
+  }
+
+  appState.user=data.user;
+
+  await enterApplication();
+});
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+async function refreshAll(){
+
+  try{
+
+    await loadDepartments();
+    await loadUsers();
+    await loadDocuments();
+    await loadRecords();
+    await loadPlans();
+    await loadTasks();
+
+    updateUserHeader();
+    renderDashboard();
+
+    showToast("System refreshed","success");
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      "Refresh failed",
+      "error"
+    );
+  }
+}
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+(async function init(){
+
+  try{
+
+    await initAuth();
+
+  }catch(error){
+
+    console.error(
+      "Application initialization failed:",
+      error
+    );
+
+    showToast(
+      "Unable to initialize application",
+      "error"
+    );
+  }
+
+})();
 </script>
+
 </body>
 </html>
